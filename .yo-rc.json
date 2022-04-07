@@ -1,0 +1,48 @@
+{
+  "generator-jhipster": {
+    "applicationType": "microservice",
+    "authenticationType": "jwt",
+    "baseName": "cloudasset-management-service",
+    "blueprints": [],
+    "buildTool": "maven",
+    "cacheProvider": "no",
+    "clientPackageManager": "npm",
+    "creationTimestamp": 1616398912029,
+    "databaseType": "sql",
+    "devDatabaseType": "postgresql",
+    "dtoSuffix": "DTO",
+    "embeddableLaunchScript": false,
+    "enableSwaggerCodegen": false,
+    "enableTranslation": false,
+    "entities": [
+      "ServiceProviderCloudAccount",
+      "Department",
+      "Cloud",
+      "CloudEnvironment",
+      "ProductEnclave",
+      "CloudElement",
+      "Catalogue",
+      "DataSource"
+    ],
+    "entitySuffix": "",
+    "jhiPrefix": "jhi",
+    "jhipsterVersion": "6.10.5",
+    "jwtSecretKey": "ZTdlYTc4NzBiMzhlNGM0ZjQxNDlkOGMwMWJhMmExNTcxYWY2MTNlODY3OGQwYjY5YTBiN2IwYmZiYzkyZWUyOGZkODE5ZDAwMmU0ZDVlMTBjZTBlNTdhYzM0YmJiNWFlNWM2ZmE4MjEyNWZmMjkxZmM1OTE5OTVjODA1ZTc0N2Y=",
+    "lastLiquibaseTimestamp": 1648792735000,
+    "messageBroker": false,
+    "otherModules": [],
+    "packageFolder": "com/synectiks/asset",
+    "packageName": "com.synectiks.asset",
+    "prodDatabaseType": "postgresql",
+    "promptValues": {
+      "packageName": "com.synectiks.asset"
+    },
+    "searchEngine": false,
+    "serverPort": "5057",
+    "serviceDiscoveryType": false,
+    "skipClient": true,
+    "skipUserManagement": true,
+    "testFrameworks": [],
+    "websocket": false
+  }
+}

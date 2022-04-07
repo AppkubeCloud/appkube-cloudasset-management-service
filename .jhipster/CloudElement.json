@@ -1,0 +1,66 @@
+{
+  "applications": "*",
+  "changelogDate": "20220401055852",
+  "clientRootFolder": "assetservice",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "cloud_element",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "parentId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "updatedOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "viewJson",
+      "fieldType": "byte[]",
+      "fieldTypeBlobContent": "any"
+    }
+  ],
+  "fluentMethods": true,
+  "javadoc": "Discovered assets of a cloud environment",
+  "jpaMetamodelFiltering": false,
+  "microserviceName": "assetservice",
+  "name": "CloudElement",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "productEnclave",
+      "otherEntityRelationshipName": "cloudElement",
+      "relationshipName": "productEnclaveId",
+      "relationshipType": "many-to-one"
+    },
+    {
+      "otherEntityName": "cloudEnvironment",
+      "otherEntityRelationshipName": "cloudElement",
+      "relationshipName": "cloudEnvironmentId",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

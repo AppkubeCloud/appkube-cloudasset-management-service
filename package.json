@@ -1,0 +1,26 @@
+{
+  "name": "cloudasset-management-service",
+  "version": "0.0.0",
+  "description": "Description for cloudasset-management-service",
+  "private": true,
+  "license": "UNLICENSED",
+  "cacheDirectories": [
+    "node_modules"
+  ],
+  "devDependencies": {
+    "@openapitools/openapi-generator-cli": "1.0.13-4.3.1",
+    "generator-jhipster": "^7.7.0",
+    "husky": "^4.3.8",
+    "lint-staged": "^12.3.7",
+    "prettier": "2.1.2"
+  },
+  "engines": {
+    "node": ">=12.16.1"
+  },
+  "scripts": {
+    "prettier:format": "prettier --write \"{,src/**/}*.{md,json,yml}\""
+  },
+  "dependencies": {
+    "jhipster": "^0.0.2"
+  }
+}

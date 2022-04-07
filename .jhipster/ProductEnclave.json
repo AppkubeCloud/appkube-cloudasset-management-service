@@ -1,0 +1,51 @@
+{
+  "applications": "*",
+  "changelogDate": "20220401055851",
+  "clientRootFolder": "assetservice",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "product_enclave",
+  "fields": [
+    {
+      "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "updatedOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "javadoc": "Discovered assets of a cloud environment",
+  "jpaMetamodelFiltering": false,
+  "microserviceName": "assetservice",
+  "name": "ProductEnclave",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [
+    {
+      "otherEntityName": "cloudEnvironment",
+      "otherEntityRelationshipName": "productEnclave",
+      "relationshipName": "cloudEnvironmentId",
+      "relationshipType": "many-to-one"
+    }
+  ],
+  "service": "serviceImpl"
+}

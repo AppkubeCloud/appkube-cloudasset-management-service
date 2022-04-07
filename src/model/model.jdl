@@ -1,0 +1,110 @@
+/**Synectiks Cloud account details */
+entity ServiceProviderCloudAccount{
+	cloudType String
+	accountId String
+	accessKey String
+   	secretKey String
+   	region String
+   	status String
+	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+entity Department {
+   name String
+   description String maxlength(500)
+   orgId Long
+   status String
+   createdOn Instant
+   updatedOn Instant
+   updatedBy String
+   createdBy String
+}
+
+entity Cloud{
+	name String
+	status String
+	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+/**Client's cloud accounts */
+entity CloudEnvironment{
+	name String
+   	description String maxlength(5000)
+   	accountId String
+   	accessKey String
+   	secretKey String
+   	region String
+   	vaultId String
+   	orgId Long
+   	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String   
+}
+
+/** Discovered assets of a cloud environment */
+entity ProductEnclave{
+	name String
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+}
+
+/** Discovered assets of a cloud environment */
+entity CloudElement{
+	name String
+	parentId String
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+   	viewJson Blob
+}
+
+/** Inventory of dashboards */
+entity Catalogue{
+	name String
+	description String maxlength(5000)
+	uuid String
+	dashboardNature String /** PERF, AVAILABILITY */
+	awsBucket String
+	fileName String
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+}
+
+/** Client specific datasources*/
+entity DataSource{
+	name String
+	description String maxlength(5000)
+	type String
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+}
+
+relationship ManyToOne {
+	CloudEnvironment{cloud} to Cloud,
+	CloudEnvironment{department} to Department,
+	ProductEnclave{cloudEnvironment}  to CloudEnvironment,
+	CloudElement{productEnclave} to ProductEnclave,
+	CloudElement{cloudEnvironment}  to CloudEnvironment,
+	DataSource{cloudEnvironment} to CloudEnvironment
+}
+
+dto * with mapstruct service all with serviceImpl

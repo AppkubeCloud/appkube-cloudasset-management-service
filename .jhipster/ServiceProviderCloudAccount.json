@@ -1,0 +1,60 @@
+{
+  "applications": "*",
+  "changelogDate": "20220401055847",
+  "clientRootFolder": "assetservice",
+  "databaseType": "sql",
+  "dto": "mapstruct",
+  "embedded": false,
+  "entityTableName": "service_provider_cloud_account",
+  "fields": [
+    {
+      "fieldName": "cloudType",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "accountId",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "accessKey",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "secretKey",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "region",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "status",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "updatedOn",
+      "fieldType": "Instant"
+    },
+    {
+      "fieldName": "updatedBy",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "createdBy",
+      "fieldType": "String"
+    }
+  ],
+  "fluentMethods": true,
+  "javadoc": "Synectiks Cloud account details",
+  "jpaMetamodelFiltering": false,
+  "microserviceName": "assetservice",
+  "name": "ServiceProviderCloudAccount",
+  "pagination": "no",
+  "readOnly": false,
+  "relationships": [],
+  "service": "serviceImpl"
+}
