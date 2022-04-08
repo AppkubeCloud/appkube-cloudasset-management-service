@@ -309,10 +309,6 @@ public class CloudEnvironment implements Serializable {
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", accountId='" + getAccountId() + "'" +
-            ", accessKey='" + getAccessKey() + "'" +
-            ", secretKey='" + getSecretKey() + "'" +
-            ", region='" + getRegion() + "'" +
-            ", vaultId='" + getVaultId() + "'" +
             ", orgId=" + getOrgId() +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +

@@ -152,7 +152,7 @@ info:
 
 jhipster:
   clientApp:
-    name: 'assetserviceApp'
+    name: 'cloudasset-management-service'
   # By default CORS is disabled. Uncomment to enable.
   cors :
        allowed-origins: "*"

@@ -25,14 +25,14 @@ public class OrganizationService {
 	@Autowired
     RestTemplate restTemplate;
 	
-	@Autowired
-    DepartmentService departmentService;
+//	@Autowired
+//    DepartmentService departmentService;
 	
 	public Organization getOrgByUserName(String userName) {
         String secSrvUrl = appProps.getSecurityServiceUrl();
         String url = secSrvUrl+"/security/organization/getOrganizationByUserName?userName="+userName;
         Organization org = this.restTemplate.getForObject(url, Organization.class);
-        getDepartment(org);
+//        getDepartment(org);
         return org;
     }
 
@@ -42,15 +42,15 @@ public class OrganizationService {
         String secSrvUrl = appProps.getSecurityServiceUrl();
         String url = secSrvUrl+"/security/organization/getOrganization/"+id;
         Organization org = this.restTemplate.getForObject(url, Organization.class);
-        getDepartment(org);
+//        getDepartment(org);
 		
         return org;
     }
 	
-	private void getDepartment(Organization org) {
-		Map<String, String> obj = new HashMap<>();
-        obj.put("orgId", String.valueOf(org.getId()));
-        List<Department> departmentList = departmentService.searchAllDepartment(obj);
-        org.setDepartmentList(departmentList);
-	}
+//	private void getDepartment(Organization org) {
+//		Map<String, String> obj = new HashMap<>();
+//        obj.put("orgId", String.valueOf(org.getId()));
+//        List<Department> departmentList = departmentService.searchAllDepartment(obj);
+//        org.setDepartmentList(departmentList);
+//	}
 }

@@ -27,15 +27,31 @@ public class DepartmentService {
 	@Autowired
 	DepartmentRepository departmentRepository;
 	
+	@Autowired
+	OrganizationService organizationService;
+	
 	public Optional<Department> getDepartment(Long id) {
 		logger.info("Get department by id: {}", id);
-		return departmentRepository.findById(id);
+		Optional<Department> oObj = departmentRepository.findById(id);
+		Department dp = null;
+		if(oObj.isPresent()) {
+			dp = oObj.get();
+			dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+			return Optional.of(dp);
+		}else {
+			return Optional.empty();
+		}
 	}
 	
 	public List<Department> getAllDepartment() {
 		logger.info("Get all departments");
-		return departmentRepository.findAll(Sort.by(Direction.DESC, "id"));
+		List<Department> listDp = departmentRepository.findAll(Sort.by(Direction.DESC, "id"));
+		for(Department dp : listDp) {
+			dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+		}
+		return listDp;
 	}
+	
 	
 	public Optional<Department> deleteDepartment(Long id) {
 		logger.info("Delete department by id: {}", id);
@@ -65,7 +81,9 @@ public class DepartmentService {
 			throw new BadRequestAlertException("Invalid organization id", "Department", "idnotfound");
 		}
 		obj.setUpdatedOn(Instant.now());
-		return departmentRepository.save(obj);
+		Department dp = departmentRepository.save(obj);
+		dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+		return dp;
 	}
 	
 	public Optional<Department> partialUpdateDepartment(Department obj){
@@ -96,7 +114,9 @@ public class DepartmentService {
 				return existingObj;
 			})
 			.map(departmentRepository::save);
-		return result;
+		Department dp = result.get();
+		dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+		return Optional.of(dp);
 	}
 	
 	public List<Department> searchAllDepartment(Map<String, String> obj) {
@@ -134,6 +154,9 @@ public class DepartmentService {
 			list = departmentRepository.findAll(Example.of(dp), Sort.by(Direction.DESC, "id"));
 		}else {
 			list = departmentRepository.findAll(Sort.by(Direction.DESC, "id"));
+		}
+		for(Department dpt : list) {
+			dpt.setOrganization(organizationService.getOrgById(dpt.getOrgId()));
 		}
 		return list;
 	}

@@ -24,7 +24,7 @@ import com.synectiks.asset.business.service.DataSourceService;
 import com.synectiks.asset.domain.DataSource;
 
 @RestController
-@RequestMapping("/cloudasset/api")
+@RequestMapping("/api")
 public class DataSourceController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DataSourceController.class);

@@ -24,7 +24,7 @@ import com.synectiks.asset.business.service.ServiceProviderCloudAccountService;
 import com.synectiks.asset.domain.ServiceProviderCloudAccount;
 
 @RestController
-@RequestMapping("/cloudasset/api")
+@RequestMapping("/api")
 public class ServiceProviderCloudAccountController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderCloudAccountController.class);

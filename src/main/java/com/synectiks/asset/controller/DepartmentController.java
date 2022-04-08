@@ -24,7 +24,7 @@ import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.domain.Department;
 
 @RestController
-@RequestMapping("/cloudasset/api")
+@RequestMapping("/api")
 public class DepartmentController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DepartmentController.class);

@@ -60,6 +60,9 @@ public class CloudEnvironmentService {
 	
 	public CloudEnvironment createCloudEnvironment(CloudEnvironment obj){
 		logger.info("Create new cloud environment");
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -88,7 +91,9 @@ public class CloudEnvironmentService {
 		if(!pOdp.isPresent()) {
 			throw new BadRequestAlertException("Parent department not found", "CloudEnvironment", "parentidnotfound");
 		}
-		
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		obj.setUpdatedOn(Instant.now());
 		return cloudEnvironmentRepository.save(obj);
 	}
@@ -123,7 +128,7 @@ public class CloudEnvironmentService {
 					existingObj.setOrgId(obj.getOrgId());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				
 				if(obj.getCloud() != null && obj.getCloud().getId() != null) {
@@ -217,7 +222,7 @@ public class CloudEnvironmentService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
-			cld.setStatus(obj.get("status"));
+			cld.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
 		}
 		

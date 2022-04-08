@@ -2,10 +2,21 @@ package com.synectiks.asset.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A Department.
@@ -50,6 +61,10 @@ public class Department implements Serializable {
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
+  @Transient
+  @JsonProperty
+  private Organization organization;
+  
   public Long getId() {
     return this.id;
   }
@@ -167,6 +182,14 @@ public class Department implements Serializable {
     this.createdBy = createdBy;
   }
 
+  public Organization getOrganization() {
+	return organization;
+  }
+
+  public void setOrganization(Organization organization) {
+	this.organization = organization;
+  }
+	  
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
   @Override

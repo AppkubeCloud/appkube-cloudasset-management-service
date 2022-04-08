@@ -24,7 +24,7 @@ import com.synectiks.asset.business.service.CatalogueService;
 import com.synectiks.asset.domain.Catalogue;
 
 @RestController
-@RequestMapping("/cloudasset/api")
+@RequestMapping("/api")
 public class CatalogueController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CatalogueController.class);

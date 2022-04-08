@@ -24,7 +24,7 @@ import com.synectiks.asset.business.service.CloudEnvironmentService;
 import com.synectiks.asset.domain.CloudEnvironment;
 
 @RestController
-@RequestMapping("/cloudasset/api")
+@RequestMapping("/api")
 public class CloudEnvironmentController {
 	
 	private static final Logger logger = LoggerFactory.getLogger(CloudEnvironmentController.class);
