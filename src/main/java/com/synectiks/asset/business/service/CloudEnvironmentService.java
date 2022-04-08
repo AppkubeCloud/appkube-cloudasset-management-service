@@ -63,6 +63,12 @@ public class CloudEnvironmentService {
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
 		}
+		if(Objects.isNull(obj.getCloud()) || (!Objects.isNull(obj.getCloud()) && obj.getCloud().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid cloud id", "CloudEnvironment", "idnotfound");
+		}
+		if(Objects.isNull(obj.getDepartment()) || (!Objects.isNull(obj.getDepartment()) && obj.getDepartment().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid department id", "CloudEnvironment", "idnotfound");
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
