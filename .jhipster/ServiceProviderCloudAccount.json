@@ -51,7 +51,7 @@
   "fluentMethods": true,
   "javadoc": "Synectiks Cloud account details",
   "jpaMetamodelFiltering": false,
-  "microserviceName": "assetservice",
+  "microserviceName": "cloudasset-management-service",
   "name": "ServiceProviderCloudAccount",
   "pagination": "no",
   "readOnly": false,

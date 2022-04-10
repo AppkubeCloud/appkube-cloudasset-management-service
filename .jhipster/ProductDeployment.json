@@ -1,14 +1,24 @@
 {
   "applications": "*",
-  "changelogDate": "20220401055849",
-  "clientRootFolder": "assetservice",
+  "changelogDate": "20220408082930",
+  "clientRootFolder": "cloudasset-management-service",
   "databaseType": "sql",
   "dto": "mapstruct",
   "embedded": false,
-  "entityTableName": "cloud",
+  "entityTableName": "product_deployment",
   "fields": [
     {
-      "fieldName": "name",
+      "fieldName": "environmentName",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "5000"
+    },
+    {
+      "fieldName": "billingFrequency",
       "fieldType": "String"
     },
     {
@@ -35,9 +45,16 @@
   "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "microserviceName": "cloudasset-management-service",
-  "name": "Cloud",
+  "name": "ProductDeployment",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "departmentProduct",
+      "otherEntityRelationshipName": "productDeployment",
+      "relationshipName": "departmentProduct",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "service": "serviceImpl"
 }

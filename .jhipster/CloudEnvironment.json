@@ -65,22 +65,21 @@
   "fluentMethods": true,
   "javadoc": "Client's cloud accounts",
   "jpaMetamodelFiltering": false,
-  "microserviceName": "assetservice",
+  "microserviceName": "cloudasset-management-service",
   "name": "CloudEnvironment",
   "pagination": "no",
   "readOnly": false,
   "relationships": [
     {
-      "javadoc": "deprecate relationships",
       "otherEntityName": "cloud",
       "otherEntityRelationshipName": "cloudEnvironment",
-      "relationshipName": "cloudId",
+      "relationshipName": "cloud",
       "relationshipType": "many-to-one"
     },
     {
       "otherEntityName": "department",
       "otherEntityRelationshipName": "cloudEnvironment",
-      "relationshipName": "departmentid",
+      "relationshipName": "department",
       "relationshipType": "many-to-one"
     }
   ],

@@ -1,25 +1,33 @@
 {
   "applications": "*",
-  "changelogDate": "20220401055848",
-  "clientRootFolder": "assetservice",
+  "changelogDate": "20220408082931",
+  "clientRootFolder": "cloudasset-management-service",
   "databaseType": "sql",
   "dto": "mapstruct",
   "embedded": false,
-  "entityTableName": "department",
+  "entityTableName": "product_billing",
   "fields": [
     {
-      "fieldName": "name",
-      "fieldType": "String"
+      "fieldName": "periodFrom",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "periodTo",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "dueDate",
+      "fieldType": "LocalDate"
+    },
+    {
+      "fieldName": "amount",
+      "fieldType": "Double"
     },
     {
       "fieldName": "description",
       "fieldType": "String",
       "fieldValidateRules": ["maxlength"],
-      "fieldValidateRulesMaxlength": "500"
-    },
-    {
-      "fieldName": "orgId",
-      "fieldType": "Long"
+      "fieldValidateRulesMaxlength": "5000"
     },
     {
       "fieldName": "status",
@@ -45,9 +53,16 @@
   "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "microserviceName": "cloudasset-management-service",
-  "name": "Department",
+  "name": "ProductBilling",
   "pagination": "no",
   "readOnly": false,
-  "relationships": [],
+  "relationships": [
+    {
+      "otherEntityName": "productDeployment",
+      "otherEntityRelationshipName": "productBilling",
+      "relationshipName": "productDeployment",
+      "relationshipType": "many-to-one"
+    }
+  ],
   "service": "serviceImpl"
 }

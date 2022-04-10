@@ -58,7 +58,7 @@
   "fluentMethods": true,
   "javadoc": "Inventory of dashboards",
   "jpaMetamodelFiltering": false,
-  "microserviceName": "assetservice",
+  "microserviceName": "cloudasset-management-service",
   "name": "Catalogue",
   "pagination": "no",
   "readOnly": false,

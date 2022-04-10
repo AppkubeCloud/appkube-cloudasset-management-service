@@ -98,13 +98,101 @@ entity DataSource{
    	createdBy String
 }
 
+entity Product {
+	name String
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+entity Services {
+	name String
+	description String maxlength(5000)
+	type String
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+entity ProductService{
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+entity DepartmentProduct{
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+entity ProductDeployment{
+	environmentName String
+	description String maxlength(5000)
+	billingFrequency String
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
+entity ProductBilling{
+	periodFrom LocalDate
+	periodTo LocalDate
+	dueDate LocalDate
+	amount Double
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+}
+
+entity ServiceBilling{
+	periodFrom LocalDate
+	periodTo LocalDate
+	dueDate LocalDate
+	amount Double
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+}
+
 relationship ManyToOne {
 	CloudEnvironment{cloud} to Cloud,
 	CloudEnvironment{department} to Department,
 	ProductEnclave{cloudEnvironment}  to CloudEnvironment,
 	CloudElement{productEnclave} to ProductEnclave,
 	CloudElement{cloudEnvironment}  to CloudEnvironment,
-	DataSource{cloudEnvironment} to CloudEnvironment
+	DataSource{cloudEnvironment} to CloudEnvironment,
+	
+	ProductService{product} to Product,
+	ProductService{services} to Services, 
+	
+	DepartmentProduct{product} to Product,
+	DepartmentProduct{department} to Department,
+	DepartmentProduct{cloudEnvironment} to CloudEnvironment,
+	
+	ProductDeployment{departmentProduct} to DepartmentProduct,
+	
+	ProductBilling{productDeployment} to ProductDeployment,
+	ServiceBilling{productService} to ProductService
 }
 
 dto * with mapstruct service all with serviceImpl

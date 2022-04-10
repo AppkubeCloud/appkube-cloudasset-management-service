@@ -45,7 +45,7 @@
   "fluentMethods": true,
   "javadoc": "Client specific datasources",
   "jpaMetamodelFiltering": false,
-  "microserviceName": "assetservice",
+  "microserviceName": "cloudasset-management-service",
   "name": "DataSource",
   "pagination": "no",
   "readOnly": false,

@@ -1,31 +1,20 @@
 package com.synectiks.asset.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Size;
-
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
- * A Department.
+ * A DepartmentProduct.
  */
 @Entity
-@Table(name = "department")
+@Table(name = "department_product")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Department implements Serializable {
+public class DepartmentProduct implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -35,15 +24,9 @@ public class Department implements Serializable {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "name")
-  private String name;
-
-  @Size(max = 500)
-  @Column(name = "description", length = 500)
+  @Size(max = 5000)
+  @Column(name = "description", length = 5000)
   private String description;
-
-  @Column(name = "org_id")
-  private Long orgId;
 
   @Column(name = "status")
   private String status;
@@ -60,21 +43,20 @@ public class Department implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
+  @ManyToOne
+  private Product product;
+
+  @ManyToOne
+  @JsonIgnoreProperties(value = { "cloud", "department" }, allowSetters = true)
+  private CloudEnvironment cloudEnvironment;
+
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
-  @Transient
-  @JsonProperty
-  private Organization organization;
-  
-  @Transient
-  @JsonProperty
-  private List<Product> productList;
-  
   public Long getId() {
     return this.id;
   }
 
-  public Department id(Long id) {
+  public DepartmentProduct id(Long id) {
     this.setId(id);
     return this;
   }
@@ -83,24 +65,11 @@ public class Department implements Serializable {
     this.id = id;
   }
 
-  public String getName() {
-    return this.name;
-  }
-
-  public Department name(String name) {
-    this.setName(name);
-    return this;
-  }
-
-  public void setName(String name) {
-    this.name = name;
-  }
-
   public String getDescription() {
     return this.description;
   }
 
-  public Department description(String description) {
+  public DepartmentProduct description(String description) {
     this.setDescription(description);
     return this;
   }
@@ -109,24 +78,11 @@ public class Department implements Serializable {
     this.description = description;
   }
 
-  public Long getOrgId() {
-    return this.orgId;
-  }
-
-  public Department orgId(Long orgId) {
-    this.setOrgId(orgId);
-    return this;
-  }
-
-  public void setOrgId(Long orgId) {
-    this.orgId = orgId;
-  }
-
   public String getStatus() {
     return this.status;
   }
 
-  public Department status(String status) {
+  public DepartmentProduct status(String status) {
     this.setStatus(status);
     return this;
   }
@@ -139,7 +95,7 @@ public class Department implements Serializable {
     return this.createdOn;
   }
 
-  public Department createdOn(Instant createdOn) {
+  public DepartmentProduct createdOn(Instant createdOn) {
     this.setCreatedOn(createdOn);
     return this;
   }
@@ -152,7 +108,7 @@ public class Department implements Serializable {
     return this.updatedOn;
   }
 
-  public Department updatedOn(Instant updatedOn) {
+  public DepartmentProduct updatedOn(Instant updatedOn) {
     this.setUpdatedOn(updatedOn);
     return this;
   }
@@ -165,7 +121,7 @@ public class Department implements Serializable {
     return this.updatedBy;
   }
 
-  public Department updatedBy(String updatedBy) {
+  public DepartmentProduct updatedBy(String updatedBy) {
     this.setUpdatedBy(updatedBy);
     return this;
   }
@@ -178,7 +134,7 @@ public class Department implements Serializable {
     return this.createdBy;
   }
 
-  public Department createdBy(String createdBy) {
+  public DepartmentProduct createdBy(String createdBy) {
     this.setCreatedBy(createdBy);
     return this;
   }
@@ -187,14 +143,32 @@ public class Department implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public Organization getOrganization() {
-	return organization;
+  public Product getProduct() {
+    return this.product;
   }
 
-  public void setOrganization(Organization organization) {
-	this.organization = organization;
+  public void setProduct(Product product) {
+    this.product = product;
   }
-	  
+
+  public DepartmentProduct product(Product product) {
+    this.setProduct(product);
+    return this;
+  }
+
+  public CloudEnvironment getCloudEnvironment() {
+    return this.cloudEnvironment;
+  }
+
+  public void setCloudEnvironment(CloudEnvironment cloudEnvironment) {
+    this.cloudEnvironment = cloudEnvironment;
+  }
+
+  public DepartmentProduct cloudEnvironment(CloudEnvironment cloudEnvironment) {
+    this.setCloudEnvironment(cloudEnvironment);
+    return this;
+  }
+
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
   @Override
@@ -202,10 +176,10 @@ public class Department implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Department)) {
+    if (!(o instanceof DepartmentProduct)) {
       return false;
     }
-    return id != null && id.equals(((Department) o).id);
+    return id != null && id.equals(((DepartmentProduct) o).id);
   }
 
   @Override
@@ -217,11 +191,9 @@ public class Department implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "Department{" +
+        return "DepartmentProduct{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", orgId=" + getOrgId() +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +
@@ -229,12 +201,4 @@ public class Department implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
-
-	public List<Product> getProductList() {
-		return productList;
-	}
-
-	public void setProductList(List<Product> productList) {
-		this.productList = productList;
-	}
 }

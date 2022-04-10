@@ -1,31 +1,21 @@
 package com.synectiks.asset.domain;
 
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
-import java.util.List;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.SequenceGenerator;
-import javax.persistence.Table;
-import javax.persistence.Transient;
-import javax.validation.constraints.Size;
-
+import java.time.LocalDate;
+import javax.persistence.*;
+import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-
 /**
- * A Department.
+ * A ProductBilling.
  */
 @Entity
-@Table(name = "department")
+@Table(name = "product_billing")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class Department implements Serializable {
+public class ProductBilling implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -35,15 +25,21 @@ public class Department implements Serializable {
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "name")
-  private String name;
+  @Column(name = "period_from")
+  private LocalDate periodFrom;
 
-  @Size(max = 500)
-  @Column(name = "description", length = 500)
+  @Column(name = "period_to")
+  private LocalDate periodTo;
+
+  @Column(name = "due_date")
+  private LocalDate dueDate;
+
+  @Column(name = "amount")
+  private Double amount;
+
+  @Size(max = 5000)
+  @Column(name = "description", length = 5000)
   private String description;
-
-  @Column(name = "org_id")
-  private Long orgId;
 
   @Column(name = "status")
   private String status;
@@ -60,21 +56,17 @@ public class Department implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
+  @ManyToOne
+  @JsonIgnoreProperties(value = { "departmentProduct" }, allowSetters = true)
+  private ProductDeployment productDeployment;
+
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
-  @Transient
-  @JsonProperty
-  private Organization organization;
-  
-  @Transient
-  @JsonProperty
-  private List<Product> productList;
-  
   public Long getId() {
     return this.id;
   }
 
-  public Department id(Long id) {
+  public ProductBilling id(Long id) {
     this.setId(id);
     return this;
   }
@@ -83,24 +75,63 @@ public class Department implements Serializable {
     this.id = id;
   }
 
-  public String getName() {
-    return this.name;
+  public LocalDate getPeriodFrom() {
+    return this.periodFrom;
   }
 
-  public Department name(String name) {
-    this.setName(name);
+  public ProductBilling periodFrom(LocalDate periodFrom) {
+    this.setPeriodFrom(periodFrom);
     return this;
   }
 
-  public void setName(String name) {
-    this.name = name;
+  public void setPeriodFrom(LocalDate periodFrom) {
+    this.periodFrom = periodFrom;
+  }
+
+  public LocalDate getPeriodTo() {
+    return this.periodTo;
+  }
+
+  public ProductBilling periodTo(LocalDate periodTo) {
+    this.setPeriodTo(periodTo);
+    return this;
+  }
+
+  public void setPeriodTo(LocalDate periodTo) {
+    this.periodTo = periodTo;
+  }
+
+  public LocalDate getDueDate() {
+    return this.dueDate;
+  }
+
+  public ProductBilling dueDate(LocalDate dueDate) {
+    this.setDueDate(dueDate);
+    return this;
+  }
+
+  public void setDueDate(LocalDate dueDate) {
+    this.dueDate = dueDate;
+  }
+
+  public Double getAmount() {
+    return this.amount;
+  }
+
+  public ProductBilling amount(Double amount) {
+    this.setAmount(amount);
+    return this;
+  }
+
+  public void setAmount(Double amount) {
+    this.amount = amount;
   }
 
   public String getDescription() {
     return this.description;
   }
 
-  public Department description(String description) {
+  public ProductBilling description(String description) {
     this.setDescription(description);
     return this;
   }
@@ -109,24 +140,11 @@ public class Department implements Serializable {
     this.description = description;
   }
 
-  public Long getOrgId() {
-    return this.orgId;
-  }
-
-  public Department orgId(Long orgId) {
-    this.setOrgId(orgId);
-    return this;
-  }
-
-  public void setOrgId(Long orgId) {
-    this.orgId = orgId;
-  }
-
   public String getStatus() {
     return this.status;
   }
 
-  public Department status(String status) {
+  public ProductBilling status(String status) {
     this.setStatus(status);
     return this;
   }
@@ -139,7 +157,7 @@ public class Department implements Serializable {
     return this.createdOn;
   }
 
-  public Department createdOn(Instant createdOn) {
+  public ProductBilling createdOn(Instant createdOn) {
     this.setCreatedOn(createdOn);
     return this;
   }
@@ -152,7 +170,7 @@ public class Department implements Serializable {
     return this.updatedOn;
   }
 
-  public Department updatedOn(Instant updatedOn) {
+  public ProductBilling updatedOn(Instant updatedOn) {
     this.setUpdatedOn(updatedOn);
     return this;
   }
@@ -165,7 +183,7 @@ public class Department implements Serializable {
     return this.updatedBy;
   }
 
-  public Department updatedBy(String updatedBy) {
+  public ProductBilling updatedBy(String updatedBy) {
     this.setUpdatedBy(updatedBy);
     return this;
   }
@@ -178,7 +196,7 @@ public class Department implements Serializable {
     return this.createdBy;
   }
 
-  public Department createdBy(String createdBy) {
+  public ProductBilling createdBy(String createdBy) {
     this.setCreatedBy(createdBy);
     return this;
   }
@@ -187,14 +205,19 @@ public class Department implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public Organization getOrganization() {
-	return organization;
+  public ProductDeployment getProductDeployment() {
+    return this.productDeployment;
   }
 
-  public void setOrganization(Organization organization) {
-	this.organization = organization;
+  public void setProductDeployment(ProductDeployment productDeployment) {
+    this.productDeployment = productDeployment;
   }
-	  
+
+  public ProductBilling productDeployment(ProductDeployment productDeployment) {
+    this.setProductDeployment(productDeployment);
+    return this;
+  }
+
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
   @Override
@@ -202,10 +225,10 @@ public class Department implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof Department)) {
+    if (!(o instanceof ProductBilling)) {
       return false;
     }
-    return id != null && id.equals(((Department) o).id);
+    return id != null && id.equals(((ProductBilling) o).id);
   }
 
   @Override
@@ -217,11 +240,13 @@ public class Department implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "Department{" +
+        return "ProductBilling{" +
             "id=" + getId() +
-            ", name='" + getName() + "'" +
+            ", periodFrom='" + getPeriodFrom() + "'" +
+            ", periodTo='" + getPeriodTo() + "'" +
+            ", dueDate='" + getDueDate() + "'" +
+            ", amount=" + getAmount() +
             ", description='" + getDescription() + "'" +
-            ", orgId=" + getOrgId() +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +
@@ -229,12 +254,4 @@ public class Department implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
-
-	public List<Product> getProductList() {
-		return productList;
-	}
-
-	public void setProductList(List<Product> productList) {
-		this.productList = productList;
-	}
 }

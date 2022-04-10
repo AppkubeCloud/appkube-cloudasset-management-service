@@ -1,14 +1,24 @@
 {
   "applications": "*",
-  "changelogDate": "20220401055849",
-  "clientRootFolder": "assetservice",
+  "changelogDate": "20220408082927",
+  "clientRootFolder": "cloudasset-management-service",
   "databaseType": "sql",
   "dto": "mapstruct",
   "embedded": false,
-  "entityTableName": "cloud",
+  "entityTableName": "services",
   "fields": [
     {
       "fieldName": "name",
+      "fieldType": "String"
+    },
+    {
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "5000"
+    },
+    {
+      "fieldName": "type",
       "fieldType": "String"
     },
     {
@@ -35,7 +45,7 @@
   "fluentMethods": true,
   "jpaMetamodelFiltering": false,
   "microserviceName": "cloudasset-management-service",
-  "name": "Cloud",
+  "name": "Services",
   "pagination": "no",
   "readOnly": false,
   "relationships": [],

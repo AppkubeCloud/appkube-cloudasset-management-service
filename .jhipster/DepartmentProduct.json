@@ -1,15 +1,17 @@
 {
   "applications": "*",
-  "changelogDate": "20220401055851",
-  "clientRootFolder": "assetservice",
+  "changelogDate": "20220408082929",
+  "clientRootFolder": "cloudasset-management-service",
   "databaseType": "sql",
   "dto": "mapstruct",
   "embedded": false,
-  "entityTableName": "product_enclave",
+  "entityTableName": "department_product",
   "fields": [
     {
-      "fieldName": "name",
-      "fieldType": "String"
+      "fieldName": "description",
+      "fieldType": "String",
+      "fieldValidateRules": ["maxlength"],
+      "fieldValidateRulesMaxlength": "5000"
     },
     {
       "fieldName": "status",
@@ -33,16 +35,21 @@
     }
   ],
   "fluentMethods": true,
-  "javadoc": "Discovered assets of a cloud environment",
   "jpaMetamodelFiltering": false,
   "microserviceName": "cloudasset-management-service",
-  "name": "ProductEnclave",
+  "name": "DepartmentProduct",
   "pagination": "no",
   "readOnly": false,
   "relationships": [
     {
+      "otherEntityName": "product",
+      "otherEntityRelationshipName": "departmentProduct",
+      "relationshipName": "product",
+      "relationshipType": "many-to-one"
+    },
+    {
       "otherEntityName": "cloudEnvironment",
-      "otherEntityRelationshipName": "productEnclave",
+      "otherEntityRelationshipName": "departmentProduct",
       "relationshipName": "cloudEnvironment",
       "relationshipType": "many-to-one"
     }

@@ -44,7 +44,7 @@
   "fluentMethods": true,
   "javadoc": "Discovered assets of a cloud environment",
   "jpaMetamodelFiltering": false,
-  "microserviceName": "assetservice",
+  "microserviceName": "cloudasset-management-service",
   "name": "CloudElement",
   "pagination": "no",
   "readOnly": false,
@@ -52,13 +52,13 @@
     {
       "otherEntityName": "productEnclave",
       "otherEntityRelationshipName": "cloudElement",
-      "relationshipName": "productEnclaveId",
+      "relationshipName": "productEnclave",
       "relationshipType": "many-to-one"
     },
     {
       "otherEntityName": "cloudEnvironment",
       "otherEntityRelationshipName": "cloudElement",
-      "relationshipName": "cloudEnvironmentId",
+      "relationshipName": "cloudEnvironment",
       "relationshipType": "many-to-one"
     }
   ],
