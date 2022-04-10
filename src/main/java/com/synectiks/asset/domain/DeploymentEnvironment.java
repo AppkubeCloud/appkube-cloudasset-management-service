@@ -2,10 +2,14 @@ package com.synectiks.asset.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
+
 import javax.persistence.*;
 import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A DeploymentEnvironment.
@@ -47,6 +51,10 @@ public class DeploymentEnvironment implements Serializable {
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
+  @Transient
+  @JsonProperty
+  private List<Services> serviceList;
+  
   public Long getId() {
     return this.id;
   }
@@ -184,4 +192,12 @@ public class DeploymentEnvironment implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
+
+	public List<Services> getServiceList() {
+		return serviceList;
+	}
+
+	public void setServiceList(List<Services> serviceList) {
+		this.serviceList = serviceList;
+	}
 }

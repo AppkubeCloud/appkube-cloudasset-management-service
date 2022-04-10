@@ -22,10 +22,17 @@ public class ProductServicesController {
 	@Autowired
 	ProductServicesService productServicesService;
 	
-	@PostMapping("/product/attach-service/product/{productId}/service/{serviceId}")
-	public ResponseEntity<Product> attachService(@PathVariable Long productId, @PathVariable Long serviceId){
+	@PostMapping("/product/atach-service/product/{productId}/service/{serviceId}")
+	public ResponseEntity<Product> atachService(@PathVariable Long productId, @PathVariable Long serviceId){
 		logger.info("Request to attach new service with product");
-		Product spa = productServicesService.attachService(productId, serviceId);
+		Product spa = productServicesService.atachService(productId, serviceId);
 		return ResponseEntity.status(HttpStatus.OK).body(spa);
+	}
+	
+	@PostMapping("/product/detach-service/product/{productId}/service/{serviceId}")
+	public ResponseEntity<Boolean> detachService(@PathVariable Long productId, @PathVariable Long serviceId){
+		logger.info("Request to detach service from product");
+		boolean isRemoved = productServicesService.detachService(productId, serviceId);
+		return ResponseEntity.status(HttpStatus.OK).body(Boolean.valueOf(isRemoved));
 	}
 }

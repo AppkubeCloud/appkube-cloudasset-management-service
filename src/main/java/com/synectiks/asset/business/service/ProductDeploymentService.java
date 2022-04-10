@@ -1,6 +1,7 @@
 package com.synectiks.asset.business.service;
 
 import java.time.Instant;
+import java.util.List;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -98,4 +99,10 @@ public class ProductDeploymentService {
 		return false;
 	}
 	
+	List<ProductDeployment> getDeploymentEnvironmentOfProduct(Department department, Product product){
+		ProductDeployment dp = new ProductDeployment();
+		dp.setProduct(product);
+		dp.setDepartment(department);
+		return productDeploymentRepository.findAll(Example.of(dp));
+	}
 }

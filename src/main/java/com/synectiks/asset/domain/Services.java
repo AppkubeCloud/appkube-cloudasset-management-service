@@ -2,10 +2,21 @@ package com.synectiks.asset.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * A Services.
@@ -48,6 +59,9 @@ public class Services implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
+  @Transient
+  @JsonProperty
+  private ServiceBilling serviceBilling;
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
   public Long getId() {
@@ -201,4 +215,12 @@ public class Services implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
+
+	public ServiceBilling getServiceBilling() {
+		return serviceBilling;
+	}
+
+	public void setServiceBilling(ServiceBilling serviceBilling) {
+		this.serviceBilling = serviceBilling;
+	}
 }
