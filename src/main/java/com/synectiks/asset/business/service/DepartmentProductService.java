@@ -41,20 +41,21 @@ public class DepartmentProductService {
 	@Autowired
 	DepartmentProductRepository departmentProductRepository;
 	
-	public Department attachProduct(Long departmentid, Long productId, Long cloudEnvironmentId){
+	public Department atachProduct(Long departmentid, Long cloudEnvironmentId, Long productId ){
 		logger.info("Attaching product to the department");
 		Optional<Department> oDp = departmentService.getDepartment(departmentid);
-		Optional<Product> op = productService.getProduct(productId);
 		Optional<CloudEnvironment> oCle = cloudEnvironmentService.getCloudEnvironment(cloudEnvironmentId);
+		Optional<Product> op = productService.getProduct(productId);
 		if(!oDp.isPresent()) {
 			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
 		}		
-		if(!op.isPresent()) {
-			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
-		}
 		if(!oCle.isPresent()) {
 			throw new BadRequestAlertException("Cloud environment not found", "CloudEnvironment", "idnotfound");
 		}
+		if(!op.isPresent()) {
+			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
+		}
+		
 
 		DepartmentProduct dp = new DepartmentProduct();
 		dp.setProduct(op.get());
@@ -71,20 +72,26 @@ public class DepartmentProductService {
 		return department;
 	}
 	
-	public boolean detachProduct(Long productId, Long cloudEnvironmentId){
+	public boolean detachProduct(Long departmentid, Long cloudEnvironmentId, Long productId){
 		logger.info("Detaching product from a department");
-		Optional<Product> op = productService.getProduct(productId);
+		Optional<Department> oDp = departmentService.getDepartment(departmentid);
 		Optional<CloudEnvironment> oCle = cloudEnvironmentService.getCloudEnvironment(cloudEnvironmentId);
-		if(!op.isPresent()) {
-			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
-		}
+		Optional<Product> op = productService.getProduct(productId);
+		if(!oDp.isPresent()) {
+			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
+		}		
 		if(!oCle.isPresent()) {
 			throw new BadRequestAlertException("Cloud environment not found", "CloudEnvironment", "idnotfound");
+		}
+		if(!op.isPresent()) {
+			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
 		}
 		
 		DepartmentProduct dp = new DepartmentProduct();
 		dp.setProduct(op.get());
 		dp.setCloudEnvironment(oCle.get());
+		dp.setDepartment(oDp.get());
+		
 		Optional<DepartmentProduct> odp = departmentProductRepository.findOne(Example.of(dp));
 		if(odp.isPresent()) {
 			departmentProductRepository.deleteById(odp.get().getId());

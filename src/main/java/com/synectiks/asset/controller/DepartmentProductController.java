@@ -22,12 +22,17 @@ public class DepartmentProductController {
 	@Autowired
 	DepartmentProductService departmentProductService;
 	
-	@PostMapping("/department/attach-product/department/{departmentid}/cloud-environment/{cloudEnvId}/product/{productId}")
-	public ResponseEntity<Department> attachService(@PathVariable Long departmentid, @PathVariable Long cloudEnvId, @PathVariable Long productId){
+	@PostMapping("/department/atach-product/department/{departmentid}/cloud-environment/{cloudEnvId}/product/{productId}")
+	public ResponseEntity<Department> atachProduct(@PathVariable Long departmentid, @PathVariable Long cloudEnvId, @PathVariable Long productId){
 		logger.info("Request to attach new product with department");
-		Department dp = departmentProductService.attachProduct(departmentid, cloudEnvId, productId);
+		Department dp = departmentProductService.atachProduct(departmentid, cloudEnvId, productId);
 		return ResponseEntity.status(HttpStatus.OK).body(dp);
 	}
 	
-	
+	@PostMapping("/department/detach-product/department/{departmentid}/cloud-environment/{cloudEnvId}/product/{productId}")
+	public ResponseEntity<Boolean> detachProduct(@PathVariable Long departmentid, @PathVariable Long cloudEnvId, @PathVariable Long productId){
+		logger.info("Request to attach new product with department");
+		boolean isRemoved = departmentProductService.detachProduct(departmentid, cloudEnvId, productId);
+		return ResponseEntity.status(HttpStatus.OK).body(Boolean.valueOf(isRemoved));
+	}
 }
