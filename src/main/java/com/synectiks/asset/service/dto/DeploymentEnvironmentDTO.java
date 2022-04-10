@@ -6,16 +6,16 @@ import java.util.Objects;
 import javax.validation.constraints.*;
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.ProductDeployment} entity.
+ * A DTO for the {@link com.synectiks.asset.domain.DeploymentEnvironment} entity.
  */
-public class ProductDeploymentDTO implements Serializable {
+public class DeploymentEnvironmentDTO implements Serializable {
 
   private Long id;
 
+  private String name;
+
   @Size(max = 5000)
   private String description;
-
-  private String billingFrequency;
 
   private String status;
 
@@ -27,12 +27,6 @@ public class ProductDeploymentDTO implements Serializable {
 
   private String createdBy;
 
-  private DepartmentDTO department;
-
-  private ProductDTO product;
-
-  private DeploymentEnvironmentDTO deploymentEnvironment;
-
   public Long getId() {
     return id;
   }
@@ -41,20 +35,20 @@ public class ProductDeploymentDTO implements Serializable {
     this.id = id;
   }
 
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public String getDescription() {
     return description;
   }
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public String getBillingFrequency() {
-    return billingFrequency;
-  }
-
-  public void setBillingFrequency(String billingFrequency) {
-    this.billingFrequency = billingFrequency;
   }
 
   public String getStatus() {
@@ -97,44 +91,20 @@ public class ProductDeploymentDTO implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public DepartmentDTO getDepartment() {
-    return department;
-  }
-
-  public void setDepartment(DepartmentDTO department) {
-    this.department = department;
-  }
-
-  public ProductDTO getProduct() {
-    return product;
-  }
-
-  public void setProduct(ProductDTO product) {
-    this.product = product;
-  }
-
-  public DeploymentEnvironmentDTO getDeploymentEnvironment() {
-    return deploymentEnvironment;
-  }
-
-  public void setDeploymentEnvironment(DeploymentEnvironmentDTO deploymentEnvironment) {
-    this.deploymentEnvironment = deploymentEnvironment;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ProductDeploymentDTO)) {
+    if (!(o instanceof DeploymentEnvironmentDTO)) {
       return false;
     }
 
-    ProductDeploymentDTO productDeploymentDTO = (ProductDeploymentDTO) o;
+    DeploymentEnvironmentDTO deploymentEnvironmentDTO = (DeploymentEnvironmentDTO) o;
     if (this.id == null) {
       return false;
     }
-    return Objects.equals(this.id, productDeploymentDTO.id);
+    return Objects.equals(this.id, deploymentEnvironmentDTO.id);
   }
 
   @Override
@@ -145,18 +115,15 @@ public class ProductDeploymentDTO implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "ProductDeploymentDTO{" +
+        return "DeploymentEnvironmentDTO{" +
             "id=" + getId() +
+            ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", billingFrequency='" + getBillingFrequency() + "'" +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +
             ", updatedBy='" + getUpdatedBy() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
-            ", department=" + getDepartment() +
-            ", product=" + getProduct() +
-            ", deploymentEnvironment=" + getDeploymentEnvironment() +
             "}";
     }
 }

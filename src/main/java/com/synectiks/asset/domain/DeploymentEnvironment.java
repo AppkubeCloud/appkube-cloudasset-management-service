@@ -8,12 +8,12 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
- * A ProductDeployment.
+ * A DeploymentEnvironment.
  */
 @Entity
-@Table(name = "product_deployment")
+@Table(name = "deployment_environment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ProductDeployment implements Serializable {
+public class DeploymentEnvironment implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -23,12 +23,12 @@ public class ProductDeployment implements Serializable {
   @Column(name = "id")
   private Long id;
 
+  @Column(name = "name")
+  private String name;
+
   @Size(max = 5000)
   @Column(name = "description", length = 5000)
   private String description;
-
-  @Column(name = "billing_frequency")
-  private String billingFrequency;
 
   @Column(name = "status")
   private String status;
@@ -45,22 +45,13 @@ public class ProductDeployment implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
-  @ManyToOne
-  private Department department;
-
-  @ManyToOne
-  private Product product;
-
-  @ManyToOne
-  private DeploymentEnvironment deploymentEnvironment;
-
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
   public Long getId() {
     return this.id;
   }
 
-  public ProductDeployment id(Long id) {
+  public DeploymentEnvironment id(Long id) {
     this.setId(id);
     return this;
   }
@@ -69,11 +60,24 @@ public class ProductDeployment implements Serializable {
     this.id = id;
   }
 
+  public String getName() {
+    return this.name;
+  }
+
+  public DeploymentEnvironment name(String name) {
+    this.setName(name);
+    return this;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public String getDescription() {
     return this.description;
   }
 
-  public ProductDeployment description(String description) {
+  public DeploymentEnvironment description(String description) {
     this.setDescription(description);
     return this;
   }
@@ -82,24 +86,11 @@ public class ProductDeployment implements Serializable {
     this.description = description;
   }
 
-  public String getBillingFrequency() {
-    return this.billingFrequency;
-  }
-
-  public ProductDeployment billingFrequency(String billingFrequency) {
-    this.setBillingFrequency(billingFrequency);
-    return this;
-  }
-
-  public void setBillingFrequency(String billingFrequency) {
-    this.billingFrequency = billingFrequency;
-  }
-
   public String getStatus() {
     return this.status;
   }
 
-  public ProductDeployment status(String status) {
+  public DeploymentEnvironment status(String status) {
     this.setStatus(status);
     return this;
   }
@@ -112,7 +103,7 @@ public class ProductDeployment implements Serializable {
     return this.createdOn;
   }
 
-  public ProductDeployment createdOn(Instant createdOn) {
+  public DeploymentEnvironment createdOn(Instant createdOn) {
     this.setCreatedOn(createdOn);
     return this;
   }
@@ -125,7 +116,7 @@ public class ProductDeployment implements Serializable {
     return this.updatedOn;
   }
 
-  public ProductDeployment updatedOn(Instant updatedOn) {
+  public DeploymentEnvironment updatedOn(Instant updatedOn) {
     this.setUpdatedOn(updatedOn);
     return this;
   }
@@ -138,7 +129,7 @@ public class ProductDeployment implements Serializable {
     return this.updatedBy;
   }
 
-  public ProductDeployment updatedBy(String updatedBy) {
+  public DeploymentEnvironment updatedBy(String updatedBy) {
     this.setUpdatedBy(updatedBy);
     return this;
   }
@@ -151,52 +142,13 @@ public class ProductDeployment implements Serializable {
     return this.createdBy;
   }
 
-  public ProductDeployment createdBy(String createdBy) {
+  public DeploymentEnvironment createdBy(String createdBy) {
     this.setCreatedBy(createdBy);
     return this;
   }
 
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
-  }
-
-  public Department getDepartment() {
-    return this.department;
-  }
-
-  public void setDepartment(Department department) {
-    this.department = department;
-  }
-
-  public ProductDeployment department(Department department) {
-    this.setDepartment(department);
-    return this;
-  }
-
-  public Product getProduct() {
-    return this.product;
-  }
-
-  public void setProduct(Product product) {
-    this.product = product;
-  }
-
-  public ProductDeployment product(Product product) {
-    this.setProduct(product);
-    return this;
-  }
-
-  public DeploymentEnvironment getDeploymentEnvironment() {
-    return this.deploymentEnvironment;
-  }
-
-  public void setDeploymentEnvironment(DeploymentEnvironment deploymentEnvironment) {
-    this.deploymentEnvironment = deploymentEnvironment;
-  }
-
-  public ProductDeployment deploymentEnvironment(DeploymentEnvironment deploymentEnvironment) {
-    this.setDeploymentEnvironment(deploymentEnvironment);
-    return this;
   }
 
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -206,10 +158,10 @@ public class ProductDeployment implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ProductDeployment)) {
+    if (!(o instanceof DeploymentEnvironment)) {
       return false;
     }
-    return id != null && id.equals(((ProductDeployment) o).id);
+    return id != null && id.equals(((DeploymentEnvironment) o).id);
   }
 
   @Override
@@ -221,10 +173,10 @@ public class ProductDeployment implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "ProductDeployment{" +
+        return "DeploymentEnvironment{" +
             "id=" + getId() +
+            ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", billingFrequency='" + getBillingFrequency() + "'" +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +

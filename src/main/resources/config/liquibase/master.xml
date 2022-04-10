@@ -24,6 +24,7 @@
 	<include file="config/liquibase/changelog/20220401055853_added_entity_Catalogue.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220401055854_added_entity_DataSource.xml" relativeToChangelogFile="false"/>
 	
+
 	<include file="config/liquibase/changelog/20220408082926_added_entity_Product.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082927_added_entity_Services.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082928_added_entity_ProductService.xml" relativeToChangelogFile="false"/>
@@ -31,7 +32,7 @@
 	<include file="config/liquibase/changelog/20220408082930_added_entity_ProductDeployment.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082931_added_entity_ProductBilling.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082932_added_entity_ServiceBilling.xml" relativeToChangelogFile="false"/>
-	
+	<include file="config/liquibase/changelog/20220410083743_added_entity_DeploymentEnvironment.xml" relativeToChangelogFile="false"/>
 	
 	<include file="config/liquibase/changelog/20220401055850_added_entity_constraints_CloudEnvironment.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220401055851_added_entity_constraints_ProductEnclave.xml" relativeToChangelogFile="false"/>

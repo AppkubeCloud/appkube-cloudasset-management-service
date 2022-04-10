@@ -29,13 +29,14 @@
       "DepartmentProduct",
       "ProductDeployment",
       "ProductBilling",
-      "ServiceBilling"
+      "ServiceBilling",
+      "DeploymentEnvironment"
     ],
     "entitySuffix": "",
     "jhiPrefix": "jhi",
     "jhipsterVersion": "6.10.5",
     "jwtSecretKey": "ZTdlYTc4NzBiMzhlNGM0ZjQxNDlkOGMwMWJhMmExNTcxYWY2MTNlODY3OGQwYjY5YTBiN2IwYmZiYzkyZWUyOGZkODE5ZDAwMmU0ZDVlMTBjZTBlNTdhYzM0YmJiNWFlNWM2ZmE4MjEyNWZmMjkxZmM1OTE5OTVjODA1ZTc0N2Y=",
-    "lastLiquibaseTimestamp": 1649406572000,
+    "lastLiquibaseTimestamp": 1649579863000,
     "messageBroker": false,
     "otherModules": [],
     "packageFolder": "com/synectiks/asset",

@@ -7,17 +7,17 @@
                         http://www.liquibase.org/xml/ns/dbchangelog-ext http://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-ext.xsd">
 
     <!--
-        Added the entity ProductDeployment.
+        Added the entity DeploymentEnvironment.
     -->
-    <changeSet id="20220408082930-1" author="jhipster">
-        <createTable tableName="product_deployment">
+    <changeSet id="20220410083743-1" author="jhipster">
+        <createTable tableName="deployment_environment">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
-            <column name="description" type="varchar(5000)">
+            <column name="name" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="billing_frequency" type="varchar(255)">
+            <column name="description" type="varchar(5000)">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">
@@ -35,19 +35,10 @@
             <column name="created_by" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="department_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="product_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
-            <column name="deployment_environment_id" type="bigint">
-                <constraints nullable="true" />
-            </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
         </createTable>
-        <dropDefaultValue tableName="product_deployment" columnName="created_on" columnDataType="datetime"/>
-        <dropDefaultValue tableName="product_deployment" columnName="updated_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="deployment_environment" columnName="created_on" columnDataType="datetime"/>
+        <dropDefaultValue tableName="deployment_environment" columnName="updated_on" columnDataType="datetime"/>
     </changeSet>
 
     <!-- jhipster-needle-liquibase-add-changeset - JHipster will add changesets here -->
@@ -60,15 +51,15 @@
           This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
           Spring Boot configuration key.
     -->
-    <changeSet id="20220408082930-1-data" author="jhipster" context="faker">
+    <changeSet id="20220410083743-1-data" author="jhipster" context="faker">
         <loadData
-                  file="config/liquibase/fake-data/product_deployment.csv"
+                  file="config/liquibase/fake-data/deployment_environment.csv"
                   separator=";"
-                  tableName="product_deployment"
+                  tableName="deployment_environment"
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
+            <column name="name" type="string"/>
             <column name="description" type="string"/>
-            <column name="billing_frequency" type="string"/>
             <column name="status" type="string"/>
             <column name="created_on" type="date"/>
             <column name="updated_on" type="date"/>

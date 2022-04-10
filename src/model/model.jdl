@@ -1,3 +1,4 @@
+
 /**Synectiks Cloud account details */
 entity ServiceProviderCloudAccount{
 	cloudType String
@@ -137,8 +138,17 @@ entity DepartmentProduct{
    	createdBy String	
 }
 
+entity DeploymentEnvironment{
+	name String
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String
+}
+
 entity ProductDeployment{
-	environmentName String
 	description String maxlength(5000)
 	billingFrequency String
 	status String
@@ -189,7 +199,9 @@ relationship ManyToOne {
 	DepartmentProduct{department} to Department,
 	DepartmentProduct{cloudEnvironment} to CloudEnvironment,
 	
-	ProductDeployment{departmentProduct} to DepartmentProduct,
+	ProductDeployment{department} to Department,
+	ProductDeployment{product} to Product,
+	ProductDeployment{deploymentEnvironment} to DeploymentEnvironment,
 	
 	ProductBilling{productDeployment} to ProductDeployment,
 	ServiceBilling{productService} to ProductService
