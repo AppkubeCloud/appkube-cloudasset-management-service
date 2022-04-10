@@ -12,7 +12,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.service.DepartmentProductService;
 import com.synectiks.asset.domain.Department;
-import com.synectiks.asset.domain.DepartmentProduct;
 
 @RestController
 @RequestMapping("/api")
@@ -29,4 +28,6 @@ public class DepartmentProductController {
 		Department dp = departmentProductService.attachProduct(departmentid, cloudEnvId, productId);
 		return ResponseEntity.status(HttpStatus.OK).body(dp);
 	}
+	
+	
 }

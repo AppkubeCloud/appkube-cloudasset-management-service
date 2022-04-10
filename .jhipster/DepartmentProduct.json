@@ -48,6 +48,12 @@
       "relationshipType": "many-to-one"
     },
     {
+      "otherEntityName": "department",
+      "otherEntityRelationshipName": "departmentProduct",
+      "relationshipName": "department",
+      "relationshipType": "many-to-one"
+    },
+    {
       "otherEntityName": "cloudEnvironment",
       "otherEntityRelationshipName": "departmentProduct",
       "relationshipName": "cloudEnvironment",

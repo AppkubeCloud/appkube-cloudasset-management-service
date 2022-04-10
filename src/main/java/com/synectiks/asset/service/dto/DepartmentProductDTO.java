@@ -27,6 +27,8 @@ public class DepartmentProductDTO implements Serializable {
 
   private ProductDTO product;
 
+  private DepartmentDTO department;
+
   private CloudEnvironmentDTO cloudEnvironment;
 
   public Long getId() {
@@ -93,6 +95,14 @@ public class DepartmentProductDTO implements Serializable {
     this.product = product;
   }
 
+  public DepartmentDTO getDepartment() {
+    return department;
+  }
+
+  public void setDepartment(DepartmentDTO department) {
+    this.department = department;
+  }
+
   public CloudEnvironmentDTO getCloudEnvironment() {
     return cloudEnvironment;
   }
@@ -134,6 +144,7 @@ public class DepartmentProductDTO implements Serializable {
             ", updatedBy='" + getUpdatedBy() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
             ", product=" + getProduct() +
+            ", department=" + getDepartment() +
             ", cloudEnvironment=" + getCloudEnvironment() +
             "}";
     }

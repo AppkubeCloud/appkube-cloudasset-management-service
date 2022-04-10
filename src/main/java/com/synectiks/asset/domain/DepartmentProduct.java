@@ -47,6 +47,9 @@ public class DepartmentProduct implements Serializable {
   private Product product;
 
   @ManyToOne
+  private Department department;
+
+  @ManyToOne
   @JsonIgnoreProperties(value = { "cloud", "department" }, allowSetters = true)
   private CloudEnvironment cloudEnvironment;
 
@@ -153,6 +156,19 @@ public class DepartmentProduct implements Serializable {
 
   public DepartmentProduct product(Product product) {
     this.setProduct(product);
+    return this;
+  }
+
+  public Department getDepartment() {
+    return this.department;
+  }
+
+  public void setDepartment(Department department) {
+    this.department = department;
+  }
+
+  public DepartmentProduct department(Department department) {
+    this.setDepartment(department);
     return this;
   }
 

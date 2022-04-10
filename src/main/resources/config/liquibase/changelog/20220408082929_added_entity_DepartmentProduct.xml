@@ -35,6 +35,9 @@
             <column name="product_id" type="bigint">
                 <constraints nullable="true" />
             </column>
+            <column name="department_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
             <column name="cloud_environment_id" type="bigint">
                 <constraints nullable="true" />
             </column>

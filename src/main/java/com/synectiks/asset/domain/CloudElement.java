@@ -52,12 +52,12 @@ public class CloudElement implements Serializable {
   private String viewJsonContentType;
 
   @ManyToOne
-  @JsonIgnoreProperties(value = { "cloudEnvironmentId" }, allowSetters = true)
-  private ProductEnclave productEnclaveId;
+  @JsonIgnoreProperties(value = { "cloudEnvironment" }, allowSetters = true)
+  private ProductEnclave productEnclave;
 
   @ManyToOne
-  @JsonIgnoreProperties(value = { "cloudId", "departmentid" }, allowSetters = true)
-  private CloudEnvironment cloudEnvironmentId;
+  @JsonIgnoreProperties(value = { "cloud", "department" }, allowSetters = true)
+  private CloudEnvironment cloudEnvironment;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -191,29 +191,29 @@ public class CloudElement implements Serializable {
     this.viewJsonContentType = viewJsonContentType;
   }
 
-  public ProductEnclave getProductEnclaveId() {
-    return this.productEnclaveId;
+  public ProductEnclave getProductEnclave() {
+    return this.productEnclave;
   }
 
-  public void setProductEnclaveId(ProductEnclave productEnclave) {
-    this.productEnclaveId = productEnclave;
+  public void setProductEnclave(ProductEnclave productEnclave) {
+    this.productEnclave = productEnclave;
   }
 
-  public CloudElement productEnclaveId(ProductEnclave productEnclave) {
-    this.setProductEnclaveId(productEnclave);
+  public CloudElement productEnclave(ProductEnclave productEnclave) {
+    this.setProductEnclave(productEnclave);
     return this;
   }
 
-  public CloudEnvironment getCloudEnvironmentId() {
-    return this.cloudEnvironmentId;
+  public CloudEnvironment getCloudEnvironment() {
+    return this.cloudEnvironment;
   }
 
-  public void setCloudEnvironmentId(CloudEnvironment cloudEnvironment) {
-    this.cloudEnvironmentId = cloudEnvironment;
+  public void setCloudEnvironment(CloudEnvironment cloudEnvironment) {
+    this.cloudEnvironment = cloudEnvironment;
   }
 
-  public CloudElement cloudEnvironmentId(CloudEnvironment cloudEnvironment) {
-    this.setCloudEnvironmentId(cloudEnvironment);
+  public CloudElement cloudEnvironment(CloudEnvironment cloudEnvironment) {
+    this.setCloudEnvironment(cloudEnvironment);
     return this;
   }
 

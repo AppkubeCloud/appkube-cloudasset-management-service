@@ -42,8 +42,8 @@ public class ProductEnclave implements Serializable {
   private String createdBy;
 
   @ManyToOne
-  @JsonIgnoreProperties(value = { "cloudId", "departmentid" }, allowSetters = true)
-  private CloudEnvironment cloudEnvironmentId;
+  @JsonIgnoreProperties(value = { "cloud", "department" }, allowSetters = true)
+  private CloudEnvironment cloudEnvironment;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -138,16 +138,16 @@ public class ProductEnclave implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public CloudEnvironment getCloudEnvironmentId() {
-    return this.cloudEnvironmentId;
+  public CloudEnvironment getCloudEnvironment() {
+    return this.cloudEnvironment;
   }
 
-  public void setCloudEnvironmentId(CloudEnvironment cloudEnvironment) {
-    this.cloudEnvironmentId = cloudEnvironment;
+  public void setCloudEnvironment(CloudEnvironment cloudEnvironment) {
+    this.cloudEnvironment = cloudEnvironment;
   }
 
-  public ProductEnclave cloudEnvironmentId(CloudEnvironment cloudEnvironment) {
-    this.setCloudEnvironmentId(cloudEnvironment);
+  public ProductEnclave cloudEnvironment(CloudEnvironment cloudEnvironment) {
+    this.setCloudEnvironment(cloudEnvironment);
     return this;
   }
 

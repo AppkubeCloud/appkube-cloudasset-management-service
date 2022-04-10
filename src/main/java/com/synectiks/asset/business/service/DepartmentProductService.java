@@ -36,34 +36,38 @@ public class DepartmentProductService {
 	DepartmentService departmentService;
 	
 	@Autowired
+	ProductServicesService productServicesService;
+	
+	@Autowired
 	DepartmentProductRepository departmentProductRepository;
 	
 	public Department attachProduct(Long departmentid, Long productId, Long cloudEnvironmentId){
 		logger.info("Attaching product to the department");
+		Optional<Department> oDp = departmentService.getDepartment(departmentid);
 		Optional<Product> op = productService.getProduct(productId);
 		Optional<CloudEnvironment> oCle = cloudEnvironmentService.getCloudEnvironment(cloudEnvironmentId);
-		Optional<Department> oDp = departmentService.getDepartment(departmentid);
-		
+		if(!oDp.isPresent()) {
+			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
+		}		
 		if(!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
 		}
 		if(!oCle.isPresent()) {
 			throw new BadRequestAlertException("Cloud environment not found", "CloudEnvironment", "idnotfound");
 		}
-		if(!oDp.isPresent()) {
-			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
-		}
+
 		DepartmentProduct dp = new DepartmentProduct();
 		dp.setProduct(op.get());
 		dp.setCloudEnvironment(oCle.get());
+		dp.setDepartment(oDp.get());
 		dp.setStatus(Constants.ACTIVE);
 		Instant instant = Instant.now();
-		dp.setDescription(oCle.get().getDepartment().getName() + " is associated with product "+op.get().getName());
+		dp.setDescription(oDp.get().getName() + " is associated with product "+op.get().getName());
 		dp.setCreatedOn(instant);
 		dp.setUpdatedOn(instant);
 		dp = departmentProductRepository.save(dp);
-		Department department =  dp.getCloudEnvironment().getDepartment();
-		department.setProductList(getAllProductsOfDepartment(dp.getCloudEnvironment()));
+		Department department =  dp.getDepartment();
+		department.setProductList(getAllProductsOfDepartment(dp.getDepartment()));
 		return department;
 	}
 	
@@ -91,25 +95,18 @@ public class DepartmentProductService {
 		return false;
 	}
 	
-	public List<Product> getAllProductsOfDepartment(CloudEnvironment cloudEnvironment) {
+	public List<Product> getAllProductsOfDepartment(Department department) {
 		DepartmentProduct dp = new DepartmentProduct();
-		dp.setCloudEnvironment(cloudEnvironment);
+		dp.setDepartment(department);
 		List<Product> productList = new ArrayList<>();
 		List<DepartmentProduct> listDp = departmentProductRepository.findAll(Example.of(dp),  Sort.by(Direction.DESC, "id"));
 		for(DepartmentProduct d: listDp) {
-			productList.add(d.getProduct());
+			Product product = d.getProduct();
+			product.setServiceList(productServicesService.getAllServicesOfProduct(product));
+			productList.add(product);
 		}
 		return productList;
 	}
+
 	
-//	public List<Services> getAllServicesOfProduct(Product product){
-//		com.synectiks.asset.domain.ProductService ps = new com.synectiks.asset.domain.ProductService();
-//		ps.setProduct(product);
-//		List<com.synectiks.asset.domain.ProductService> list = departmentProductRepository.findAll(Example.of(ps), Sort.by(Direction.DESC, "id"));
-//		List<Services> servicesList = new ArrayList<>();
-//		for(com.synectiks.asset.domain.ProductService obj: list) {
-//			servicesList.add(obj.getServices());
-//		}
-//		return servicesList;
-//	}
 }
