@@ -49,6 +49,9 @@ public class DeploymentEnvironmentService {
 	
 	public DeploymentEnvironment createDeploymentEnvironment(DeploymentEnvironment obj){
 		logger.info("Create new deployment environment");
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -59,6 +62,9 @@ public class DeploymentEnvironmentService {
 		logger.info("Update deployment environment. Id: {}", obj.getId());
 		if(!deploymentEnvironmentRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "DeploymentEnvironment", "idnotfound");
+		}
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
 		}
 		obj.setUpdatedOn(Instant.now());
 		return deploymentEnvironmentRepository.save(obj);
@@ -79,7 +85,7 @@ public class DeploymentEnvironmentService {
 					existingObj.setDescription(obj.getDescription());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
@@ -109,7 +115,7 @@ public class DeploymentEnvironmentService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
-			cld.setStatus(obj.get("status"));
+			cld.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
 		}
 		

@@ -16,7 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.domain.Department;
+import com.synectiks.asset.domain.Product;
 import com.synectiks.asset.domain.ServiceBilling;
+import com.synectiks.asset.domain.Services;
 import com.synectiks.asset.repository.ServiceBillingRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -29,10 +32,14 @@ public class ServiceBillingService {
 	ServiceBillingRepository serviceBillingRepository;
 	
 	@Autowired
-	ProductServicesService productServicesService;
+	ProductService productService;
 	
-//	@Autowired
-//	ServicesService servicesService;
+	@Autowired
+	ServicesService servicesService;
+	
+	@Autowired
+	DepartmentService departmentService;
+	
 	
 	public Optional<ServiceBilling> getServiceBilling(Long id) {
 		logger.info("Get service billing by id: {}", id);
@@ -60,10 +67,15 @@ public class ServiceBillingService {
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
 		}
-		if(Objects.isNull(obj.getProductService()) || (!Objects.isNull(obj.getProductService()) && obj.getProductService().getId() < 0)) {
-			throw new BadRequestAlertException("Invalid product-service id", "ProductService", "idnotfound");
+		if(Objects.isNull(obj.getProduct()) || (!Objects.isNull(obj.getProduct()) && obj.getProduct().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid product id", "ServiceBilling", "idnotfound");
 		}
-		
+		if(Objects.isNull(obj.getServices()) || (!Objects.isNull(obj.getServices()) && obj.getServices().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid services id", "ServiceBilling", "idnotfound");
+		}
+		if(Objects.isNull(obj.getDepartment()) || (!Objects.isNull(obj.getDepartment()) && obj.getDepartment().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid department id", "ServiceBilling", "idnotfound");
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -75,9 +87,16 @@ public class ServiceBillingService {
 		if(!serviceBillingRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "ServiceBilling", "idnotfound");
 		}
-		if(Objects.isNull(obj.getProductService()) || (!Objects.isNull(obj.getProductService()) && obj.getProductService().getId() < 0)) {
-			throw new BadRequestAlertException("Invalid product-service id", "ProductService", "idnotfound");
+		if(Objects.isNull(obj.getProduct()) || (!Objects.isNull(obj.getProduct()) && obj.getProduct().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid product id", "ServiceBilling", "idnotfound");
 		}
+		if(Objects.isNull(obj.getServices()) || (!Objects.isNull(obj.getServices()) && obj.getServices().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid services id", "ServiceBilling", "idnotfound");
+		}
+		if(Objects.isNull(obj.getDepartment()) || (!Objects.isNull(obj.getDepartment()) && obj.getDepartment().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid department id", "ServiceBilling", "idnotfound");
+		}
+		
 		
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
@@ -91,8 +110,14 @@ public class ServiceBillingService {
 		if(!serviceBillingRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "ServiceBilling", "idnotfound");
 		}
-		if(Objects.isNull(obj.getProductService()) || (!Objects.isNull(obj.getProductService()) && obj.getProductService().getId() < 0)) {
-			throw new BadRequestAlertException("Invalid product-service id", "ProductService", "idnotfound");
+		if(Objects.isNull(obj.getProduct()) || (!Objects.isNull(obj.getProduct()) && obj.getProduct().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid product id", "ServiceBilling", "idnotfound");
+		}
+		if(Objects.isNull(obj.getServices()) || (!Objects.isNull(obj.getServices()) && obj.getServices().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid services id", "ServiceBilling", "idnotfound");
+		}
+		if(Objects.isNull(obj.getDepartment()) || (!Objects.isNull(obj.getDepartment()) && obj.getDepartment().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid department id", "ServiceBilling", "idnotfound");
 		}
 		
 		Optional<ServiceBilling> result = serviceBillingRepository.findById(obj.getId())
@@ -106,6 +131,9 @@ public class ServiceBillingService {
 				if(!StringUtils.isBlank(obj.getStatus())) {
 					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
+				existingObj.setProduct(obj.getProduct());
+				existingObj.setServices(obj.getServices());
+				existingObj.setDepartment(obj.getDepartment());
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
 			})
@@ -133,10 +161,29 @@ public class ServiceBillingService {
 			isFilter = true;
 		}
 		
-		if(!StringUtils.isBlank(obj.get("productServiceId"))) {
-			Optional<com.synectiks.asset.domain.ProductService> opd = productServicesService.getProductService(Long.parseLong(obj.get("productServiceId")));
+		if(!StringUtils.isBlank(obj.get("productId"))) {
+			Optional<Product> opd = productService.getProduct(Long.parseLong(obj.get("productId")));
 			if(opd.isPresent()) {
-				cld.setProductService(opd.get());
+				cld.setProduct(opd.get());
+				isFilter = true;
+			}else {
+				return Collections.emptyList();
+			}
+		}
+		
+		if(!StringUtils.isBlank(obj.get("servicesId"))) {
+			Optional<Services> opd = servicesService.getServices(Long.parseLong(obj.get("servicesId")));
+			if(opd.isPresent()) {
+				cld.setServices(opd.get());
+				isFilter = true;
+			}else {
+				return Collections.emptyList();
+			}
+		}
+		if(!StringUtils.isBlank(obj.get("departmentId"))) {
+			Optional<Department> opd = departmentService.getDepartment(Long.parseLong(obj.get("departmentId")));
+			if(opd.isPresent()) {
+				cld.setDepartment(opd.get());
 				isFilter = true;
 			}else {
 				return Collections.emptyList();

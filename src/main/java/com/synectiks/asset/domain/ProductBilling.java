@@ -55,10 +55,15 @@ public class ProductBilling implements Serializable {
 
   @Column(name = "created_by")
   private String createdBy;
-
+  
   @ManyToOne
-  @JsonIgnoreProperties(value = { "departmentProduct" }, allowSetters = true)
-  private ProductDeployment productDeployment;
+  private Product product;
+  
+  @ManyToOne
+  private Department department;
+  
+  @ManyToOne
+  private DeploymentEnvironment deploymentEnvironment;
 
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
@@ -205,18 +210,6 @@ public class ProductBilling implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public ProductDeployment getProductDeployment() {
-    return this.productDeployment;
-  }
-
-  public void setProductDeployment(ProductDeployment productDeployment) {
-    this.productDeployment = productDeployment;
-  }
-
-  public ProductBilling productDeployment(ProductDeployment productDeployment) {
-    this.setProductDeployment(productDeployment);
-    return this;
-  }
 
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
@@ -254,4 +247,28 @@ public class ProductBilling implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
+
+	public DeploymentEnvironment getDeploymentEnvironment() {
+		return deploymentEnvironment;
+	}
+
+	public void setDeploymentEnvironment(DeploymentEnvironment deploymentEnvironment) {
+		this.deploymentEnvironment = deploymentEnvironment;
+	}
 }

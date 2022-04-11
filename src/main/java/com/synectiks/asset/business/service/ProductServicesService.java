@@ -2,7 +2,9 @@ package com.synectiks.asset.business.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -33,6 +35,9 @@ public class ProductServicesService {
 	
 	@Autowired
 	ServicesService servicesService;
+	
+	@Autowired
+	ServiceBillingService serviceBillingService;
 	
 	public Optional<com.synectiks.asset.domain.ProductService> getProductService(Long id) {
 		logger.info("Get roduct service by id: {}", id);
@@ -92,8 +97,21 @@ public class ProductServicesService {
 		ps.setProduct(product);
 		List<com.synectiks.asset.domain.ProductService> list = productServiceRepository.findAll(Example.of(ps), Sort.by(Direction.DESC, "id"));
 		List<Services> servicesList = new ArrayList<>();
+		Map<String, String> searchMap = new HashMap<>();
 		for(com.synectiks.asset.domain.ProductService obj: list) {
-			servicesList.add(obj.getServices());
+			searchMap.clear();
+			Services services = obj.getServices();
+			searchMap.put("productId", String.valueOf(product.getId()));
+			searchMap.put("servicesId", String.valueOf(services.getId()));
+			searchMap.put("status", Constants.STATUS_UNPAID);
+			List<ServiceBilling> srvBillList = serviceBillingService.searchAllServiceBilling(searchMap);
+			Double total = 0D;
+			for(ServiceBilling sb: srvBillList) {
+				total  = total + sb.getAmount();
+			}
+			services.setServiceBillingList(serviceBillingService.searchAllServiceBilling(searchMap));
+			services.setTotalBillingAmount(total);
+			servicesList.add(services);
 		}
 		return servicesList;
 	}

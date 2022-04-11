@@ -49,6 +49,9 @@ public class CloudService {
 	
 	public Cloud createCloud(Cloud obj){
 		logger.info("Create new cloud");
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -59,6 +62,9 @@ public class CloudService {
 		logger.info("Update cloud. Id: {}", obj.getId());
 		if(!cloudRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Cloud", "idnotfound");
+		}
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
 		}
 		obj.setUpdatedOn(Instant.now());
 		return cloudRepository.save(obj);
@@ -76,7 +82,7 @@ public class CloudService {
 					existingObj.setName(obj.getName());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
@@ -101,7 +107,7 @@ public class CloudService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
-			cld.setStatus(obj.get("status"));
+			cld.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
 		}
 		

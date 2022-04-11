@@ -67,6 +67,10 @@ public class Product implements Serializable {
   @JsonProperty
   private List<DeploymentEnvironment> deploymentEnvironmentList;
   
+  @Transient
+  @JsonProperty
+  private ProductBilling productBilling;
+  
   public Long getId() {
     return this.id;
   }
@@ -219,5 +223,13 @@ public class Product implements Serializable {
 
 	public void setDeploymentEnvironmentList(List<DeploymentEnvironment> deploymentEnvironmentList) {
 		this.deploymentEnvironmentList = deploymentEnvironmentList;
+	}
+
+	public ProductBilling getProductBilling() {
+		return productBilling;
+	}
+
+	public void setProductBilling(ProductBilling productBilling) {
+		this.productBilling = productBilling;
 	}
 }

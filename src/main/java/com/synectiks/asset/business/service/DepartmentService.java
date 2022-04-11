@@ -66,6 +66,9 @@ public class DepartmentService {
 	
 	public Department createDepartment(Department obj){
 		logger.info("Create new department");
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -79,6 +82,9 @@ public class DepartmentService {
 		}
 		if(Objects.isNull(obj.getOrgId()) || (!Objects.isNull(obj.getOrgId()) && obj.getOrgId() < 0)) {
 			throw new BadRequestAlertException("Invalid organization id", "Department", "idnotfound");
+		}
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
 		}
 		obj.setUpdatedOn(Instant.now());
 		Department dp = departmentRepository.save(obj);
@@ -108,7 +114,7 @@ public class DepartmentService {
 					existingObj.setOrgId(obj.getOrgId());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
@@ -145,7 +151,7 @@ public class DepartmentService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
-			dp.setStatus(obj.get("status"));
+			dp.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
 		}
 		

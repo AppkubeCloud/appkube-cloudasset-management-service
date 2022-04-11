@@ -203,8 +203,13 @@ relationship ManyToOne {
 	ProductDeployment{product} to Product,
 	ProductDeployment{deploymentEnvironment} to DeploymentEnvironment,
 	
-	ProductBilling{productDeployment} to ProductDeployment,
-	ServiceBilling{productService} to ProductService
+	ProductBilling{product} to Product,
+	ProductBilling{department} to Department,
+	ProductBilling{deploymentEnvironment} to DeploymentEnvironment,
+	
+	ServiceBilling{product} to Product,
+	ServiceBilling{services} to Services,
+	ServiceBilling{department} to Department
 }
 
 dto * with mapstruct service all with serviceImpl

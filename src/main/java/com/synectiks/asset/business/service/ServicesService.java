@@ -49,6 +49,9 @@ public class ServicesService {
 	
 	public Services createServices(Services obj){
 		logger.info("Create new services");
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -59,6 +62,9 @@ public class ServicesService {
 		logger.info("Update services. Id: {}", obj.getId());
 		if(!servicesRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Services", "idnotfound");
+		}
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
 		}
 		obj.setUpdatedOn(Instant.now());
 		return servicesRepository.save(obj);
@@ -82,7 +88,7 @@ public class ServicesService {
 					existingObj.setType(obj.getType());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
@@ -117,7 +123,7 @@ public class ServicesService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
-			cld.setStatus(obj.get("status"));
+			cld.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
 		}
 		

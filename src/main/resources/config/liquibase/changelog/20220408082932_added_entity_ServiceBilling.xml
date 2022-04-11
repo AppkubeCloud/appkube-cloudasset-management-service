@@ -44,7 +44,13 @@
             <column name="created_by" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
-            <column name="product_service_id" type="bigint">
+            <column name="product_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="services_id" type="bigint">
+                <constraints nullable="true" />
+            </column>
+            <column name="department_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->

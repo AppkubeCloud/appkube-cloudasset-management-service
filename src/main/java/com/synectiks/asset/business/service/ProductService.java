@@ -59,6 +59,9 @@ public class ProductService {
 	
 	public Product createProduct(Product obj){
 		logger.info("Create new product");
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -69,6 +72,9 @@ public class ProductService {
 		logger.info("Update product. Id: {}", obj.getId());
 		if(!productRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Product", "idnotfound");
+		}
+		if(!StringUtils.isBlank(obj.getStatus())) {
+			obj.setStatus(obj.getStatus().toUpperCase());
 		}
 		obj.setUpdatedOn(Instant.now());
 		return productRepository.save(obj);
@@ -89,7 +95,7 @@ public class ProductService {
 					existingObj.setDescription(obj.getDescription());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
@@ -119,7 +125,7 @@ public class ProductService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
-			cld.setStatus(obj.get("status"));
+			cld.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
 		}
 		

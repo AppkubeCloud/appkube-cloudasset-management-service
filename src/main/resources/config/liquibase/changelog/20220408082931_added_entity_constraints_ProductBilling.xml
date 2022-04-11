@@ -8,10 +8,20 @@
     -->
     <changeSet id="20220408082931-2" author="jhipster">
 
-        <addForeignKeyConstraint baseColumnNames="product_deployment_id"
+        <addForeignKeyConstraint baseColumnNames="product_id"
                                  baseTableName="product_billing"
-                                 constraintName="fk_product_billing__product_deployment_id"
+                                 constraintName="fk_product_billing__product_id"
                                  referencedColumnNames="id"
-                                 referencedTableName="product_deployment"/>
+                                 referencedTableName="product"/>
+        <addForeignKeyConstraint baseColumnNames="department_id"
+                                 baseTableName="product_billing"
+                                 constraintName="fk_product_billing__department_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="department"/>
+        <addForeignKeyConstraint baseColumnNames="deployment_environment_id"
+                                 baseTableName="product_billing"
+                                 constraintName="fk_product_billing__deployment_environment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="deployment_environment"/>
     </changeSet>
 </databaseChangeLog>

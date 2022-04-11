@@ -2,6 +2,7 @@ package com.synectiks.asset.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
+import java.util.List;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -61,7 +62,11 @@ public class Services implements Serializable {
 
   @Transient
   @JsonProperty
-  private ServiceBilling serviceBilling;
+  private List<ServiceBilling> serviceBillingList;
+  
+  @Transient
+  @JsonProperty
+  private Double totalBillingAmount;
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
   public Long getId() {
@@ -216,11 +221,21 @@ public class Services implements Serializable {
             "}";
     }
 
-	public ServiceBilling getServiceBilling() {
-		return serviceBilling;
+	public List<ServiceBilling> getServiceBillingList() {
+		return serviceBillingList;
 	}
 
-	public void setServiceBilling(ServiceBilling serviceBilling) {
-		this.serviceBilling = serviceBilling;
+	public void setServiceBillingList(List<ServiceBilling> serviceBillingList) {
+		this.serviceBillingList = serviceBillingList;
 	}
+
+	public Double getTotalBillingAmount() {
+		return totalBillingAmount;
+	}
+
+	public void setTotalBillingAmount(Double totalBillingAmount) {
+		this.totalBillingAmount = totalBillingAmount;
+	}
+
+	
 }

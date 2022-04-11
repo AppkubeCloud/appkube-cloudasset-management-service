@@ -28,6 +28,8 @@ public final class Constants {
     public static final Map<String, Map<String, Map<String, List<Dashboard>> > > ENABLED_DASHBOARD_CACHE = new HashMap<String, Map<String, Map<String, List<Dashboard>> > >();
     
     public static final List<String> AWS_DISCOVERED_ASSETS = new ArrayList<>();
+    
+    public static final String STATUS_UNPAID = "UNPAID";
 //    public static final Map<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache > AWS_DISCOVERED_ASSET_CACHE = new HashMap<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache>();
     
 //    static {

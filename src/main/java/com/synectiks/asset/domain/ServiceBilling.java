@@ -1,11 +1,19 @@
 package com.synectiks.asset.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -57,9 +65,14 @@ public class ServiceBilling implements Serializable {
   private String createdBy;
 
   @ManyToOne
-  @JsonIgnoreProperties(value = { "product", "services" }, allowSetters = true)
-  private ProductService productService;
+  private Product product;
 
+  @ManyToOne
+  private Services services;
+  
+  @ManyToOne
+  private Department department;
+  
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
   public Long getId() {
@@ -205,19 +218,6 @@ public class ServiceBilling implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public ProductService getProductService() {
-    return this.productService;
-  }
-
-  public void setProductService(ProductService productService) {
-    this.productService = productService;
-  }
-
-  public ServiceBilling productService(ProductService productService) {
-    this.setProductService(productService);
-    return this;
-  }
-
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
   @Override
@@ -254,4 +254,28 @@ public class ServiceBilling implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
+
+	public Product getProduct() {
+		return product;
+	}
+
+	public void setProduct(Product product) {
+		this.product = product;
+	}
+
+	public Services getServices() {
+		return services;
+	}
+
+	public void setServices(Services services) {
+		this.services = services;
+	}
+
+	public Department getDepartment() {
+		return department;
+	}
+
+	public void setDepartment(Department department) {
+		this.department = department;
+	}
 }
