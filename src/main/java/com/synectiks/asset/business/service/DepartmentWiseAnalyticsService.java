@@ -21,15 +21,21 @@ import com.synectiks.asset.domain.ProductDeployment;
 import com.synectiks.asset.domain.ServiceBilling;
 import com.synectiks.asset.domain.ServiceCategory;
 import com.synectiks.asset.domain.Services;
+import com.synectiks.asset.response.AvailabilityResponse;
+import com.synectiks.asset.response.DataProtectionResponse;
 import com.synectiks.asset.response.DepartmentResponse;
 import com.synectiks.asset.response.DepartmentWiseAnaliticResponse;
 import com.synectiks.asset.response.DeploymentEnvironmentResponse;
 import com.synectiks.asset.response.OrganizationResponse;
+import com.synectiks.asset.response.PerformanceResponse;
 import com.synectiks.asset.response.ProductBillingResponse;
 import com.synectiks.asset.response.ProductResponse;
+import com.synectiks.asset.response.SecurityResponse;
 import com.synectiks.asset.response.ServiceBillingResponse;
 import com.synectiks.asset.response.ServiceCategoryResponse;
 import com.synectiks.asset.response.ServiceResponse;
+import com.synectiks.asset.response.UserExperianceResponse;
+import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
@@ -186,6 +192,11 @@ public class DepartmentWiseAnalyticsService {
 		searchMap.put("servicesId", String.valueOf(services.getId()));
 
 		ServiceResponse serviceResponse = ServiceResponse.from(services);
+		serviceResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
+		serviceResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
+		serviceResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
+		serviceResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
+		serviceResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
 		
 		List<ServiceBilling> serviceBillingList =  serviceBillingService.searchAllServiceBilling(searchMap);
 		if(serviceBillingList.size() > 0) {

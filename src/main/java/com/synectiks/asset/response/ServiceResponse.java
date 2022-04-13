@@ -25,6 +25,11 @@ public class ServiceResponse implements Serializable {
   private String type;
   private String status;
   private ServiceBillingResponse serviceBilling;
+  private PerformanceResponse performance;
+  private AvailabilityResponse availability;
+  private SecurityResponse security;
+  private DataProtectionResponse dataProtection;
+  private UserExperianceResponse userExperiance;
   
   public static ServiceResponse from(Services services) {
 	  return ServiceResponse.builder()
