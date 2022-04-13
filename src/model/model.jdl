@@ -109,6 +109,16 @@ entity Product {
    	createdBy String	
 }
 
+entity ServiceCategory {
+	name String
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
+}
+
 entity Services {
 	name String
 	description String maxlength(5000)
@@ -194,6 +204,7 @@ relationship ManyToOne {
 	
 	ProductService{product} to Product,
 	ProductService{services} to Services, 
+	ProductService{deploymentEnvironment} to DeploymentEnvironment,
 	
 	DepartmentProduct{product} to Product,
 	DepartmentProduct{department} to Department,
@@ -209,7 +220,9 @@ relationship ManyToOne {
 	
 	ServiceBilling{product} to Product,
 	ServiceBilling{services} to Services,
-	ServiceBilling{department} to Department
+	ServiceBilling{department} to Department,
+	
+	Services{serviceCategory} to ServiceCategory
 }
 
 dto * with mapstruct service all with serviceImpl

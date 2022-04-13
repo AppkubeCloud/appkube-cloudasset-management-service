@@ -3,14 +3,17 @@ package com.synectiks.asset.service.dto;
 import java.io.Serializable;
 import java.time.Instant;
 import java.util.Objects;
-import javax.validation.constraints.*;
+
+import javax.validation.constraints.Size;
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.ProductService} entity.
+ * A DTO for the {@link com.synectiks.asset.domain.Services} entity.
  */
-public class ProductServiceDTO implements Serializable {
+public class ServiceCategoryDTO implements Serializable {
 
   private Long id;
+
+  private String name;
 
   @Size(max = 5000)
   private String description;
@@ -25,18 +28,20 @@ public class ProductServiceDTO implements Serializable {
 
   private String createdBy;
 
-  private ProductDTO product;
-
-  private ServicesDTO services;
-
-  private DeploymentEnvironmentDTO deploymentEnvironment;
-  
   public Long getId() {
     return id;
   }
 
   public void setId(Long id) {
     this.id = id;
+  }
+
+  public String getName() {
+    return name;
+  }
+
+  public void setName(String name) {
+    this.name = name;
   }
 
   public String getDescription() {
@@ -87,36 +92,20 @@ public class ProductServiceDTO implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public ProductDTO getProduct() {
-    return product;
-  }
-
-  public void setProduct(ProductDTO product) {
-    this.product = product;
-  }
-
-  public ServicesDTO getServices() {
-    return services;
-  }
-
-  public void setServices(ServicesDTO services) {
-    this.services = services;
-  }
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ProductServiceDTO)) {
+    if (!(o instanceof ServiceCategoryDTO)) {
       return false;
     }
 
-    ProductServiceDTO productServiceDTO = (ProductServiceDTO) o;
+    ServiceCategoryDTO servicesDTO = (ServiceCategoryDTO) o;
     if (this.id == null) {
       return false;
     }
-    return Objects.equals(this.id, productServiceDTO.id);
+    return Objects.equals(this.id, servicesDTO.id);
   }
 
   @Override
@@ -127,24 +116,15 @@ public class ProductServiceDTO implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "ProductServiceDTO{" +
+        return "ServicesDTO{" +
             "id=" + getId() +
+            ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +
             ", updatedBy='" + getUpdatedBy() + "'" +
             ", createdBy='" + getCreatedBy() + "'" +
-            ", product=" + getProduct() +
-            ", services=" + getServices() +
             "}";
     }
-
-	public DeploymentEnvironmentDTO getDeploymentEnvironment() {
-		return deploymentEnvironment;
-	}
-
-	public void setDeploymentEnvironment(DeploymentEnvironmentDTO deploymentEnvironment) {
-		this.deploymentEnvironment = deploymentEnvironment;
-	}
 }

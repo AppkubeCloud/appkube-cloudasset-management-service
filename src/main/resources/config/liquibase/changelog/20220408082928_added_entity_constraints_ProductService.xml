@@ -19,5 +19,11 @@
                                  constraintName="fk_product_service__services_id"
                                  referencedColumnNames="id"
                                  referencedTableName="services"/>
+                                 
+        <addForeignKeyConstraint baseColumnNames="deployment_environment_id"
+                                 baseTableName="product_service"
+                                 constraintName="fk_product_service__deployment_environment_id"
+                                 referencedColumnNames="id"
+                                 referencedTableName="deployment_environment"/>
     </changeSet>
 </databaseChangeLog>

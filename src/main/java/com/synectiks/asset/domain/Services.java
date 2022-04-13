@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import javax.persistence.Transient;
@@ -69,6 +70,9 @@ public class Services implements Serializable {
   private Double totalBillingAmount;
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
+  @ManyToOne
+  private ServiceCategory serviceCategory;
+  
   public Long getId() {
     return this.id;
   }
@@ -235,6 +239,14 @@ public class Services implements Serializable {
 
 	public void setTotalBillingAmount(Double totalBillingAmount) {
 		this.totalBillingAmount = totalBillingAmount;
+	}
+
+	public ServiceCategory getServiceCategory() {
+		return serviceCategory;
+	}
+
+	public void setServiceCategory(ServiceCategory serviceCategory) {
+		this.serviceCategory = serviceCategory;
 	}
 
 	

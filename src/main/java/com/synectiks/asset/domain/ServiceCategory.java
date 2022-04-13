@@ -2,18 +2,26 @@ package com.synectiks.asset.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
-import javax.persistence.*;
-import javax.validation.constraints.*;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.SequenceGenerator;
+import javax.persistence.Table;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 /**
- * A ProductService.
+ * A ServiceCategory.
  */
 @Entity
-@Table(name = "product_service")
+@Table(name = "service_category")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class ProductService implements Serializable {
+public class ServiceCategory implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -22,6 +30,9 @@ public class ProductService implements Serializable {
   @SequenceGenerator(name = "sequenceGenerator")
   @Column(name = "id")
   private Long id;
+
+  @Column(name = "name")
+  private String name;
 
   @Size(max = 5000)
   @Column(name = "description", length = 5000)
@@ -42,22 +53,13 @@ public class ProductService implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
-  @ManyToOne
-  private Product product;
-
-  @ManyToOne
-  private Services services;
-
-  @ManyToOne
-  private DeploymentEnvironment deploymentEnvironment;
-  
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
   public Long getId() {
     return this.id;
   }
 
-  public ProductService id(Long id) {
+  public ServiceCategory id(Long id) {
     this.setId(id);
     return this;
   }
@@ -66,11 +68,24 @@ public class ProductService implements Serializable {
     this.id = id;
   }
 
+  public String getName() {
+    return this.name;
+  }
+
+  public ServiceCategory name(String name) {
+    this.setName(name);
+    return this;
+  }
+
+  public void setName(String name) {
+    this.name = name;
+  }
+
   public String getDescription() {
     return this.description;
   }
 
-  public ProductService description(String description) {
+  public ServiceCategory description(String description) {
     this.setDescription(description);
     return this;
   }
@@ -83,7 +98,7 @@ public class ProductService implements Serializable {
     return this.status;
   }
 
-  public ProductService status(String status) {
+  public ServiceCategory status(String status) {
     this.setStatus(status);
     return this;
   }
@@ -96,7 +111,7 @@ public class ProductService implements Serializable {
     return this.createdOn;
   }
 
-  public ProductService createdOn(Instant createdOn) {
+  public ServiceCategory createdOn(Instant createdOn) {
     this.setCreatedOn(createdOn);
     return this;
   }
@@ -109,7 +124,7 @@ public class ProductService implements Serializable {
     return this.updatedOn;
   }
 
-  public ProductService updatedOn(Instant updatedOn) {
+  public ServiceCategory updatedOn(Instant updatedOn) {
     this.setUpdatedOn(updatedOn);
     return this;
   }
@@ -122,7 +137,7 @@ public class ProductService implements Serializable {
     return this.updatedBy;
   }
 
-  public ProductService updatedBy(String updatedBy) {
+  public ServiceCategory updatedBy(String updatedBy) {
     this.setUpdatedBy(updatedBy);
     return this;
   }
@@ -135,39 +150,13 @@ public class ProductService implements Serializable {
     return this.createdBy;
   }
 
-  public ProductService createdBy(String createdBy) {
+  public ServiceCategory createdBy(String createdBy) {
     this.setCreatedBy(createdBy);
     return this;
   }
 
   public void setCreatedBy(String createdBy) {
     this.createdBy = createdBy;
-  }
-
-  public Product getProduct() {
-    return this.product;
-  }
-
-  public void setProduct(Product product) {
-    this.product = product;
-  }
-
-  public ProductService product(Product product) {
-    this.setProduct(product);
-    return this;
-  }
-
-  public Services getServices() {
-    return this.services;
-  }
-
-  public void setServices(Services services) {
-    this.services = services;
-  }
-
-  public ProductService services(Services services) {
-    this.setServices(services);
-    return this;
   }
 
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
@@ -177,10 +166,10 @@ public class ProductService implements Serializable {
     if (this == o) {
       return true;
     }
-    if (!(o instanceof ProductService)) {
+    if (!(o instanceof ServiceCategory)) {
       return false;
     }
-    return id != null && id.equals(((ProductService) o).id);
+    return id != null && id.equals(((ServiceCategory) o).id);
   }
 
   @Override
@@ -192,8 +181,9 @@ public class ProductService implements Serializable {
   // prettier-ignore
     @Override
     public String toString() {
-        return "ProductService{" +
+        return "Services{" +
             "id=" + getId() +
+            ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
@@ -203,11 +193,4 @@ public class ProductService implements Serializable {
             "}";
     }
 
-	public DeploymentEnvironment getDeploymentEnvironment() {
-		return deploymentEnvironment;
-	}
-
-	public void setDeploymentEnvironment(DeploymentEnvironment deploymentEnvironment) {
-		this.deploymentEnvironment = deploymentEnvironment;
-	}
 }

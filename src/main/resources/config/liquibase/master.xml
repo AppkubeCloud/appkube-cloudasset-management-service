@@ -33,6 +33,8 @@
 	<include file="config/liquibase/changelog/20220408082931_added_entity_ProductBilling.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082932_added_entity_ServiceBilling.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220410083743_added_entity_DeploymentEnvironment.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20220413100427_added_entity_ServiceCategory.xml" relativeToChangelogFile="false"/>
+	
 	
 	<include file="config/liquibase/changelog/20220401055850_added_entity_constraints_CloudEnvironment.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220401055851_added_entity_constraints_ProductEnclave.xml" relativeToChangelogFile="false"/>
@@ -44,5 +46,7 @@
 	<include file="config/liquibase/changelog/20220408082930_added_entity_constraints_ProductDeployment.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082931_added_entity_constraints_ProductBilling.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220408082932_added_entity_constraints_ServiceBilling.xml" relativeToChangelogFile="false"/>
+	<include file="config/liquibase/changelog/20220408082927_added_entity_constraints_Services.xml" relativeToChangelogFile="false"/>
+	
 	
 </databaseChangeLog>

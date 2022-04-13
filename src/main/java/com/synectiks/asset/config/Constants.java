@@ -30,6 +30,13 @@ public final class Constants {
     public static final List<String> AWS_DISCOVERED_ASSETS = new ArrayList<>();
     
     public static final String STATUS_UNPAID = "UNPAID";
+    public static final String SERVICE_FIREWALL = "Firewall";
+    public static final String SERVICE_LOAD_BALANCER = "Load Balancer";
+    public static final String SERVICE_GATEWAY_SERVICE = "Gateway Services";
+    public static final String SERVICE_BUSINESS_SERVICE = "Business Services";
+    public static final String SERVICE_BUSINESS_APP_SERVICE = "APP";
+    public static final String SERVICE_BUSINESS_DATA_SERVICE = "DATA";
+    
 //    public static final Map<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache > AWS_DISCOVERED_ASSET_CACHE = new HashMap<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache>();
     
 //    static {

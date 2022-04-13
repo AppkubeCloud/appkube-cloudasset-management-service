@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.service.DepartmentWiseAnalyticsService;
 import com.synectiks.asset.domain.Department;
+import com.synectiks.asset.response.DepartmentWiseAnaliticResponse;
+import com.synectiks.asset.response.OrganizationResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -30,5 +32,12 @@ public class DepartmentWiseAnalyticsController {
 		logger.info("Request to search department-wise-analytics");
 		List<Department> list = departmentWiseAnalyticsService.searchDepartmentWiseStats(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(list);
+	}
+	
+	@GetMapping("/department-wise-analytics/get")
+	public ResponseEntity<DepartmentWiseAnaliticResponse> getAllDepartment(@RequestParam Map<String, String> obj){
+		logger.info("Request to get department-wise-analytics");
+		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getDepartmentWiseStats(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
 }

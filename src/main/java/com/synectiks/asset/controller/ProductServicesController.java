@@ -25,14 +25,28 @@ public class ProductServicesController {
 	@PostMapping("/product/atach-service/product/{productId}/service/{serviceId}")
 	public ResponseEntity<Product> atachService(@PathVariable Long productId, @PathVariable Long serviceId){
 		logger.info("Request to attach new service with product");
-		Product spa = productServicesService.atachService(productId, serviceId);
+		Product spa = productServicesService.atachService(productId, serviceId, null);
+		return ResponseEntity.status(HttpStatus.OK).body(spa);
+	}
+	
+	@PostMapping("/product/atach-service/product/{productId}/service/{serviceId}/depEnv/{depEnvId}")
+	public ResponseEntity<Product> atachWithDepEvnService(@PathVariable Long productId, @PathVariable Long serviceId, @PathVariable Long depEnvId){
+		logger.info("Request to attach new service with product");
+		Product spa = productServicesService.atachService(productId, serviceId, depEnvId);
 		return ResponseEntity.status(HttpStatus.OK).body(spa);
 	}
 	
 	@PostMapping("/product/detach-service/product/{productId}/service/{serviceId}")
 	public ResponseEntity<Boolean> detachService(@PathVariable Long productId, @PathVariable Long serviceId){
 		logger.info("Request to detach service from product");
-		boolean isRemoved = productServicesService.detachService(productId, serviceId);
+		boolean isRemoved = productServicesService.detachService(productId, serviceId, null);
+		return ResponseEntity.status(HttpStatus.OK).body(Boolean.valueOf(isRemoved));
+	}
+	
+	@PostMapping("/product/detach-service/product/{productId}/service/{serviceId}/depEnv/{depEnvId}")
+	public ResponseEntity<Boolean> detachWithDepEvnService(@PathVariable Long productId, @PathVariable Long serviceId, @PathVariable Long depEnvId){
+		logger.info("Request to detach service from product");
+		boolean isRemoved = productServicesService.detachService(productId, serviceId, depEnvId);
 		return ResponseEntity.status(HttpStatus.OK).body(Boolean.valueOf(isRemoved));
 	}
 }

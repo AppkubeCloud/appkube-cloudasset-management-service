@@ -9,8 +9,8 @@
     <!--
         Added the entity Services.
     -->
-    <changeSet id="20220408082927-1" author="jhipster">
-        <createTable tableName="services">
+    <changeSet id="20220413100427-1" author="jhipster">
+        <createTable tableName="service_category">
             <column name="id" type="bigint">
                 <constraints primaryKey="true" nullable="false"/>
             </column>
@@ -18,9 +18,6 @@
                 <constraints nullable="true" />
             </column>
             <column name="description" type="varchar(5000)">
-                <constraints nullable="true" />
-            </column>
-            <column name="type" type="varchar(255)">
                 <constraints nullable="true" />
             </column>
             <column name="status" type="varchar(255)">
@@ -36,9 +33,6 @@
                 <constraints nullable="true" />
             </column>
             <column name="created_by" type="varchar(255)">
-                <constraints nullable="true" />
-            </column>
-			<column name="service_category_id" type="bigint">
                 <constraints nullable="true" />
             </column>
             <!-- jhipster-needle-liquibase-add-column - JHipster will add columns here -->
@@ -57,16 +51,15 @@
           This can be customized by adding or removing 'faker' in the 'spring.liquibase.contexts'
           Spring Boot configuration key.
     -->
-    <changeSet id="20220408082927-1-data" author="jhipster" context="faker">
+    <changeSet id="20220413100427-1-data" author="jhipster" context="faker">
         <loadData
-                  file="config/liquibase/fake-data/services.csv"
+                  file="config/liquibase/fake-data/service_category.csv"
                   separator=";"
-                  tableName="services"
+                  tableName="service_category"
                   usePreparedStatements="true">
             <column name="id" type="numeric"/>
             <column name="name" type="string"/>
             <column name="description" type="string"/>
-            <column name="type" type="string"/>
             <column name="status" type="string"/>
             <column name="created_on" type="date"/>
             <column name="updated_on" type="date"/>

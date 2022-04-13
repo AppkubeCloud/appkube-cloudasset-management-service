@@ -1,8 +1,10 @@
 package com.synectiks.asset.business.service;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +16,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.config.Constants;
+import com.synectiks.asset.domain.ServiceCategory;
 import com.synectiks.asset.domain.Services;
 import com.synectiks.asset.repository.ServicesRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -25,6 +29,9 @@ public class ServicesService {
 		
 	@Autowired
 	ServicesRepository servicesRepository;
+	
+	@Autowired
+	ServiceCategoryService serviceCategoryService;
 	
 	public Optional<Services> getServices(Long id) {
 		logger.info("Get services by id: {}", id);
@@ -49,8 +56,31 @@ public class ServicesService {
 	
 	public Services createServices(Services obj){
 		logger.info("Create new services");
+		if(Objects.isNull(obj.getServiceCategory()) || (!Objects.isNull(obj.getServiceCategory()) && obj.getServiceCategory().getId() < 0)) {
+			throw new BadRequestAlertException("Service category id not found", "Services", "idnotfound");
+		}
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
+		}
+		Optional<ServiceCategory> osc = serviceCategoryService.getServiceCategory(obj.getServiceCategory().getId());
+		if(!osc.isPresent()) {
+			throw new BadRequestAlertException("Invalid service category id", "Services", "idnotfound");
+		}
+		if(Constants.SERVICE_FIREWALL.equalsIgnoreCase(osc.get().getName())) {
+			obj.setType(Constants.SERVICE_FIREWALL);
+		}else if(Constants.SERVICE_LOAD_BALANCER.equalsIgnoreCase(osc.get().getName())) {
+			obj.setType(Constants.SERVICE_LOAD_BALANCER);
+		}else if(Constants.SERVICE_GATEWAY_SERVICE.equalsIgnoreCase(osc.get().getName())) {
+			obj.setType(Constants.SERVICE_GATEWAY_SERVICE);
+		}else if(Constants.SERVICE_BUSINESS_SERVICE.equalsIgnoreCase(osc.get().getName())) {
+			if(Constants.SERVICE_BUSINESS_APP_SERVICE.equalsIgnoreCase(obj.getType())
+					|| Constants.SERVICE_BUSINESS_DATA_SERVICE.equalsIgnoreCase(obj.getType())) {
+				obj.setType(obj.getType().toUpperCase());
+			}else {
+				throw new BadRequestAlertException("Invalid business service type", "Services", "invalid.business.service.type");
+			}
+		}else {
+			throw new BadRequestAlertException("Invalid service category", "Services", "invalid.service.category");
 		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
@@ -62,6 +92,29 @@ public class ServicesService {
 		logger.info("Update services. Id: {}", obj.getId());
 		if(!servicesRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Services", "idnotfound");
+		}
+		if(Objects.isNull(obj.getServiceCategory()) || (!Objects.isNull(obj.getServiceCategory()) && obj.getServiceCategory().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid service category id", "Services", "idnotfound");
+		}
+		Optional<ServiceCategory> osc = serviceCategoryService.getServiceCategory(obj.getServiceCategory().getId());
+		if(!osc.isPresent()) {
+			throw new BadRequestAlertException("Invalid service category id", "Services", "idnotfound");
+		}
+		if(Constants.SERVICE_FIREWALL.equalsIgnoreCase(osc.get().getName())) {
+			obj.setType(Constants.SERVICE_FIREWALL);
+		}else if(Constants.SERVICE_LOAD_BALANCER.equalsIgnoreCase(osc.get().getName())) {
+			obj.setType(Constants.SERVICE_LOAD_BALANCER);
+		}else if(Constants.SERVICE_GATEWAY_SERVICE.equalsIgnoreCase(osc.get().getName())) {
+			obj.setType(Constants.SERVICE_GATEWAY_SERVICE);
+		}else if(Constants.SERVICE_BUSINESS_SERVICE.equalsIgnoreCase(osc.get().getName())) {
+			if(Constants.SERVICE_BUSINESS_APP_SERVICE.equalsIgnoreCase(obj.getType())
+					|| Constants.SERVICE_BUSINESS_DATA_SERVICE.equalsIgnoreCase(obj.getType())) {
+				obj.setType(obj.getType().toUpperCase());
+			}else {
+				throw new BadRequestAlertException("Invalid business service type", "Services", "invalid.business.service.type");
+			}
+		}else {
+			throw new BadRequestAlertException("Invalid service category", "Services", "invalid.service.category");
 		}
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
@@ -75,7 +128,9 @@ public class ServicesService {
 		if(!servicesRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Services", "idnotfound");
 		}
-		
+		if(Objects.isNull(obj.getServiceCategory()) || (!Objects.isNull(obj.getServiceCategory()) && obj.getServiceCategory().getId() < 0)) {
+			throw new BadRequestAlertException("Invalid service category id", "Services", "idnotfound");
+		}
 		Optional<Services> result = servicesRepository.findById(obj.getId())
 			.map(existingObj ->{
 				if(!StringUtils.isBlank(obj.getName())) {
@@ -84,12 +139,35 @@ public class ServicesService {
 				if(!StringUtils.isBlank(obj.getDescription())) {
 					existingObj.setDescription(obj.getDescription());
 				}
-				if(!StringUtils.isBlank(obj.getType())) {
-					existingObj.setType(obj.getType());
+//				if(!StringUtils.isBlank(obj.getType())) {
+//					existingObj.setType(obj.getType());
+//				}
+				
+				Optional<ServiceCategory> osc = serviceCategoryService.getServiceCategory(obj.getServiceCategory().getId());
+				if(!osc.isPresent()) {
+					throw new BadRequestAlertException("Invalid service category id", "Services", "idnotfound");
 				}
+				if(Constants.SERVICE_FIREWALL.equalsIgnoreCase(osc.get().getName())) {
+					existingObj.setType(Constants.SERVICE_FIREWALL);
+				}else if(Constants.SERVICE_LOAD_BALANCER.equalsIgnoreCase(osc.get().getName())) {
+					existingObj.setType(Constants.SERVICE_LOAD_BALANCER);
+				}else if(Constants.SERVICE_GATEWAY_SERVICE.equalsIgnoreCase(osc.get().getName())) {
+					existingObj.setType(Constants.SERVICE_GATEWAY_SERVICE);
+				}else if(Constants.SERVICE_BUSINESS_SERVICE.equalsIgnoreCase(osc.get().getName())) {
+					if(Constants.SERVICE_BUSINESS_APP_SERVICE.equalsIgnoreCase(obj.getType())
+							|| Constants.SERVICE_BUSINESS_DATA_SERVICE.equalsIgnoreCase(obj.getType())) {
+						existingObj.setType(obj.getType().toUpperCase());
+					}else {
+						throw new BadRequestAlertException("Invalid business service type", "Services", "invalid.business.service.type");
+					}
+				}else {
+					throw new BadRequestAlertException("Invalid service category", "Services", "invalid.service.category");
+				}
+				
 				if(!StringUtils.isBlank(obj.getStatus())) {
 					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
+				existingObj.setServiceCategory(obj.getServiceCategory());
 				existingObj.updatedOn(Instant.now());
 				return existingObj;
 			})
@@ -118,13 +196,23 @@ public class ServicesService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("type"))) {
-			cld.setType(obj.get("type"));
+			cld.setType(obj.get("type").toUpperCase());
 			isFilter = true;
 		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
 			cld.setStatus(obj.get("status").toUpperCase());
 			isFilter = true;
+		}
+		
+		if(!StringUtils.isBlank(obj.get("serviceCategoryId"))) {
+			Optional<ServiceCategory> osc = serviceCategoryService.getServiceCategory(Long.parseLong(obj.get("serviceCategoryId")));
+			if(osc.isPresent()) {
+				cld.setServiceCategory(osc.get());
+				isFilter = true;
+			}else {
+				return Collections.emptyList();
+			}
 		}
 		
 		List<Services> list = null;
