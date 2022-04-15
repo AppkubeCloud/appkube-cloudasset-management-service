@@ -1,7 +1,9 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
+import java.util.List;
 
+import com.synectiks.asset.domain.ServiceTag;
 import com.synectiks.asset.domain.Services;
 
 import lombok.AllArgsConstructor;
@@ -22,21 +24,20 @@ public class ServiceResponse implements Serializable {
   private Long id;
   private String name;
   private String description;
-  private String type;
   private String status;
-  private ServiceBillingResponse serviceBilling;
-  private PerformanceResponse performance;
-  private AvailabilityResponse availability;
-  private SecurityResponse security;
-  private DataProtectionResponse dataProtection;
-  private UserExperianceResponse userExperiance;
+//  private ServiceBillingResponse serviceBilling;
+//  private PerformanceResponse performance;
+//  private AvailabilityResponse availability;
+//  private SecurityResponse security;
+//  private DataProtectionResponse dataProtection;
+//  private UserExperianceResponse userExperiance;
+//  private List<ServiceTagResponse> tagList;
   
   public static ServiceResponse from(Services services) {
 	  return ServiceResponse.builder()
 			  .id(services.getId())
 			  .name(services.getName())
 			  .description(services.getDescription())
-			  .type(services.getType())
 			  .status(services.getStatus())
 			  .build();
   }

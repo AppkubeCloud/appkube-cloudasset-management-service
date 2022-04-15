@@ -130,6 +130,7 @@ entity Services {
    	createdBy String	
 }
 
+
 entity ProductService{
 	description String maxlength(5000)
 	status String
