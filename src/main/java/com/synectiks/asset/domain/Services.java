@@ -43,9 +43,6 @@ public class Services implements Serializable {
   @Column(name = "description", length = 5000)
   private String description;
 
-  @Column(name = "type")
-  private String type;
-
   @Column(name = "status")
   private String status;
 
@@ -110,19 +107,6 @@ public class Services implements Serializable {
 
   public void setDescription(String description) {
     this.description = description;
-  }
-
-  public String getType() {
-    return this.type;
-  }
-
-  public Services type(String type) {
-    this.setType(type);
-    return this;
-  }
-
-  public void setType(String type) {
-    this.type = type;
   }
 
   public String getStatus() {
@@ -216,7 +200,6 @@ public class Services implements Serializable {
             "id=" + getId() +
             ", name='" + getName() + "'" +
             ", description='" + getDescription() + "'" +
-            ", type='" + getType() + "'" +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +

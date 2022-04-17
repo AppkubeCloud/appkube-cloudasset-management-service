@@ -24,7 +24,8 @@ public class ServiceCategoryResponse implements Serializable {
   private String name;
   private String description;
   private String status;
-  private List<ServiceResponse> serviceList;
+//  private List<ServiceResponse> serviceList;
+  private List<ServiceTagResponse> tagList;
   
   public static ServiceCategoryResponse from(ServiceCategory serviceCategory) {
 	  return ServiceCategoryResponse.builder()

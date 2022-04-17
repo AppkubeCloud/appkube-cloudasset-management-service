@@ -59,7 +59,7 @@ public class ProductDeploymentService {
 		dp.setDeploymentEnvironment(oDe.get());
 		dp.setStatus(Constants.ACTIVE);
 		Instant instant = Instant.now();
-		dp.setDescription(oDe.get().getName() + " is associated with product "+op.get().getName());
+		dp.setDescription(oDe.get().getName() + " is associated with product "+op.get().getName()+" in environment "+oDe.get().getName());
 		dp.setCreatedOn(instant);
 		dp.setUpdatedOn(instant);
 		dp = productDeploymentRepository.save(dp);
