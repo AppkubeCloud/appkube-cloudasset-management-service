@@ -40,4 +40,11 @@ public class DepartmentWiseAnalyticsController {
 		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getDepartmentWiseStats(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
+	
+//	@GetMapping("/department-wise-analytics/get2")
+//	public ResponseEntity<DepartmentWiseAnaliticResponse> getAllDepartment2(@RequestParam Map<String, String> obj){
+//		logger.info("Request to get department-wise-analytics");
+//		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getDepartmentWiseStats2(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(resp);
+//	}
 }
