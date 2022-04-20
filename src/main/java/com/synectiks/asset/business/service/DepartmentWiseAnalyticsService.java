@@ -186,81 +186,6 @@ public class DepartmentWiseAnalyticsService {
 		
 	}
 	
-//	public DepartmentWiseAnaliticResponse getDepartmentWiseStats2(Map<String, String> obj) {
-//		
-//		if(StringUtils.isBlank(obj.get("orgId"))) {
-//			throw new BadRequestAlertException("Entity not found", "Organization", "idnotfound");
-//		}
-//		OrganizationResponse org = OrganizationResponse.from(organizationService.getOrgById(Long.parseLong(obj.get("orgId"))));
-//		
-//		List<Department> departmentList = departmentService.searchAllDepartment(obj);
-//		
-//		List<DepartmentResponse> departmentResponseList = new ArrayList<>();
-//		for(Department department: departmentList) {
-//			DepartmentResponse deptResp = DepartmentResponse.from(department);
-//			departmentResponseList.add(deptResp);
-//			
-//			List<Product> productList = departmentProductService.getAllProductsOfDepartment(department);
-//			List<ProductResponse> productResponseList = new ArrayList<>();
-//			for(Product product: productList) {
-//				ProductResponse productResponse = ProductResponse.from(product);
-//				productResponseList.add(productResponse);
-//				
-//				List<ProductDeployment> productDeploymentList = productDeploymentService.getDeploymentEnvironmentOfProduct(department, product);
-//				List<DeploymentEnvironmentResponse> deploymentEnvironmentResponseList = new ArrayList<>();
-//				Map<String, String> productBillSearchMap = new HashMap<>();
-//				for(ProductDeployment productDeployment: productDeploymentList) {
-//					DeploymentEnvironmentResponse depEnvResp = DeploymentEnvironmentResponse.from(productDeployment.getDeploymentEnvironment());
-//					depEnvResp.setServiceCategoryList(getServiceCategoryList());
-//					
-//					productBillSearchMap.clear();
-//					productBillSearchMap.put("departmentId", String.valueOf(department.getId())); 
-//					productBillSearchMap.put("productId", String.valueOf(product.getId()));
-//					productBillSearchMap.put("deploymentEnvironmentId", String.valueOf(productDeployment.getDeploymentEnvironment().getId()));
-//					List<ProductBilling> productBillingList = productBillingService.searchAllProductBilling(productBillSearchMap);
-//					if(productBillingList.size() > 0) {
-//						depEnvResp.setProductBilling(ProductBillingResponse.from(productBillingList.get(0)));
-//					}else {
-//						depEnvResp.setProductBilling(ProductBillingResponse.builder().amount(0D).build());
-//					}
-//					
-//					deploymentEnvironmentResponseList.add(depEnvResp);
-//					
-//					List<Services> productServiceList = productServicesService.getServicesList(product, productDeployment.getDeploymentEnvironment());
-////					List<ServiceResponse> serviceRespList = new ArrayList<>();
-//					
-//					Map<String, String> searchMap = new HashMap<>();
-//					for(Services services: productServiceList) {
-//						filterServices2(searchMap, department, product, depEnvResp.getServiceCategoryList(), services);
-////						searchMap.clear();
-////						ServiceResponse serviceResponse = ServiceResponse.from(services);
-////						serviceRespList.add(serviceResponse);
-////						searchMap.put("departmentId", String.valueOf(department.getId())); 
-////						searchMap.put("productId", String.valueOf(product.getId()));
-////						searchMap.put("servicesId", String.valueOf(services.getId()));
-////						List<ServiceBilling> serviceBillingList =  serviceBillingService.searchAllServiceBilling(searchMap);
-////						if(serviceBillingList.size() > 0) {
-////							serviceResponse.setServiceBilling(ServiceBillingResponse.from(serviceBillingList.get(0)));
-////						}else {
-////							serviceResponse.setServiceBilling(ServiceBillingResponse.builder().amount(0D).build());
-////						}
-//					}
-////					depEnvResp.setServiceList(serviceRespList);
-//					
-//				}
-//				productResponse.setDeploymentEnvironmentList(deploymentEnvironmentResponseList);
-//			}
-//			deptResp.setProductList(productResponseList);
-//			deptResp.setTotalProduct(productResponseList.size());
-//		}
-//		org.setTotalDepartment(departmentResponseList.size());
-//		org.setDepartmentList(departmentResponseList);
-//		
-//		return DepartmentWiseAnaliticResponse.builder().organization(org).build();
-////		List<Department> departmentList = departmentService.searchAllDepartment(obj);
-//		
-//	}
-	
 	private List<ServiceCategoryResponse> getServiceCategoryList(){
 		List<ServiceCategoryResponse> srvCatRespList = new ArrayList<>();
 		Map<String, String> reqMap = new HashMap<>();
@@ -306,6 +231,7 @@ public class DepartmentWiseAnalyticsService {
 			////
 			
 			for(ServiceTagResponse stResp: scResp.getTagList()) {
+				
 				searchMap.clear();
 				searchMap.put("servicesId", String.valueOf(serviceResponse.getId())); 
 				searchMap.put("serviceTagId", String.valueOf(stResp.getId()));
@@ -313,6 +239,7 @@ public class DepartmentWiseAnalyticsService {
 				if(stlList != null && stlList.size() > 0) {
 					ServiceTagLink stl = stlList.get(0);
 					ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(stl);
+					serviceTagLinkResponse.setName(stl.getServiceTag().getTagName()+" ("+stl.getServices().getName()+")");
 					serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
 					serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
 					serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
@@ -345,56 +272,11 @@ public class DepartmentWiseAnalyticsService {
 						
 					}
 				}
+				
 			}
 		}
 	}
 
-//	private void filterServices2(Map<String, String> searchMap, Department department, Product product, List<ServiceCategoryResponse> srvCatRespList, Services services) {
-//		searchMap.clear();
-//		searchMap.put("departmentId", String.valueOf(department.getId())); 
-//		searchMap.put("productId", String.valueOf(product.getId()));
-//		searchMap.put("servicesId", String.valueOf(services.getId()));
-//		List<ServiceBilling> serviceBillingList =  serviceBillingService.searchAllServiceBilling(searchMap);
-//		
-//		ServiceResponse serviceResponse = ServiceResponse.from(services);
-//		
-//		for(ServiceCategoryResponse scResp: srvCatRespList) {
-//
-//			
-//			for(ServiceTagResponse stResp: scResp.getTagList()) {
-//				searchMap.clear();
-//				searchMap.put("servicesId", String.valueOf(serviceResponse.getId())); 
-//				searchMap.put("serviceTagId", String.valueOf(stResp.getId()));
-//				List<ServiceTagLink> stlList = serviceTagLinkService.searchAllServiceTagLink(searchMap);
-//				if(stlList != null && stlList.size() > 0) {
-//					ServiceTagLink stl = stlList.get(0);
-//					ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(stl);
-//
-//					if(stResp.getServiceList() == null) {
-//						List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
-//						srvRespList.add(serviceTagLinkResponse);
-//						stResp.setServiceList(srvRespList);
-//					}else {
-//						stResp.getServiceList().add(serviceTagLinkResponse);
-//					}
-//					
-//					ServiceNameResponse serviceNameResponse = ServiceNameResponse.from(stl);
-//					serviceNameResponse.setTagList(scResp.getTagList());
-//					if(scResp.getServiceNameList() == null) {
-//						List<ServiceNameResponse> snRespList = new ArrayList<>();
-//						snRespList.add(serviceNameResponse);
-//						scResp.setServiceNameList(snRespList);
-//					}else {
-//						if(!scResp.getServiceNameList().contains(serviceNameResponse)) {
-//							scResp.getServiceNameList().add(serviceNameResponse);
-//						}
-//						
-//					}
-//				}
-//			}
-//		}
-//	}
-	
 	private List<ServiceTagResponse> getTagList(ServiceCategory sc) {
 		List<ServiceTagResponse> srvTagRespList = new ArrayList<>();
 		Map<String, String> reqMap = new HashMap<>();
@@ -407,4 +289,5 @@ public class DepartmentWiseAnalyticsService {
 		}
 		return srvTagRespList;
 	}
+	
 }
