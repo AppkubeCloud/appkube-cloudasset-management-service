@@ -2,6 +2,7 @@ package com.synectiks.asset.business.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -142,5 +143,17 @@ public class ProductServicesService {
 			servicesList.add(obj.getServices());
 		}
 		return servicesList;
+	}
+	
+	public List<Services> getAllServices(Long productId, Long depEnvId) {
+		Optional<Product> opd = productService.getProduct(productId);
+		if(!opd.isPresent()) {
+			return Collections.emptyList();
+		}
+		Optional<DeploymentEnvironment> ode = deploymentEnvironmentService.getDeploymentEnvironment(depEnvId);
+		if(!ode.isPresent()) {
+			return Collections.emptyList();
+		}
+		return getServicesList(opd.get(), ode.get());
 	}
 }

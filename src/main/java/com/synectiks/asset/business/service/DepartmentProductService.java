@@ -2,6 +2,7 @@ package com.synectiks.asset.business.service;
 
 import java.time.Instant;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
 
@@ -115,5 +116,38 @@ public class DepartmentProductService {
 		return productList;
 	}
 
+	public List<Product> getAllProducts(Department department, CloudEnvironment cloudEnvironment) {
+		DepartmentProduct dp = new DepartmentProduct();
+		dp.setDepartment(department);
+		dp.setCloudEnvironment(cloudEnvironment);
+		List<Product> productList = new ArrayList<>();
+		List<DepartmentProduct> listDp = departmentProductRepository.findAll(Example.of(dp),  Sort.by(Direction.DESC, "id"));
+		for(DepartmentProduct d: listDp) {
+			Product product = d.getProduct();
+			product.setServiceList(productServicesService.getAllServicesOfProduct(product));
+			productList.add(product);
+		}
+		return productList;
+	}
+	
+	public List<Product> getAllProductsOfDepartment(Long departmentId) {
+		Optional<Department> od = departmentService.getDepartment(departmentId);
+		if(!od.isPresent()) {
+			return Collections.emptyList();
+		}
+		return getAllProductsOfDepartment(od.get());
+	}
+	
+	public List<Product> getAllProducts(Long departmentId, Long cloudEnvId) {
+		Optional<Department> od = departmentService.getDepartment(departmentId);
+		Optional<CloudEnvironment> oce = cloudEnvironmentService.getCloudEnvironment(cloudEnvId);
+		if(!od.isPresent()) {
+			return Collections.emptyList();
+		}
+		if(!oce.isPresent()) {
+			return Collections.emptyList();
+		}
+		return getAllProducts(od.get(), oce.get());
+	}
 	
 }

@@ -193,7 +193,7 @@ public class DepartmentWiseAnalyticsService {
 		List<ServiceCategory> srvCatList = serviceCategoryService.searchAllServiceCategory(reqMap);
 		for(ServiceCategory sc: srvCatList) {
 			ServiceCategoryResponse scResp =ServiceCategoryResponse.from(sc);
-			scResp.setTagList(getTagList(sc));
+//			scResp.setTagList(getTagList(sc));
 			srvCatRespList.add(scResp);
 		}
 		return srvCatRespList;
@@ -229,8 +229,11 @@ public class DepartmentWiseAnalyticsService {
 //				
 //			}
 			////
+			int i=1;
+			List<ServiceTagResponse> tagList = getTagList(scResp.getId());
 			
-			for(ServiceTagResponse stResp: scResp.getTagList()) {
+//			for(ServiceTagResponse stResp: scResp.getTagList()) {
+			for(ServiceTagResponse stResp: tagList) {
 				
 				searchMap.clear();
 				searchMap.put("servicesId", String.valueOf(serviceResponse.getId())); 
@@ -239,7 +242,7 @@ public class DepartmentWiseAnalyticsService {
 				if(stlList != null && stlList.size() > 0) {
 					ServiceTagLink stl = stlList.get(0);
 					ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(stl);
-					serviceTagLinkResponse.setName(stl.getServiceTag().getTagName()+" ("+stl.getServices().getName()+")");
+					serviceTagLinkResponse.setName(stl.getServices().getName()+ "-" +stl.getServiceTag().getTagName()+"-"+i);
 					serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
 					serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
 					serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
@@ -260,7 +263,12 @@ public class DepartmentWiseAnalyticsService {
 					
 					////
 					ServiceNameResponse serviceNameResponse = ServiceNameResponse.from(stl);
-					serviceNameResponse.setTagList(scResp.getTagList());
+					
+					// setting tag list in searciceNameList
+//					serviceNameResponse.setTagList(scResp.getTagList());
+					serviceNameResponse.setTagList(tagList);
+					
+					
 					if(scResp.getServiceNameList() == null) {
 						List<ServiceNameResponse> snRespList = new ArrayList<>();
 						snRespList.add(serviceNameResponse);
@@ -272,7 +280,7 @@ public class DepartmentWiseAnalyticsService {
 						
 					}
 				}
-				
+				++i;
 			}
 		}
 	}
@@ -290,4 +298,16 @@ public class DepartmentWiseAnalyticsService {
 		return srvTagRespList;
 	}
 	
+	private List<ServiceTagResponse> getTagList(Long scId) {
+		List<ServiceTagResponse> srvTagRespList = new ArrayList<>();
+		Map<String, String> reqMap = new HashMap<>();
+		reqMap.put("status", Constants.ACTIVE);
+		reqMap.put("serviceCategoryId", String.valueOf(scId));
+		
+		List<ServiceTag> srvTagList = serviceTagService.searchAllServiceTag(reqMap);
+		for(ServiceTag st: srvTagList) {
+			srvTagRespList.add(ServiceTagResponse.from(st));
+		}
+		return srvTagRespList;
+	}
 }

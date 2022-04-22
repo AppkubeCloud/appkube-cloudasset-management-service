@@ -152,6 +152,15 @@ public class ServiceTagLinkService {
 				if(!StringUtils.isBlank(obj.getStatus())) {
 					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
+				
+				if(!StringUtils.isBlank(obj.getHostingType())) {
+					existingObj.setHostingType(obj.getHostingType());
+				}
+				
+				if(!StringUtils.isBlank(obj.getName())) {
+					existingObj.setName(obj.getName());
+				}
+				
 				existingObj.setUpdatedOn(Instant.now());
 				return existingObj;
 			})
@@ -176,6 +185,16 @@ public class ServiceTagLinkService {
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
 			cld.setStatus(obj.get("status").toUpperCase());
+			isFilter = true;
+		}
+		
+		if(!StringUtils.isBlank(obj.get("hostingType"))) {
+			cld.setHostingType(obj.get("hostingType"));
+			isFilter = true;
+		}
+		
+		if(!StringUtils.isBlank(obj.get("name"))) {
+			cld.setName(obj.get("name"));
 			isFilter = true;
 		}
 		

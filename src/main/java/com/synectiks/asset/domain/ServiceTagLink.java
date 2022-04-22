@@ -51,6 +51,12 @@ public class ServiceTagLink implements Serializable {
   @Column(name = "created_by")
   private String createdBy;
 
+  @Column(name = "name")
+  private String name;
+
+  @Column(name = "hosting_type")
+  private String hostingType;
+
   @ManyToOne
   private Services services;
   
@@ -127,6 +133,22 @@ public class ServiceTagLink implements Serializable {
 	
 	public void setServiceTag(ServiceTag serviceTag) {
 		this.serviceTag = serviceTag;
+	}
+
+	public String getName() {
+		return name;
+	}
+
+	public void setName(String name) {
+		this.name = name;
+	}
+
+	public String getHostingType() {
+		return hostingType;
+	}
+
+	public void setHostingType(String hostingType) {
+		this.hostingType = hostingType;
 	}
 	  
 	  	

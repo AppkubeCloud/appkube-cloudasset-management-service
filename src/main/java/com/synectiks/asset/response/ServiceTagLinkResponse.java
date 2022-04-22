@@ -23,7 +23,8 @@ public class ServiceTagLinkResponse implements Serializable {
   private String name;
   private String description;
   private String status;
- 
+  private String hostingType;
+  
   private ServiceBillingResponse serviceBilling;
   private PerformanceResponse performance;
   private AvailabilityResponse availability;
@@ -34,7 +35,8 @@ public class ServiceTagLinkResponse implements Serializable {
   public static ServiceTagLinkResponse from (ServiceTagLink stl) {
 	  return ServiceTagLinkResponse.builder()
 			  .id(stl.getId())
-			  .name(stl.getServices().getName())
+			  .name(stl.getName())
+			  .hostingType(stl.getHostingType())
 			  .description(stl.getDescription())
 			  .status(stl.getStatus())
 			  .build();
