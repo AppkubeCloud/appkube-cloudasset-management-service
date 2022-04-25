@@ -1,0 +1,33 @@
+package com.synectiks.asset.response;
+
+import java.io.Serializable;
+
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
+public class ServiceDetailStats implements Serializable {
+
+  private static final long serialVersionUID = 1L;
+
+  private String totalCostSoFar;
+  private String lastDayCost;
+  private String lastWeekCost;
+  private String lastMonthCost;
+  
+  public static ServiceDetailStats from(Integer totalCostSoFar, Integer lastDayCost, Integer lastWeekCost, Integer lastMonthCost) {
+	  return ServiceDetailStats.builder()
+			  .totalCostSoFar(String.valueOf(totalCostSoFar))
+			  .lastDayCost(String.valueOf(lastDayCost))
+			  .lastWeekCost(String.valueOf(lastWeekCost))
+			  .lastMonthCost(String.valueOf(lastMonthCost))
+			  .build();
+  }
+}
