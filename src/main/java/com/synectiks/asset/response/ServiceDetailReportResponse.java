@@ -1,6 +1,7 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
+import java.util.List;
 
 import com.synectiks.asset.domain.ServiceDetail;
 
@@ -18,23 +19,13 @@ import lombok.Setter;
 public class ServiceDetailReportResponse implements Serializable {
 
   private static final long serialVersionUID = 1L;
+  private List<ServiceDetail> services;
 
-  private Long id;
-  private ServiceDetailResponse details;
-  
-  public static ServiceDetailReportResponse from(ServiceDetail sd) {
+  public static ServiceDetailReportResponse from(List<ServiceDetail> services) {
 	  ServiceDetailReportResponse sdr = ServiceDetailReportResponse.builder()
-			  .id(sd.getId())
 			  .build();
-	  sdr.setDetails(ServiceDetailResponse.from(sd));
+	  sdr.setServices(services);
 	  return sdr;
   }
   
-  public static ServiceDetailReportResponse from(Long id, ServiceDetailResponse sd) {
-	  ServiceDetailReportResponse sdr = ServiceDetailReportResponse.builder()
-			  .build();
-	  sdr.setId(id);
-	  sdr.setDetails(sd);
-	  return sdr;
-  }
 }

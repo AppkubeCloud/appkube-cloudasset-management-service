@@ -22,7 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
-import com.synectiks.asset.response.ServiceDetailReportingResponse;
+import com.synectiks.asset.response.ServiceDetailReportResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -79,10 +79,10 @@ public class ServicesDetailController {
 	}
 	
 	@GetMapping("/service-detail/search")
-	public ResponseEntity<ServiceDetailReportingResponse> searchAllServiceDetail(@RequestParam Map<String, String> obj){
+	public ResponseEntity<ServiceDetailReportResponse> searchAllServiceDetail(@RequestParam Map<String, String> obj){
 		logger.info("Request to search service-detail");
-		ServiceDetailReportingResponse serviceDetailReportingResponse = serviceDetailService.searchServiceDetail(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(serviceDetailReportingResponse);
+		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(sdr);
 	}
 	
 	

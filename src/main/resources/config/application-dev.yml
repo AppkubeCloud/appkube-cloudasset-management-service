@@ -43,6 +43,9 @@ spring:
     hikari:
       poolName: Hikari
       auto-commit: false
+      data-source-properties: stringtype=unspecified
+    tomcat:
+      connection-properties: stringtype=unspecified
   jpa:
     database-platform: io.github.jhipster.domain.util.FixedPostgreSQL10Dialect
     show-sql: true
