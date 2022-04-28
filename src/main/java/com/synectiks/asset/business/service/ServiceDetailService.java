@@ -15,7 +15,6 @@ import com.google.gson.Gson;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
-import com.synectiks.asset.response.ServiceDetailResponse;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service

@@ -48,6 +48,4 @@ public class ServiceDetail implements Serializable {
   @Column(columnDefinition = "jsonb")
   private ServiceDetailResponse details;
   
-  
-  
 }

@@ -39,7 +39,7 @@ public class CatalogueController {
 		if(oObj.isPresent()) {
 			return ResponseEntity.status(HttpStatus.OK).body(oObj.get());
 		}
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 	
 	@GetMapping("/catalogue")

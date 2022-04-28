@@ -9,4 +9,4 @@ import org.springframework.stereotype.Repository;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface CatalogueRepository extends JpaRepository<Catalogue, Long> {}
+public interface CatalogueRepository extends JpaRepository<Catalogue, Long>, CatalogueRepositoryCustom {}

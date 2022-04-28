@@ -1,9 +1,6 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
-import java.time.Instant;
-
-import com.synectiks.asset.domain.ServiceDetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
