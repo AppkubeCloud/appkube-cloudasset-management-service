@@ -76,48 +76,58 @@ public class AwsService {
 		searchMap.put("accountId", accountId);
 		List<CloudEnvironment> ceList = cloudEnvironmentService.searchAllCloudEnvironment(searchMap);
 		if(ceList.size() == 0) {
-			return null;
+			throw new BadRequestAlertException("AWS account not found", "Dashboard", "aws.account.notfound");
 		}
 		CloudEnvironment ce = ceList.get(0);
 		
-		AmazonS3 s3Client = Utils.getAmazonS3Client(ce.getAccessKey(), ce.getSecretKey(), ce.getRegion());
-		S3Object file = s3Client.getObject(bucket, fileName);
-		
 		Dashboard dashboard = new Dashboard();
 		
-		dashboard.setCloudName(associatedCloud);
-		dashboard.setElementType(associatedCloudElementType);
-//		dashboard.setTenantId(tenantId);
-		dashboard.setAccountId(accountId);
-		dashboard.setInputType(associatedSLAType);
-		dashboard.setFileName(fileName);
-		dashboard.setInputSourceId(dataSourceName);
-		String dName = associatedCloud+"_"+associatedCloudElementType+"_"+dataSourceName;
-		dashboard.setTitle(dName);
-		dashboard.setSlug(dName);
-		String data = displayTextInputStream(file.getObjectContent());
+		AmazonS3 s3Client = Utils.getAmazonS3Client(ce.getAccessKey(), ce.getSecretKey(), ce.getRegion());
+		if(s3Client == null) {
+			throw new BadRequestAlertException("AWS S3 client connection could not be establised", "Dashboard", "aws.s3.connection.failed");
+		}
 		
-		ObjectMapper mapper = new ObjectMapper();
-		ArrayNode arrayNode = mapper.createArrayNode();
-		
-		ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
-		for(JsonNode panel : dataNode.get("panels")) {
-			ObjectNode oPanel = (ObjectNode)panel;
-			oPanel.put("datasource", dataSourceName);
-			arrayNode.add(oPanel);
-        }
-		dataNode.put("panels", arrayNode);
-		data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataNode);
-		logger.debug("Datasource updated. Json : "+ data);
-		
-		String uid = RandomStringUtils.random(8, true, true);
-		dashboard.setUid(uid);
-		dashboard.setData(data);
-		
-		DashboardMeta meta = new DashboardMeta();
-		meta.setSlug(dashboard.getSlug());
-		
-		dashboard.setDashboardMeta(meta);
+		try {
+			S3Object file = s3Client.getObject(bucket, fileName);
+			
+			dashboard.setCloudName(associatedCloud);
+			dashboard.setElementType(associatedCloudElementType);
+	//		dashboard.setTenantId(tenantId);
+			dashboard.setAccountId(accountId);
+			dashboard.setInputType(associatedSLAType);
+			dashboard.setFileName(fileName);
+			dashboard.setInputSourceId(dataSourceName);
+			String dName = associatedCloud+"_"+associatedCloudElementType+"_"+dataSourceName;
+			dashboard.setTitle(dName);
+			dashboard.setSlug(dName);
+			String data = displayTextInputStream(file.getObjectContent());
+			
+			ObjectMapper mapper = new ObjectMapper();
+			ArrayNode arrayNode = mapper.createArrayNode();
+			
+			ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
+			for(JsonNode panel : dataNode.get("panels")) {
+				ObjectNode oPanel = (ObjectNode)panel;
+				oPanel.put("datasource", dataSourceName);
+				arrayNode.add(oPanel);
+	        }
+			dataNode.put("panels", arrayNode);
+			data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataNode);
+			logger.debug("Datasource updated. Json : "+ data);
+			
+			String uid = RandomStringUtils.random(8, true, true);
+			dashboard.setUid(uid);
+			dashboard.setData(data);
+			
+			DashboardMeta meta = new DashboardMeta();
+			meta.setSlug(dashboard.getSlug());
+			
+			dashboard.setDashboardMeta(meta);
+		}finally {
+			if(s3Client != null) {
+				s3Client.shutdown();
+			}
+		}
 		return dashboard;
 	}
 	
