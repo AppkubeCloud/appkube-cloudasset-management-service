@@ -78,10 +78,16 @@ public class CatalogueController {
 	}
 	
 	@GetMapping("/catalogue/search")
+	public ResponseEntity<Catalogue> searchCatalogue(@RequestParam Map<String, String> obj){
+		logger.info("Request to search catalogue");
+		Catalogue catalogue = catalogueService.searchCatalogue(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(catalogue);
+	}
+	
+	@GetMapping("/catalogue/search-all")
 	public ResponseEntity<List<Catalogue>> searchAllCatalogue(@RequestParam Map<String, String> obj){
 		logger.info("Request to search catalogue");
 		List<Catalogue> list = catalogueService.searchAllCatalogue(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
-	
 }

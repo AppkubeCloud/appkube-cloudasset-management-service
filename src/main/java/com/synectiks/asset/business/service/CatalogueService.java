@@ -1,5 +1,6 @@
 package com.synectiks.asset.business.service;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -72,6 +73,17 @@ public class CatalogueService {
 		return result;
 	}
 	
+	public Catalogue searchCatalogue(Map<String, String> obj) {
+		logger.info("Search catalogue");
+		Gson gson = new Gson(); 
+		String json = gson.toJson(obj); 
+		List<Catalogue> list = catalogueRepository.findCatalogue(json);
+		if(list.size() > 0) {
+			return list.get(0);
+		}
+		return null;
+	}
+
 	public List<Catalogue> searchAllCatalogue(Map<String, String> obj) {
 		logger.info("Search catalogue");
 		Gson gson = new Gson(); 
@@ -79,7 +91,5 @@ public class CatalogueService {
 		List<Catalogue> list = catalogueRepository.findCatalogue(json);
 		return list;
 	}
-	
-
 	
 }
