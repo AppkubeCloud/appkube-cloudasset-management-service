@@ -15,7 +15,9 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.synectiks.asset.business.service.ServiceDetailConverter;
+import com.synectiks.asset.business.service.ViewJsonConverter;
 import com.synectiks.asset.response.ServiceDetailResponse;
+import com.synectiks.asset.response.ViewJsonResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -47,5 +49,9 @@ public class ServiceDetail implements Serializable {
   @Convert(converter = ServiceDetailConverter.class)
   @Column(columnDefinition = "jsonb")
   private ServiceDetailResponse details;
+  
+  @Convert(converter = ViewJsonConverter.class)
+  @Column(columnDefinition = "jsonb")
+  private ViewJsonResponse view_json;
   
 }

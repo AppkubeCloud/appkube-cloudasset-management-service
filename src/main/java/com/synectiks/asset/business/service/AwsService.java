@@ -112,6 +112,8 @@ public class AwsService {
 				arrayNode.add(oPanel);
 	        }
 			dataNode.put("panels", arrayNode);
+			dataNode.put("id", 0);
+			dataNode.put("uid", "");
 			data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataNode);
 			logger.debug("Datasource updated. Json : "+ data);
 			
