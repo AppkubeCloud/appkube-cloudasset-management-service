@@ -24,39 +24,140 @@ public class ViewJsonResponse implements Serializable {
   private static final long serialVersionUID = 1L;
 
   private String serviceId;
-  private List<PerformanceViewJsonResponse> performance;
+  private List<AllocatedDashboardViewJsonResponse> performance;
+  private List<AllocatedDashboardViewJsonResponse> availability;
+  private List<AllocatedDashboardViewJsonResponse> reliability;
+  private List<AllocatedDashboardViewJsonResponse> endUsage;
+  private List<AllocatedDashboardViewJsonResponse> security;
+  private List<AllocatedDashboardViewJsonResponse> compliance;
+  private List<AllocatedDashboardViewJsonResponse> alerts;
   
   public static ViewJsonResponse from(String serviceId, JsonNode jsonNode, String key) {
 	  ViewJsonResponse vrj = ViewJsonResponse.builder().serviceId(serviceId).build();
 	  if(jsonNode.isArray()) {
 		if("performance".equalsIgnoreCase(key)) { 
-			List<PerformanceViewJsonResponse> perf = new ArrayList<>();
-			for(JsonNode node: jsonNode) {
-				PerformanceViewJsonResponse pvj = PerformanceViewJsonResponse.from(node);
-				perf.add(pvj);
-			}
-			vrj.setPerformance(perf);
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setPerformance(list);
 		}
-		
+		if("availability".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setAvailability(list);
+		}
+		if("reliability".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setReliability(list);
+		}
+		if("endUsage".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setEndUsage(list);
+		}
+		if("security".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setSecurity(list);
+		}
+		if("compliance".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setCompliance(list);
+		}
+		if("alerts".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
+			createViewJson(jsonNode, list);
+			vrj.setAlerts(list);
+		}
 	  }
 	  return vrj;
   }
+
+  private static void createViewJson(JsonNode jsonNode, List<AllocatedDashboardViewJsonResponse> perf) {
+	  for(JsonNode node: jsonNode) {
+		  AllocatedDashboardViewJsonResponse pvj = AllocatedDashboardViewJsonResponse.from(node);
+		  perf.add(pvj);
+	  }
+  }
   
-  public static ViewJsonResponse updateFrom(JsonNode jsonNode, String serviceId, ViewJsonResponse viewJsonResponse, String key) {
-	  ViewJsonResponse vrj = ViewJsonResponse.builder().serviceId(serviceId).build();
-	  List<PerformanceViewJsonResponse> newPerfList = new ArrayList<>();
+  public static void updateFrom(JsonNode jsonNode, String serviceId, ViewJsonResponse viewJsonResponse, String key) {
+//	  ViewJsonResponse vrj = ViewJsonResponse.builder().serviceId(serviceId).build();
+	  List<AllocatedDashboardViewJsonResponse> newList = new ArrayList<>();
 	  if(jsonNode.isArray()) {
-		for(JsonNode node: jsonNode) {
-			PerformanceViewJsonResponse pvj = PerformanceViewJsonResponse.from(node);
-			newPerfList.add(pvj);
-		}
+		createViewJson(jsonNode, newList);
 	  }
-	  List<PerformanceViewJsonResponse> existingViewJsonList = viewJsonResponse.getPerformance();
-	  for(PerformanceViewJsonResponse p: newPerfList) {
-		  existingViewJsonList.add(p);
+	 
+	  if("performance".equalsIgnoreCase(key)) { 
+		  List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getPerformance();
+		  if(existingViewJsonList == null) {
+			  existingViewJsonList = new ArrayList<>(); 
+		  }
+		  for(AllocatedDashboardViewJsonResponse p: newList) {
+			  existingViewJsonList.add(p);
+		  }
+		  viewJsonResponse.setPerformance(existingViewJsonList);
 	  }
-	  vrj.setPerformance(existingViewJsonList);
-	  return vrj;
+	  if("availability".equalsIgnoreCase(key)) { 
+		  List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getAvailability();
+		  if(existingViewJsonList == null) {
+			  existingViewJsonList = new ArrayList<>(); 
+		  }
+		  for(AllocatedDashboardViewJsonResponse p: newList) {
+			  existingViewJsonList.add(p);
+		  }
+		  viewJsonResponse.setAvailability(existingViewJsonList);
+	  }
+	  if("reliability".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getReliability();
+			if(existingViewJsonList == null) {
+				existingViewJsonList = new ArrayList<>(); 
+			}
+			for(AllocatedDashboardViewJsonResponse p: newList) {
+				existingViewJsonList.add(p);
+			}
+			viewJsonResponse.setReliability(existingViewJsonList);
+	  }
+	  if("endUsage".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getEndUsage();
+			if(existingViewJsonList == null) {
+				existingViewJsonList = new ArrayList<>(); 
+			}
+			for(AllocatedDashboardViewJsonResponse p: newList) {
+				existingViewJsonList.add(p);
+			}
+			viewJsonResponse.setEndUsage(existingViewJsonList);
+	  }
+	  if("security".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getSecurity();
+			if(existingViewJsonList == null) {
+				existingViewJsonList = new ArrayList<>(); 
+			}
+			for(AllocatedDashboardViewJsonResponse p: newList) {
+				existingViewJsonList.add(p);
+			}
+			viewJsonResponse.setSecurity(existingViewJsonList);
+	  }
+	  if("compliance".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getCompliance();
+			if(existingViewJsonList == null) {
+				existingViewJsonList = new ArrayList<>(); 
+			}
+			for(AllocatedDashboardViewJsonResponse p: newList) {
+				existingViewJsonList.add(p);
+			}
+			viewJsonResponse.setCompliance(existingViewJsonList);
+	  }
+	  if("alerts".equalsIgnoreCase(key)) { 
+			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getAlerts();
+			if(existingViewJsonList == null) {
+				existingViewJsonList = new ArrayList<>(); 
+			}
+			for(AllocatedDashboardViewJsonResponse p: newList) {
+				existingViewJsonList.add(p);
+			}
+			viewJsonResponse.setAlerts(existingViewJsonList);
+	  }
   }
   
 }

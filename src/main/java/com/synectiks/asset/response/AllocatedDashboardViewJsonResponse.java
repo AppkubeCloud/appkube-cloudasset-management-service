@@ -15,7 +15,7 @@ import lombok.Setter;
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class PerformanceViewJsonResponse implements Serializable {
+public class AllocatedDashboardViewJsonResponse implements Serializable {
 
 	/**
 	 * 
@@ -26,8 +26,8 @@ public class PerformanceViewJsonResponse implements Serializable {
 	private String uid;
 	private Long dashboardCatalogueId;
 	
-	public static PerformanceViewJsonResponse from(JsonNode node) {
-		return PerformanceViewJsonResponse.builder()
+	public static AllocatedDashboardViewJsonResponse from(JsonNode node) {
+		return AllocatedDashboardViewJsonResponse.builder()
 				.id(node.get("id").asText())
 				.slug(node.get("slug").asText())
 				.uid(node.get("uid").asText())
