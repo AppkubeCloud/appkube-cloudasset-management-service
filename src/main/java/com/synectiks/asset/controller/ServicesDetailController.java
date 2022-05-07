@@ -1,5 +1,6 @@
 package com.synectiks.asset.controller;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -20,9 +21,13 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
+import com.synectiks.asset.response.ViewJsonResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -85,5 +90,12 @@ public class ServicesDetailController {
 		return ResponseEntity.status(HttpStatus.OK).body(sdr);
 	}
 	
-	
+	@PostMapping("/service-detail/create-bulk-data")
+	public ResponseEntity<ViewJsonResponse> createBulkData(@RequestBody ObjectNode objNode) throws IOException {
+		JsonNode objArray = objNode.get("services");
+		for(JsonNode node: objArray) {
+			serviceDetailService.createBulkData(node);
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
 }

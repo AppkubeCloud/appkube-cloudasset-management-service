@@ -2,6 +2,9 @@ package com.synectiks.asset.response;
 
 import java.io.Serializable;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.synectiks.asset.util.RandomUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -70,4 +73,36 @@ public class ServiceDetailResponse implements Serializable {
 //			  .associatedGlobalServiceLocation("NA".equalsIgnoreCase(sd.getAssociatedGlobalServiceLocation()) ? "" : sd.getAssociatedGlobalServiceLocation())
 //			  .build();
 //  }
+  
+  public static ServiceDetailResponse from(JsonNode node) {
+	  ServiceDetailResponse sdr = ServiceDetailResponse.builder()
+	  .name(node.get("name").asText())
+	  .description("NA".equalsIgnoreCase(node.get("description").asText()) ? "" : node.get("description").asText())
+	  .associatedOU("NA".equalsIgnoreCase(node.get("associatedOU").asText()) ? "": node.get("associatedOU").asText())
+	  .associatedDept("NA".equalsIgnoreCase(node.get("associatedDept").asText()) ? "": node.get("associatedDept").asText()) 
+	  .associatedProduct("NA".equalsIgnoreCase(node.get("associatedProduct").asText()) ? "": node.get("associatedProduct").asText()) 
+	  .associatedEnv("NA".equalsIgnoreCase(node.get("associatedEnv").asText()) ? "": node.get("associatedEnv").asText())
+	  .associatedLandingZone("NA".equalsIgnoreCase(node.get("associatedLandingZone").asText()) ? "": node.get("associatedLandingZone").asText())
+	  .associatedProductEnclave("NA".equalsIgnoreCase(node.get("associatedProductEnclave").asText()) ? "": node.get("associatedProductEnclave").asText())
+	  .associatedCluster("NA".equalsIgnoreCase(node.get("associatedCluster").asText()) ? "": node.get("associatedCluster").asText()) 
+	  .serviceNature("NA".equalsIgnoreCase(node.get("serviceNature").asText()) ? "": node.get("serviceNature").asText())
+	  .associatedCommonService("NA".equalsIgnoreCase(node.get("associatedCommonService").asText()) ? "": node.get("associatedCommonService").asText())
+	  .associatedBusinessService("NA".equalsIgnoreCase(node.get("associatedBusinessService").asText()) ? "": node.get("associatedBusinessService").asText())
+	  .serviceType("NA".equalsIgnoreCase(node.get("serviceType").asText()) ? "": node.get("serviceType").asText())
+	  .serviceHostingType("NA".equalsIgnoreCase(node.get("serviceHostingType").asText()) ? "": node.get("serviceHostingType").asText())
+	  .associatedClusterNamespace("NA".equalsIgnoreCase(node.get("associatedClusterNamespace").asText()) ? "": node.get("associatedClusterNamespace").asText())
+	  .associatedManagedCloudServiceLocation("NA".equalsIgnoreCase(node.get("associatedManagedCloudServiceLocation").asText()) ? "": node.get("associatedManagedCloudServiceLocation").asText())
+	  .associatedCloudElementId("NA".equalsIgnoreCase(node.get("associatedCloudElementId").asText()) ? "": node.get("associatedCloudElementId").asText())
+	  .associatedGlobalServiceLocation("NA".equalsIgnoreCase(node.get("associatedGlobalServiceLocation").asText()) ? "": node.get("associatedGlobalServiceLocation").asText())
+	  .performance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build())
+	  .availability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build())
+	  .security(SecurityResponse.builder().score(RandomUtil.getRandom()).build())
+	  .dataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build())
+	  .userExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build())
+	  .build();
+	  JsonNode statsNode = node.get("stats");
+	  ServiceDetailStats sds = ServiceDetailStats.fromString(statsNode.get("totalCostSoFar").asText(), statsNode.get("lastDayCost").asText(), statsNode.get("lastWeekCost").asText(), statsNode.get("lastMonthCost").asText());
+	  sdr.setStats(sds);
+	  return sdr;
+  }
 }

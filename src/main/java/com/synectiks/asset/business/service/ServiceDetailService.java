@@ -1,5 +1,6 @@
 package com.synectiks.asset.business.service;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,10 +12,12 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.databind.JsonNode;
 import com.google.gson.Gson;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
+import com.synectiks.asset.response.ServiceDetailResponse;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
@@ -79,7 +82,21 @@ public class ServiceDetailService {
 		List<ServiceDetail> list = serviceDetailJsonRepository.findServiceDetails(json);
 		ServiceDetailReportResponse resp = ServiceDetailReportResponse.builder().build();
 		resp.setServices(list);
+		resp.setTotal(list.size());
 		return resp;
 	}
 	
+	public void updateViewJson(JsonNode node) {
+		String apiKey[] = {"performance","availability","reliability","endUsage","security","compliance","alerts"};
+		for(String key: apiKey) {
+			serviceDetailJsonRepository.updateViewJson(node.get("id").asText(), key);
+		}
+	}
+	
+	public void createBulkData(JsonNode node) throws IOException {
+		ServiceDetail sd = ServiceDetail.builder().build();
+		ServiceDetailResponse sdr = ServiceDetailResponse.from(node);
+		sd.setDetails(sdr);
+		createServiceDetail(sd);
+	}
 }

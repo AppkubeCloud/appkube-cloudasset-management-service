@@ -6,4 +6,5 @@ import com.synectiks.asset.domain.ServiceDetail;
 
 public interface ServiceDetailRepositoryCustom {
 	List<ServiceDetail> findServiceDetails(String whereCondition);
+	void updateViewJson(String id, String key);
 }

@@ -30,4 +30,13 @@ public class ServiceDetailStats implements Serializable {
 			  .lastMonthCost(String.valueOf(lastMonthCost))
 			  .build();
   }
+  
+  public static ServiceDetailStats fromString(String totalCostSoFar, String lastDayCost, String lastWeekCost, String lastMonthCost) {
+	  return ServiceDetailStats.builder()
+			  .totalCostSoFar(totalCostSoFar)
+			  .lastDayCost(lastDayCost)
+			  .lastWeekCost(lastWeekCost)
+			  .lastMonthCost(lastMonthCost)
+			  .build();
+  }
 }
