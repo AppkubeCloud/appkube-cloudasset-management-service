@@ -5,7 +5,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -21,9 +20,9 @@ import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.synectiks.asset.domain.CloudEnvironment;
 import com.synectiks.asset.domain.Dashboard;
 import com.synectiks.asset.domain.DashboardMeta;
+import com.synectiks.asset.domain.ServiceProviderCloudAccount;
 import com.synectiks.asset.util.Utils;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -32,8 +31,12 @@ public class AwsService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AwsService.class);
 	
+//	@Autowired
+//	private CloudEnvironmentService cloudEnvironmentService;
+	
 	@Autowired
-	private CloudEnvironmentService cloudEnvironmentService;
+	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
+	
 	
 	public Dashboard getDashboardFromAwsS3(Map<String, String> object) throws IOException {
 		logger.info("Downloading dashboard json from AWS");
@@ -73,16 +76,10 @@ public class AwsService {
 		}
 		
 		Map<String, String> searchMap = new HashMap<>();
-		searchMap.put("accountId", accountId);
-		List<CloudEnvironment> ceList = cloudEnvironmentService.searchAllCloudEnvironment(searchMap);
-		if(ceList.size() == 0) {
-			throw new BadRequestAlertException("AWS account not found", "Dashboard", "aws.account.notfound");
-		}
-		CloudEnvironment ce = ceList.get(0);
+		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
 		
 		Dashboard dashboard = new Dashboard();
-		
-		AmazonS3 s3Client = Utils.getAmazonS3Client(ce.getAccessKey(), ce.getSecretKey(), ce.getRegion());
+		AmazonS3 s3Client = Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
 		if(s3Client == null) {
 			throw new BadRequestAlertException("AWS S3 client connection could not be establised", "Dashboard", "aws.s3.connection.failed");
 		}
