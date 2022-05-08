@@ -7,6 +7,8 @@ import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
 /**
  * Client's cloud accounts
  */
@@ -72,8 +74,22 @@ public class CloudEnvironment implements Serializable {
   @ManyToOne
   private Department department;
 
-  // jhipster-needle-entity-add-field - JHipster will add fields here
-
+  @Transient
+  @JsonProperty
+  private Integer totalProductEnclave;
+  
+  @Transient
+  @JsonProperty
+  private Integer totalProducts;
+  
+  @Transient
+  @JsonProperty
+  private Integer totalAppServices;
+  
+  @Transient
+  @JsonProperty
+  private Integer totalDataServices;
+  
   public Long getId() {
     return this.id;
   }
@@ -317,4 +333,36 @@ public class CloudEnvironment implements Serializable {
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
+
+	public Integer getTotalProductEnclave() {
+		return totalProductEnclave;
+	}
+
+	public void setTotalProductEnclave(Integer totalProductEnclave) {
+		this.totalProductEnclave = totalProductEnclave;
+	}
+
+	public Integer getTotalProducts() {
+		return totalProducts;
+	}
+
+	public void setTotalProducts(Integer totalProducts) {
+		this.totalProducts = totalProducts;
+	}
+
+	public Integer getTotalAppServices() {
+		return totalAppServices;
+	}
+
+	public void setTotalAppServices(Integer totalAppServices) {
+		this.totalAppServices = totalAppServices;
+	}
+
+	public Integer getTotalDataServices() {
+		return totalDataServices;
+	}
+
+	public void setTotalDataServices(Integer totalDataServices) {
+		this.totalDataServices = totalDataServices;
+	}
 }

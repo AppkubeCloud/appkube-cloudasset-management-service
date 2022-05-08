@@ -1,5 +1,7 @@
 package com.synectiks.asset.controller;
 
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -21,7 +23,12 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.service.CloudEnvironmentService;
+import com.synectiks.asset.business.service.CloudService;
+import com.synectiks.asset.business.service.ServiceDetailService;
+import com.synectiks.asset.domain.Cloud;
 import com.synectiks.asset.domain.CloudEnvironment;
+import com.synectiks.asset.domain.ServiceDetail;
+import com.synectiks.asset.response.ServiceDetailReportResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -31,6 +38,12 @@ public class CloudEnvironmentController {
 	
 	@Autowired
 	CloudEnvironmentService cloudEnvironmentService;
+	
+	@Autowired
+	ServiceDetailService serviceDetailService;
+	
+	@Autowired
+	CloudService cloudService;
 	
 	@GetMapping("/cloud-environment/{id}")
 	public ResponseEntity<CloudEnvironment> getCloudEnvironment(@PathVariable Long id) {
@@ -77,10 +90,66 @@ public class CloudEnvironmentController {
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
 	
+//	@GetMapping("/cloud-environment/search")
+//	public ResponseEntity<List<CloudEnvironment>> searchAllCloudEnvironment(@RequestParam Map<String, String> obj){
+//		logger.info("Request to search cloud-environment");
+//		List<CloudEnvironment> list = cloudEnvironmentService.searchAllCloudEnvironment(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(list);
+//	}
+	
 	@GetMapping("/cloud-environment/search")
-	public ResponseEntity<List<CloudEnvironment>> searchAllCloudEnvironment(@RequestParam Map<String, String> obj){
+	public ResponseEntity<List<CloudEnvironment>> searchAllCloudEnvironmentNew(@RequestParam Map<String, String> obj){
 		logger.info("Request to search cloud-environment");
-		List<CloudEnvironment> list = cloudEnvironmentService.searchAllCloudEnvironment(obj);
+		if(obj.containsKey("status")) {
+			obj.remove("status");
+		}
+//		List<CloudEnvironment> list = cloudEnvironmentService.searchAllCloudEnvironment(obj);
+		CloudEnvironment ceObj = cloudEnvironmentService.searchAllCloudEnvironment(obj).get(0);
+		Cloud cloud = cloudService.searchAllCloud(new HashMap<>()).get(0);
+		
+		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
+		Map<String, String> landingZone = new HashMap<>();
+		for(ServiceDetail sd: sdr.getServices()) {
+			landingZone.put(sd.getDetails().getAssociatedLandingZone(), sd.getDetails().getAssociatedLandingZone());
+		}
+		List<CloudEnvironment> list = new ArrayList<>();
+		
+		Map<String, String> searchMap = new HashMap<>();
+		for (String key: landingZone.keySet()) {
+			searchMap.clear();
+			searchMap.put("associatedLandingZone", key);
+			ServiceDetailReportResponse lzone = serviceDetailService.searchAllServiceDetail(searchMap);
+			int totalApp = 0 ;
+			int totalData = 0;
+			Map<String, String> productMap = new HashMap<String, String>();
+			Map<String, String> productEnclaveMap = new HashMap<String, String>();
+			for(ServiceDetail sdDetail: lzone.getServices()) {
+				if("APP".equalsIgnoreCase(sdDetail.getDetails().getServiceType())) {
+					totalApp = totalApp + 1;
+				}else if("DATA".equalsIgnoreCase(sdDetail.getDetails().getServiceType())) {
+					totalData = totalData + 1;
+				}
+				productMap.put(sdDetail.getDetails().getAssociatedProduct(), sdDetail.getDetails().getAssociatedProduct());
+				productEnclaveMap.put(sdDetail.getDetails().getAssociatedProductEnclave(), sdDetail.getDetails().getAssociatedProductEnclave());
+			}
+			
+			CloudEnvironment ce = new CloudEnvironment();
+			ce.setTotalAppServices(totalApp);
+			ce.setTotalDataServices(totalData);
+			ce.setTotalProducts(productMap.size());
+			ce.setTotalProductEnclave(productEnclaveMap.size());
+			ce.setName(key);
+			ce.setDescription(key);
+			ce.setAccountId(key);
+			ce.setAccessKey(ceObj.getAccessKey());
+			ce.setSecretKey(ceObj.getSecretKey());
+			ce.setRegion(ceObj.getRegion());
+			ce.setOrgId(ceObj.getOrgId());
+			ce.setStatus(ceObj.getStatus());
+			ce.setCloud(ceObj.getCloud());
+			list.add(ce);
+		}
+		
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 	
