@@ -37,6 +37,11 @@ public final class Constants {
     public static final String SERVICE_BUSINESS_APP_SERVICE = "APP";
     public static final String SERVICE_BUSINESS_DATA_SERVICE = "DATA";
     
+    public static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
+    public static final String DATE_FORMAT_MM_DD_YYYY = "MM-dd-yyyy";
+    public static final String DATE_FORMAT_DD_MM_YYYY = "dd-MM-yyyy";
+    public static final String DEFAULT_DATE_FORMAT =  DATE_FORMAT_MM_DD_YYYY;
+    
 //    public static final Map<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache > AWS_DISCOVERED_ASSET_CACHE = new HashMap<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache>();
     
 //    static {
