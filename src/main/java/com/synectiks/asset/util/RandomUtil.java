@@ -11,4 +11,11 @@ public class RandomUtil {
 		Integer result = r.nextInt(high-low) + low;
 		return result;
 	}
+	
+	public static Integer getRandom(int low, int high) {
+		Random r = new Random();
+		high = high + 1; //it is exclusive
+		Integer result = r.nextInt(high-low) + low;
+		return result;
+	}
 }
