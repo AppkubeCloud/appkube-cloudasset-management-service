@@ -2,6 +2,8 @@ package com.synectiks.asset.response;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.ServiceTagLink;
 
 import lombok.AllArgsConstructor;
@@ -41,4 +43,25 @@ public class ServiceTagLinkResponse implements Serializable {
 			  .status(stl.getStatus())
 			  .build();
   }
+  
+  public static ServiceTagLinkResponse from (Long id, String name, String hostingType, String description, String status) {
+	  ServiceTagLinkResponse stlr = ServiceTagLinkResponse.builder().build();
+	  if(id != null) {
+		  stlr.setId(id);
+	  }
+	  if(!StringUtils.isBlank(name)) {
+		  stlr.setName(name);
+	  }
+	  if(!StringUtils.isBlank(hostingType)) {
+		  stlr.setHostingType(hostingType);
+	  }
+	  if(!StringUtils.isBlank(description)) {
+		  stlr.setDescription(description);
+	  }
+	  if(!StringUtils.isBlank(status)) {
+		  stlr.setStatus(status);
+	  }
+	  return stlr;
+  }
+  
 }

@@ -3,6 +3,8 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.DeploymentEnvironment;
 
 import lombok.AllArgsConstructor;
@@ -32,5 +34,16 @@ public class DeploymentEnvironmentResponse implements Serializable {
 			  .id(depEnv.getId())
 			  .name(depEnv.getName())
 			  .build();
+  }
+  
+  public static DeploymentEnvironmentResponse from(Long id, String name) {
+	  DeploymentEnvironmentResponse der = DeploymentEnvironmentResponse.builder().build();
+	  if(id != null) {
+		  der.setId(id);
+	  }
+	  if(!StringUtils.isBlank(name)) {
+		  der.setName(name);
+	  }
+	  return der;
   }
 }

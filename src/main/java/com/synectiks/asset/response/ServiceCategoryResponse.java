@@ -3,6 +3,8 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.ServiceCategory;
 
 import lombok.AllArgsConstructor;
@@ -37,4 +39,20 @@ public class ServiceCategoryResponse implements Serializable {
 			  .build();
   }
 
+  public static ServiceCategoryResponse from(Long id, String name, String description, String status) {
+	  ServiceCategoryResponse scr = ServiceCategoryResponse.builder().build();
+	  if(id != null) {
+		  scr.setId(id);
+	  }
+	  if(!StringUtils.isBlank(name)) {
+		  scr.setName(name);
+	  }
+	  if(!StringUtils.isBlank(description)) {
+		  scr.setDescription(description);
+	  }
+	  if(!StringUtils.isBlank(status)) {
+		  scr.setStatus(status);
+	  }
+	  return scr;
+  }
 }

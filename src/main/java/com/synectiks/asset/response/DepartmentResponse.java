@@ -3,6 +3,8 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.Department;
 
 import lombok.AllArgsConstructor;
@@ -32,6 +34,20 @@ public class DepartmentResponse implements Serializable {
 			  .name(department.getName())
 			  .status(department.getStatus())
 			  .build();
+  }
+  
+  public static DepartmentResponse from(Long id, String name, String status) {
+	  DepartmentResponse dr = DepartmentResponse.builder().build();
+	  if(id != null) {
+		  dr.setId(id);
+	  }
+	  if(!StringUtils.isBlank(name)) {
+		  dr.setName(name);
+	  }
+	  if(!StringUtils.isBlank(status)) {
+		  dr.setStatus(status);
+	  }
+	  return dr;
   }
   
 }

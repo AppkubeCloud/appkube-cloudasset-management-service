@@ -3,6 +3,8 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.ServiceTagLink;
 
 import lombok.AllArgsConstructor;
@@ -42,5 +44,16 @@ public class ServiceNameResponse implements Serializable {
 //			  .description(services.getDescription())
 //			  .status(services.getStatus())
 			  .build();
+  }
+  
+  public static ServiceNameResponse from(Long id, String name) {
+	  ServiceNameResponse snr = ServiceNameResponse.builder().build();
+	  if(id != null) {
+		  snr.setId(id);
+	  }
+	  if(!StringUtils.isBlank(name)) {
+		  snr.setName(name);
+	  }
+	  return snr;
   }
 }

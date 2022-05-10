@@ -3,6 +3,8 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.ServiceTag;
 import com.synectiks.asset.domain.ServiceTagLink;
 
@@ -32,5 +34,19 @@ public class ServiceTagResponse implements Serializable {
 			  .tagName(st.getTagName())
 			  .status(st.getStatus())
 			  .build();
+  }
+  
+  public static ServiceTagResponse from(Long id, String name, String status) {
+	  ServiceTagResponse str = ServiceTagResponse.builder().build();
+	  if(id != null) {
+		  str.setId(id);
+	  }
+	  if(!StringUtils.isBlank(name)) {
+		  str.setTagName(name);
+	  }
+	  if(!StringUtils.isBlank(status)) {
+		  str.setStatus(status);
+	  }
+	  return str;
   }
 }

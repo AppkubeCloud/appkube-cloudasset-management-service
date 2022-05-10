@@ -2,6 +2,8 @@ package com.synectiks.asset.response;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.ServiceBilling;
 
 import lombok.AllArgsConstructor;
@@ -30,4 +32,21 @@ public class ServiceBillingResponse implements Serializable {
 			  .status(sb.getStatus())
 			  .build();
   }
+  
+  public static ServiceBillingResponse from(Long id, Double amount, String status) {
+	  ServiceBillingResponse sbr = ServiceBillingResponse.builder().build();
+	  if(id != null) {
+		  sbr.setId(id);
+	  }
+	  if(amount != null) {
+		  sbr.setAmount(amount);
+	  }else {
+		  sbr.setAmount(0D);
+	  }
+	  if(!StringUtils.isBlank(status)) {
+		  sbr.setStatus(status);
+	  }
+	  return sbr;
+  }
+  
 }

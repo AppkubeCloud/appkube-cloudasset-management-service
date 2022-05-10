@@ -2,6 +2,8 @@ package com.synectiks.asset.response;
 
 import java.io.Serializable;
 
+import org.apache.commons.lang3.StringUtils;
+
 import com.synectiks.asset.domain.ProductBilling;
 
 import lombok.AllArgsConstructor;
@@ -29,5 +31,21 @@ public class ProductBillingResponse implements Serializable {
 			  .amount(pb.getAmount())
 			  .status(pb.getStatus())
 			  .build();
+  }
+  
+  public static ProductBillingResponse from(Long id, Double amount, String status) {
+	  ProductBillingResponse pbr = ProductBillingResponse.builder().build();
+	  if(id != null) {
+		  pbr.setId(id);
+	  }
+	  if(amount != null) {
+		  pbr.setAmount(amount);
+	  }else {
+		  pbr.setAmount(0D);
+	  }
+	  if(!StringUtils.isBlank(status)) {
+		  pbr.setStatus(status);
+	  }
+	  return pbr;
   }
 }
