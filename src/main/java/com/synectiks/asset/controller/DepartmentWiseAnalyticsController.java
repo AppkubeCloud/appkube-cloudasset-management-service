@@ -41,9 +41,9 @@ public class DepartmentWiseAnalyticsController {
 	}
 	
 	@GetMapping("/department-wise-analytics/get-data")
-	public ResponseEntity<DepartmentWiseAnaliticResponse> getAnalyticalData(){
+	public ResponseEntity<DepartmentWiseAnaliticResponse> getAnalyticalData(@RequestParam Map<String, String> obj){
 		logger.info("Request to get department-wise-analytics from json");
-		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getAnalyticalDataFromJson();
+		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getAnalyticalDataFromJson(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
 }

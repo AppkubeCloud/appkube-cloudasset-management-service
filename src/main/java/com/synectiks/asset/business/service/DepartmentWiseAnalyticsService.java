@@ -324,9 +324,9 @@ public class DepartmentWiseAnalyticsService {
 	
 	
 	// department wise analytics by service.json
-	public DepartmentWiseAnaliticResponse getAnalyticalDataFromJson() {
+	public DepartmentWiseAnaliticResponse getAnalyticalDataFromJson(Map<String, String> obj) {
 		
-		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(new HashMap());
+		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
 		OrganizationResponse org = null;
 		
 		//unique list of all the departments 
