@@ -468,7 +468,7 @@ public class DepartmentWiseAnalyticsService {
 							// one more time
 							for(ServiceTagResponse str: srvTagRespList) {
 								if(str.getTagName().equalsIgnoreCase(depEnvSpecificSd.getDetails().getServiceType())) {
-									ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(depEnvSpecificSd.getId(), depEnvSpecificSd.getDetails().getName(), depEnvSpecificSd.getDetails().getServiceHostingType(), depEnvSpecificSd.getDetails().getDescription(), null);
+									ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(depEnvSpecificSd);
 									serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
 									serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
 									serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
