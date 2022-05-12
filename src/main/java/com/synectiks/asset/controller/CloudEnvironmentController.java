@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -124,9 +125,10 @@ public class CloudEnvironmentController {
 			Map<String, String> productMap = new HashMap<String, String>();
 			Map<String, String> productEnclaveMap = new HashMap<String, String>();
 			for(ServiceDetail sdDetail: lzone.getServices()) {
-				if("APP".equalsIgnoreCase(sdDetail.getDetails().getServiceType())) {
+				if("APP".equalsIgnoreCase(sdDetail.getDetails().getServiceType()) && !StringUtils.isBlank(sdDetail.getDetails().getAssociatedProductEnclave())) {
 					totalApp = totalApp + 1;
-				}else if("DATA".equalsIgnoreCase(sdDetail.getDetails().getServiceType())) {
+				}else if("DATA".equalsIgnoreCase(sdDetail.getDetails().getServiceType()) 
+						&& !StringUtils.isBlank(sdDetail.getDetails().getAssociatedProductEnclave())) {
 					totalData = totalData + 1;
 				}
 				productMap.put(sdDetail.getDetails().getAssociatedProduct(), sdDetail.getDetails().getAssociatedProduct());
