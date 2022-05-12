@@ -20,7 +20,7 @@ public class OpsResponse implements Serializable {
   
   private List<CloudDashboard> cloudDashBoards;
   private List<Datasource> dataSources;
-  private ProvisioningTemplates provisioningTemplates;
+  private List<ProvisioningTemplates> provisioningTemplates;
   private AlertRules slertRules;
   private Workflows workflows;
   private Collectors collectors;
