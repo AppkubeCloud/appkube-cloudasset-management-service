@@ -59,21 +59,21 @@ public class AwsService {
 //		String associatedCreds = object.get("associatedCreds");
 		String accountId = object.get("accountId");
 		
-		String bucket = null;
-		String fileName = null;
+		String bucket = getBucket(jsonLocation);
+		String fileName = getFileName(jsonLocation);
 		
-		try {
-			String ary[] = jsonLocation.split("/");
-			if(ary.length < 2) {
-				throw new BadRequestAlertException("Mandatory fields jsonLocation either missing or not correct. Its should be bucket/filename.json", "Dashboard", "mandatory.field.missing");
-			}
-			bucket = ary[0];
-			fileName = ary[1];
-		}catch(BadRequestAlertException e) {
-			throw e;
-		}catch(Exception e) {
-			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
-		}
+//		try {
+//			String ary[] = jsonLocation.split("/");
+//			if(ary.length < 2) {
+//				throw new BadRequestAlertException("Mandatory fields jsonLocation either missing or not correct. Its should be bucket/filename.json", "Dashboard", "mandatory.field.missing");
+//			}
+//			bucket = ary[0];
+//			fileName = ary[1];
+//		}catch(BadRequestAlertException e) {
+//			throw e;
+//		}catch(Exception e) {
+//			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
+//		}
 		
 		Map<String, String> searchMap = new HashMap<>();
 		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
@@ -142,4 +142,26 @@ public class AwsService {
         return sb.toString();
 	}
 	
+//	public static void main(String a[]) {
+//		String jsonLocation ="s3://updated-dashboards-bucket/NewDashboards/CloudTrail/AWS CloudTrail - Overview.txt";
+////		String f = jsonLocation.substring(jsonLocation.indexOf("//")+2);
+////		System.out.println(f);
+////		String fName = f.substring(f.lastIndexOf("/")+1);
+//		System.out.println("File : "+getFileName(jsonLocation));
+//		
+////		String bPath = f.substring(0,f.lastIndexOf("/"));
+//		System.out.println("Path : "+getBucket(jsonLocation));
+//		
+//	}
+	
+	private String getBucket(String jsonLocation) {
+		String f = jsonLocation.substring(jsonLocation.indexOf("//")+2);
+		return f.substring(0,f.lastIndexOf("/"));
+	}
+	
+	private String getFileName(String jsonLocation) {
+		String f = jsonLocation.substring(jsonLocation.indexOf("//")+2);
+		return f.substring(f.lastIndexOf("/")+1);
+		
+	}
 }
