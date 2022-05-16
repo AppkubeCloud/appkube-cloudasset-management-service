@@ -1,7 +1,6 @@
 package com.synectiks.asset.business.service;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -336,15 +335,13 @@ public class DepartmentWiseAnalyticsService {
 			depMap.put(sd.getDetails().getAssociatedDept(), sd.getDetails().getAssociatedDept());
 		}
 		
+		// product list of each department
 		List<DepartmentResponse> departmentResponseList = new ArrayList<>();
-		
 		Map<String, String> productSearch = new HashMap<>();
-		for(Map.Entry<String, String> entry: depMap.entrySet()) {
-			// creating department response
+		for(Map.Entry<String, String> entry: depMap.entrySet()) {  
 			DepartmentResponse deptResp = DepartmentResponse.from(null,entry.getKey(),null);
 			departmentResponseList.add(deptResp);
 			
-			// getting product of the department
 			productSearch.clear();
 			productSearch.put("associatedDept", entry.getKey());
 			ServiceDetailReportResponse productJson = serviceDetailService.searchAllServiceDetail(productSearch);
@@ -361,6 +358,7 @@ public class DepartmentWiseAnalyticsService {
 			deptResp.setProductList(productResponseList);
 		}
 		
+		// deployment environment of each product
 		for(DepartmentResponse depResp: departmentResponseList) {
 			Map<String, String> depEnvSearch = new HashMap<>();
 			for(ProductResponse prdResp: depResp.getProductList()) {
@@ -368,176 +366,263 @@ public class DepartmentWiseAnalyticsService {
 				depEnvSearch.put("associatedDept", depResp.getName());
 				depEnvSearch.put("associatedProduct", prdResp.getName());
 				ServiceDetailReportResponse depEnvJson = serviceDetailService.searchAllServiceDetail(depEnvSearch);
-				
-				Map<String, String> depEnvMap = new HashMap<>(); // filter all deployment environment of this product
-//				Map<String, String> serviceCatMap = new HashMap<>(); // filter all categories of this product
+				Map<String, String> deploymentEnvironmentMap = new HashMap<>(); 
 				for(ServiceDetail depEnvSd: depEnvJson.getServices()) {
-					depEnvMap.put(depEnvSd.getDetails().getAssociatedEnv(), depEnvSd.getDetails().getAssociatedEnv());
-//					serviceCatMap.put(depEnvSd.getDetails().getServiceNature(), depEnvSd.getDetails().getServiceNature());
+					deploymentEnvironmentMap.put(depEnvSd.getDetails().getAssociatedEnv(), depEnvSd.getDetails().getAssociatedEnv());
 				}
-				
-				// getting all the services of a department, product and deployment environment
 				List<DeploymentEnvironmentResponse> deploymentEnvironmentResponseList = new ArrayList<>();
-				for(Map.Entry<String, String> depEnvEntry: depEnvMap.entrySet()) {
+				for(Map.Entry<String, String> depEnvEntry: deploymentEnvironmentMap.entrySet()) {
 					DeploymentEnvironmentResponse depEnvResp = DeploymentEnvironmentResponse.from(null, depEnvEntry.getKey());
 					ProductBillingResponse pbr = ProductBillingResponse.from(null, RandomUtil.getRandom().doubleValue(), null);
 					depEnvResp.setProductBilling(pbr);
 					deploymentEnvironmentResponseList.add(depEnvResp);
-					
-					depEnvSearch.put("associatedEnv", depEnvEntry.getKey());
-					// list of services related to a department, product and deployment environment
-					ServiceDetailReportResponse serivesOfdepPrdDepEnvJson = serviceDetailService.searchAllServiceDetail(depEnvSearch);
+				}
+				prdResp.setDeploymentEnvironmentList(deploymentEnvironmentResponseList);
+			}
+		}
+		
+		//service category (common/business) for each deployment environment
+		for(DepartmentResponse depResp: departmentResponseList) {
+			for(ProductResponse prdResp: depResp.getProductList()) {
+				Map<String, String> queryMap = new HashMap<>();
+				for(DeploymentEnvironmentResponse deploymentEnvironmentResponse: prdResp.getDeploymentEnvironmentList()) {
+					queryMap.clear();
+					queryMap.put("associatedDept", depResp.getName());
+					queryMap.put("associatedProduct", prdResp.getName());
+					queryMap.put("associatedEnv", deploymentEnvironmentResponse.getName());
+					ServiceDetailReportResponse serivesOfdepPrdDepEnvJson = serviceDetailService.searchAllServiceDetail(queryMap);
 					
 					Map<String, String> serviceCatMap = new HashMap<>(); // filter all categories of this product
-					Map<String, String> serviceTagMap = new HashMap<>(); // filter all tags of this product
 					for(ServiceDetail depEnvSpecificSd: serivesOfdepPrdDepEnvJson.getServices()) {
 						serviceCatMap.put(depEnvSpecificSd.getDetails().getServiceNature(), depEnvSpecificSd.getDetails().getServiceNature());
-						serviceTagMap.put(depEnvSpecificSd.getDetails().getServiceType(), depEnvSpecificSd.getDetails().getServiceType());
 					}
+					
 					List<ServiceCategoryResponse> srvCatRespList = new ArrayList<>();
 					for(Map.Entry<String, String> srvNtrEntry: serviceCatMap.entrySet()) {
 						ServiceCategoryResponse scr = ServiceCategoryResponse.from(null, srvNtrEntry.getKey(), null, null);
 						srvCatRespList.add(scr);
 					}
-					depEnvResp.setServiceCategoryList(srvCatRespList);
-					
-					List<ServiceTagResponse> srvTagRespList = new ArrayList<>();
-					for(Map.Entry<String, String> srvTagEntry: serviceTagMap.entrySet()) {
-						ServiceTagResponse str = ServiceTagResponse.from(null, srvTagEntry.getKey(), null);
-						srvTagRespList.add(str);
-					}
-					
-					Map<String, String> srvSearchMap = new HashMap<>();
-					
-//					for(ServiceCategoryResponse scResp: srvCatRespList) {
-//						for(ServiceTagResponse str: srvTagRespList) {
-//							srvSearchMap.clear();
-//							srvSearchMap.put("associatedDept", depResp.getName());
-//							srvSearchMap.put("associatedProduct", prdResp.getName());
-//							srvSearchMap.put("associatedEnv", depEnvEntry.getKey());
-//							srvSearchMap.put("serviceNature", scResp.getName());
-//							srvSearchMap.put("serviceType", str.getTagName());
-//							ServiceDetailReportResponse finalServices = serviceDetailService.searchAllServiceDetail(srvSearchMap);
-//							for(ServiceDetail fsd: finalServices.getServices()) {
-//								ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(fsd.getId(), fsd.getDetails().getName(), fsd.getDetails().getServiceHostingType(), fsd.getDetails().getDescription(), null);
-//								serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(fsd.getId(), 0D, null));
-//								if(str.getServiceList() == null) {
-//									List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
-//									srvRespList.add(serviceTagLinkResponse);
-//									str.setServiceList(srvRespList);
-//								}else {
-//									str.getServiceList().add(serviceTagLinkResponse);
-//								}
-//								
-//								ServiceNameResponse serviceNameResponse = ServiceNameResponse.from(fsd.getId(), fsd.getDetails().getName());
-//								serviceNameResponse.setTagList(srvTagRespList);
-//								if(scResp.getServiceNameList() == null) {
-//									List<ServiceNameResponse> snRespList = new ArrayList<>();
-//									snRespList.add(serviceNameResponse);
-//									scResp.setServiceNameList(snRespList);
-//								}else {
-//									if(!scResp.getServiceNameList().contains(serviceNameResponse)) {
-//										scResp.getServiceNameList().add(serviceNameResponse);
-//									}
-//								}
-//							}
-//						}
-//					}
-					
-					
-					for(ServiceDetail depEnvSpecificSd: serivesOfdepPrdDepEnvJson.getServices()) {
-						for(ServiceCategoryResponse scResp: srvCatRespList) {
-							if(scResp.getName().equalsIgnoreCase(depEnvSpecificSd.getDetails().getServiceNature())) {
-								ServiceNameResponse serviceNameResponse = ServiceNameResponse.from(depEnvSpecificSd.getId(), depEnvSpecificSd.getDetails().getName());
-								serviceNameResponse.setTagList(srvTagRespList);
-								if(scResp.getServiceNameList() == null) {
-									List<ServiceNameResponse> snRespList = new ArrayList<>();
-									snRespList.add(serviceNameResponse);
-									scResp.setServiceNameList(snRespList);
-								}else {
-									if(!scResp.getServiceNameList().contains(serviceNameResponse)) {
-										scResp.getServiceNameList().add(serviceNameResponse);
-									}
-								}
-							}
-							// one more time
-							for(ServiceTagResponse str: srvTagRespList) {
-								if(str.getTagName().equalsIgnoreCase(depEnvSpecificSd.getDetails().getServiceType())) {
-									ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(depEnvSpecificSd);
-									serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
-									serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
-									serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
-									serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
-									serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
-									serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(depEnvSpecificSd.getId(), RandomUtil.getRandom().doubleValue(), null));
-									if(str.getServiceList() == null) {
-										List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
-										srvRespList.add(serviceTagLinkResponse);
-										str.setServiceList(srvRespList);
-									}else {
-//										str.getServiceList().add(serviceTagLinkResponse);
-									}
-								}
-							}
-
-							
-						}
-//						for(ServiceTagResponse str: srvTagRespList) {
-//							if(str.getTagName().equalsIgnoreCase(depEnvSpecificSd.getDetails().getServiceType())) {
-//								ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(depEnvSpecificSd.getId(), depEnvSpecificSd.getDetails().getName(), depEnvSpecificSd.getDetails().getServiceHostingType(), depEnvSpecificSd.getDetails().getDescription(), null);
-//								serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(depEnvSpecificSd.getId(), RandomUtil.getRandom().doubleValue(), null));
-//								if(str.getServiceList() == null) {
-//									List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
-//									srvRespList.add(serviceTagLinkResponse);
-//									str.setServiceList(srvRespList);
-//								}else {
-//									str.getServiceList().add(serviceTagLinkResponse);
-//								}
-//							}
-//						}
-					}
-					
-//					for(ServiceDetail depEnvSpecificSd: serivesOfdepPrdDepEnvJson.getServices()) {
-//						for(ServiceTagResponse str: srvTagRespList) {
-//							if(str.getTagName().equalsIgnoreCase(depEnvSpecificSd.getDetails().getServiceType())) {
-//								ServiceResponse serviceResponse = ServiceResponse.from(depEnvSpecificSd.getId(), depEnvSpecificSd.getDetails().getName(), depEnvSpecificSd.getDetails().getDescription(), null);
-//								ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(depEnvSpecificSd.getId(), depEnvSpecificSd.getDetails().getName(), depEnvSpecificSd.getDetails().getServiceHostingType(), depEnvSpecificSd.getDetails().getDescription(), null);
-//								serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
-//								serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(depEnvSpecificSd.getId(), RandomUtil.getRandom().doubleValue(), null));
-//								if(str.getServiceList() == null) {
-//									List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
-//									srvRespList.add(serviceTagLinkResponse);
-//									str.setServiceList(srvRespList);
-//								}else {
-//									str.getServiceList().add(serviceTagLinkResponse);
-//								}
-//							}
-//							
-//						}
-//					}
-					
-					
+					deploymentEnvironmentResponse.setServiceCategoryList(srvCatRespList);
 				}
-				prdResp.setDeploymentEnvironmentList(deploymentEnvironmentResponseList);
 			}
 		}
+		
+		//service name list for each service category
+		for(DepartmentResponse depResp: departmentResponseList) {
+			for(ProductResponse prdResp: depResp.getProductList()) {
+				for(DeploymentEnvironmentResponse depEnvResp: prdResp.getDeploymentEnvironmentList()) {
+					Map<String, String> queryMap = new HashMap<>();
+					for(ServiceCategoryResponse serCatResp: depEnvResp.getServiceCategoryList()) {
+						queryMap.clear();
+						queryMap.put("associatedDept", depResp.getName());
+						queryMap.put("associatedProduct", prdResp.getName());
+						queryMap.put("associatedEnv", depEnvResp.getName());
+						queryMap.put("serviceNature", serCatResp.getName());
+						ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(queryMap);
+						for(ServiceDetail sd: json.getServices()) {
+							ServiceNameResponse serviceNameResponse = null;
+							if("Common".equalsIgnoreCase(serCatResp.getName())) {
+								serviceNameResponse = ServiceNameResponse.from(null, sd.getDetails().getAssociatedCommonService());
+							}else if("Business".equalsIgnoreCase(serCatResp.getName())) {
+								serviceNameResponse = ServiceNameResponse.from(null, sd.getDetails().getAssociatedBusinessService());
+							}
+							if(serCatResp.getServiceNameList() == null) {
+								List<ServiceNameResponse> snRespList = new ArrayList<>();
+								snRespList.add(serviceNameResponse);
+								serCatResp.setServiceNameList(snRespList);
+							}else {
+//								for(ServiceNameResponse snResp: serCatResp.getServiceNameList()) {
+									if(!serCatResp.getServiceNameList().contains(serviceNameResponse)) {
+										serCatResp.getServiceNameList().add(serviceNameResponse);
+									}
+//								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+		//Tag list for each service name
+		for(DepartmentResponse depResp: departmentResponseList) {
+			for(ProductResponse prdResp: depResp.getProductList()) {
+				for(DeploymentEnvironmentResponse depEnvResp: prdResp.getDeploymentEnvironmentList()) {
+					Map<String, String> queryMap = new HashMap<>();
+					for(ServiceCategoryResponse serCatResp: depEnvResp.getServiceCategoryList()) {
+						queryMap.clear();
+						queryMap.put("associatedDept", depResp.getName());
+						queryMap.put("associatedProduct", prdResp.getName());
+						queryMap.put("associatedEnv", depEnvResp.getName());
+						queryMap.put("serviceNature", serCatResp.getName());
+						ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(queryMap);
+						for(ServiceNameResponse snResp: serCatResp.getServiceNameList()) {
+							Map<String, String> serviceTagMap = new HashMap<>(); // filter all tags of this product
+							for(ServiceDetail sd: json.getServices()) {
+								serviceTagMap.put(sd.getDetails().getServiceType(), sd.getDetails().getServiceType());
+							}
+							snResp.setTagList(getTagList(serviceTagMap));
+						}
+					}
+				}
+			}
+		}
+		
+		for(DepartmentResponse depResp: departmentResponseList) {
+			for(ProductResponse prdResp: depResp.getProductList()) {
+				for(DeploymentEnvironmentResponse depEnvResp: prdResp.getDeploymentEnvironmentList()) {
+					for(ServiceCategoryResponse serCatResp: depEnvResp.getServiceCategoryList()) {
+						for(ServiceNameResponse snResp: serCatResp.getServiceNameList()) {
+							Map<String, String> leafQryMap = new HashMap<>();
+							for(ServiceTagResponse tag: snResp.getTagList()) {
+								leafQryMap.clear();
+								leafQryMap.put("associatedDept", depResp.getName());
+								leafQryMap.put("associatedProduct", prdResp.getName());
+								leafQryMap.put("associatedEnv", depEnvResp.getName());
+								leafQryMap.put("serviceNature", serCatResp.getName()); // common/business
+								if("Common".equalsIgnoreCase(serCatResp.getName())) {
+									leafQryMap.put("associatedCommonService", snResp.getName());
+								}
+								if("Business".equalsIgnoreCase(serCatResp.getName())) {
+									leafQryMap.put("associatedBusinessService", snResp.getName());
+								}
+								leafQryMap.put("serviceType", tag.getTagName()); // app/data
+								ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(leafQryMap);
+								for(ServiceDetail sd: json.getServices()) {
+									if(depResp.getName().equals(sd.getDetails().getAssociatedDept())
+											&& prdResp.getName().equals(sd.getDetails().getAssociatedProduct())
+											&& depEnvResp.getName().equals(sd.getDetails().getAssociatedEnv())
+											&& serCatResp.getName().equals(sd.getDetails().getServiceNature())
+											&& snResp.getName().equals(sd.getDetails().getAssociatedCommonService())
+											&& tag.getTagName().equals(sd.getDetails().getServiceType())) {
+										ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(sd);
+										serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
+										serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
+										serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
+										serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
+										serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
+										serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(sd.getId(), RandomUtil.getRandom().doubleValue(), null));
+										if(tag.getServiceList() == null) {
+											List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
+											srvRespList.add(serviceTagLinkResponse);
+											tag.setServiceList(srvRespList);
+										}else {
+											tag.getServiceList().add(serviceTagLinkResponse);
+										}
+									}
+								}
+							}
+						}
+					}
+				}
+			}
+		}
+		
+//		for(DepartmentResponse depResp: departmentResponseList) {
+//			for(ProductResponse prdResp: depResp.getProductList()) {
+//				for(DeploymentEnvironmentResponse deploymentEnvironmentResponse: prdResp.getDeploymentEnvironmentList()) {
+//					
+//					Map<String, String> leafQryMap = new HashMap<>();
+//					//run it for common
+//					for(ServiceCategoryResponse scResp: deploymentEnvironmentResponse.getServiceCategoryList()) {
+//						if("Common".equalsIgnoreCase(scResp.getName())) {
+//							filterServiceData(depResp, prdResp, deploymentEnvironmentResponse, leafQryMap, scResp);
+//						}
+//						if("Business".equalsIgnoreCase(scResp.getName())) {
+//							filterServiceData(depResp, prdResp, deploymentEnvironmentResponse, leafQryMap, scResp);
+//						}
+//						
+//					}
+//					
+//				}
+//			}
+//		}
+		
 		org.setTotalDepartment(departmentResponseList.size());
 		org.setDepartmentList(departmentResponseList);
 		return DepartmentWiseAnaliticResponse.builder().organization(org).build();
 	}
 
+	private void populateServiceNameResponse(Map<String, String> serviceTagMap, ServiceCategoryResponse scResp,
+			ServiceNameResponse serviceNameResponse) {
+		if(serviceNameResponse.getTagList() == null) {
+			serviceNameResponse.setTagList(getTagList(serviceTagMap));
+		}
+		
+		if(scResp.getServiceNameList() == null) {
+			List<ServiceNameResponse> snRespList = new ArrayList<>();
+			snRespList.add(serviceNameResponse);
+			scResp.setServiceNameList(snRespList);
+		}else {
+			if(!scResp.getServiceNameList().contains(serviceNameResponse)) {
+				scResp.getServiceNameList().add(serviceNameResponse);
+			}
+		}
+	}
+
+	private void filterServiceData(DepartmentResponse depResp, ProductResponse prdResp,
+			DeploymentEnvironmentResponse deploymentEnvironmentResponse, Map<String, String> leafQryMap, ServiceCategoryResponse scResp) {
+		for(ServiceNameResponse serviceNameResponse: scResp.getServiceNameList()) {
+			// it runs fo app and data
+			for(ServiceTagResponse serviceTagResponse : serviceNameResponse.getTagList()) {
+				leafQryMap.clear();
+				leafQryMap.put("associatedDept", depResp.getName());
+				leafQryMap.put("associatedProduct", prdResp.getName());
+				leafQryMap.put("associatedEnv", deploymentEnvironmentResponse.getName());
+				leafQryMap.put("serviceNature", scResp.getName()); // common/business
+				leafQryMap.put("associatedCommonService", serviceNameResponse.getName());
+				leafQryMap.put("serviceType", serviceTagResponse.getTagName()); // app/data
+				ServiceDetailReportResponse appSrvList = serviceDetailService.searchAllServiceDetail(leafQryMap);
+				
+				if("App".equalsIgnoreCase(serviceTagResponse.getTagName())) {
+					createServiceList(depResp, prdResp, deploymentEnvironmentResponse, scResp, serviceNameResponse,
+							serviceTagResponse, appSrvList);
+					
+				}
+				if("Data".equalsIgnoreCase(serviceTagResponse.getTagName())) {
+					createServiceList(depResp, prdResp, deploymentEnvironmentResponse, scResp, serviceNameResponse,
+							serviceTagResponse, appSrvList);
+					
+				}
+			}
+		}
+	}
+
+	private void createServiceList(DepartmentResponse depResp, ProductResponse prdResp,
+			DeploymentEnvironmentResponse deploymentEnvironmentResponse, ServiceCategoryResponse scResp,
+			ServiceNameResponse serviceNameResponse, ServiceTagResponse serviceTagResponse,
+			ServiceDetailReportResponse appSrvList) {
+		for(ServiceDetail commonSd: appSrvList.getServices()) {
+			if(serviceNameResponse.getName().equals(commonSd.getDetails().getAssociatedCommonService())
+					&& depResp.getName().equals(commonSd.getDetails().getAssociatedDept())
+					&& prdResp.getName().equals(commonSd.getDetails().getAssociatedProduct())
+					&& deploymentEnvironmentResponse.getName().equals(commonSd.getDetails().getAssociatedEnv())
+					&& scResp.getName().equals(commonSd.getDetails().getServiceNature())
+					&& serviceTagResponse.getTagName().equals(commonSd.getDetails().getServiceType())) {
+				ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(commonSd);
+				serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
+				serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
+				serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
+				serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
+				serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
+				serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(commonSd.getId(), RandomUtil.getRandom().doubleValue(), null));
+				if(serviceTagResponse.getServiceList() == null) {
+					List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
+					srvRespList.add(serviceTagLinkResponse);
+					serviceTagResponse.setServiceList(srvRespList);
+				}else {
+					serviceTagResponse.getServiceList().add(serviceTagLinkResponse);
+				}
+			}
+			
+		}
+	}
+
+	private List<ServiceTagResponse> getTagList(Map<String, String>serviceTagMap) {
+		List<ServiceTagResponse> srvTagRespList = new ArrayList<>();
+		for(Map.Entry<String, String> srvTagEntry: serviceTagMap.entrySet()) {
+			ServiceTagResponse str = ServiceTagResponse.from(null, srvTagEntry.getKey(), null);
+			srvTagRespList.add(str);
+		}
+		return srvTagRespList;
+	}
 }

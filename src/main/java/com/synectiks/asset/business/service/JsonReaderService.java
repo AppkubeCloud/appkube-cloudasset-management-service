@@ -175,9 +175,9 @@ public class JsonReaderService {
 	
 	public static void main(String a[]) throws ParseException, IOException {
 		String SOURCE_JSON_FILE = "D:\\mycode\\json-data\\services.json";
-		String TARGET_CSV_FILE = "D:\\mycode\\json-data\\one_services.csv";
+		String TARGET_CSV_FILE = "D:\\mycode\\json-data\\TEST_SERVICES.csv";
 		System.out.println("Generating json data .......");
-		JSONArray ary = createBulkAnalyticData("05-01-2022 01:00", "06-05-2022 01:00", SOURCE_JSON_FILE);
+		JSONArray ary = createBulkAnalyticData("05-01-2022 01:00", "05-08-2022 01:00", SOURCE_JSON_FILE);
 		System.out.println("Json data generated");
 		System.out.println("Writing json data in CSV file.......");
 		convertToCsv(ary, TARGET_CSV_FILE);
