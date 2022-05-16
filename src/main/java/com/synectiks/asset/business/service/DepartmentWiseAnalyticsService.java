@@ -492,7 +492,7 @@ public class DepartmentWiseAnalyticsService {
 											&& prdResp.getName().equals(sd.getDetails().getAssociatedProduct())
 											&& depEnvResp.getName().equals(sd.getDetails().getAssociatedEnv())
 											&& serCatResp.getName().equals(sd.getDetails().getServiceNature())
-											&& snResp.getName().equals(sd.getDetails().getAssociatedCommonService())
+//											&& snResp.getName().equals(sd.getDetails().getAssociatedCommonService())
 											&& tag.getTagName().equals(sd.getDetails().getServiceType())) {
 										ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(sd);
 										serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
@@ -542,80 +542,80 @@ public class DepartmentWiseAnalyticsService {
 		return DepartmentWiseAnaliticResponse.builder().organization(org).build();
 	}
 
-	private void populateServiceNameResponse(Map<String, String> serviceTagMap, ServiceCategoryResponse scResp,
-			ServiceNameResponse serviceNameResponse) {
-		if(serviceNameResponse.getTagList() == null) {
-			serviceNameResponse.setTagList(getTagList(serviceTagMap));
-		}
-		
-		if(scResp.getServiceNameList() == null) {
-			List<ServiceNameResponse> snRespList = new ArrayList<>();
-			snRespList.add(serviceNameResponse);
-			scResp.setServiceNameList(snRespList);
-		}else {
-			if(!scResp.getServiceNameList().contains(serviceNameResponse)) {
-				scResp.getServiceNameList().add(serviceNameResponse);
-			}
-		}
-	}
+//	private void populateServiceNameResponse(Map<String, String> serviceTagMap, ServiceCategoryResponse scResp,
+//			ServiceNameResponse serviceNameResponse) {
+//		if(serviceNameResponse.getTagList() == null) {
+//			serviceNameResponse.setTagList(getTagList(serviceTagMap));
+//		}
+//		
+//		if(scResp.getServiceNameList() == null) {
+//			List<ServiceNameResponse> snRespList = new ArrayList<>();
+//			snRespList.add(serviceNameResponse);
+//			scResp.setServiceNameList(snRespList);
+//		}else {
+//			if(!scResp.getServiceNameList().contains(serviceNameResponse)) {
+//				scResp.getServiceNameList().add(serviceNameResponse);
+//			}
+//		}
+//	}
 
-	private void filterServiceData(DepartmentResponse depResp, ProductResponse prdResp,
-			DeploymentEnvironmentResponse deploymentEnvironmentResponse, Map<String, String> leafQryMap, ServiceCategoryResponse scResp) {
-		for(ServiceNameResponse serviceNameResponse: scResp.getServiceNameList()) {
-			// it runs fo app and data
-			for(ServiceTagResponse serviceTagResponse : serviceNameResponse.getTagList()) {
-				leafQryMap.clear();
-				leafQryMap.put("associatedDept", depResp.getName());
-				leafQryMap.put("associatedProduct", prdResp.getName());
-				leafQryMap.put("associatedEnv", deploymentEnvironmentResponse.getName());
-				leafQryMap.put("serviceNature", scResp.getName()); // common/business
-				leafQryMap.put("associatedCommonService", serviceNameResponse.getName());
-				leafQryMap.put("serviceType", serviceTagResponse.getTagName()); // app/data
-				ServiceDetailReportResponse appSrvList = serviceDetailService.searchAllServiceDetail(leafQryMap);
-				
-				if("App".equalsIgnoreCase(serviceTagResponse.getTagName())) {
-					createServiceList(depResp, prdResp, deploymentEnvironmentResponse, scResp, serviceNameResponse,
-							serviceTagResponse, appSrvList);
-					
-				}
-				if("Data".equalsIgnoreCase(serviceTagResponse.getTagName())) {
-					createServiceList(depResp, prdResp, deploymentEnvironmentResponse, scResp, serviceNameResponse,
-							serviceTagResponse, appSrvList);
-					
-				}
-			}
-		}
-	}
+//	private void filterServiceData(DepartmentResponse depResp, ProductResponse prdResp,
+//			DeploymentEnvironmentResponse deploymentEnvironmentResponse, Map<String, String> leafQryMap, ServiceCategoryResponse scResp) {
+//		for(ServiceNameResponse serviceNameResponse: scResp.getServiceNameList()) {
+//			// it runs fo app and data
+//			for(ServiceTagResponse serviceTagResponse : serviceNameResponse.getTagList()) {
+//				leafQryMap.clear();
+//				leafQryMap.put("associatedDept", depResp.getName());
+//				leafQryMap.put("associatedProduct", prdResp.getName());
+//				leafQryMap.put("associatedEnv", deploymentEnvironmentResponse.getName());
+//				leafQryMap.put("serviceNature", scResp.getName()); // common/business
+//				leafQryMap.put("associatedCommonService", serviceNameResponse.getName());
+//				leafQryMap.put("serviceType", serviceTagResponse.getTagName()); // app/data
+//				ServiceDetailReportResponse appSrvList = serviceDetailService.searchAllServiceDetail(leafQryMap);
+//				
+//				if("App".equalsIgnoreCase(serviceTagResponse.getTagName())) {
+//					createServiceList(depResp, prdResp, deploymentEnvironmentResponse, scResp, serviceNameResponse,
+//							serviceTagResponse, appSrvList);
+//					
+//				}
+//				if("Data".equalsIgnoreCase(serviceTagResponse.getTagName())) {
+//					createServiceList(depResp, prdResp, deploymentEnvironmentResponse, scResp, serviceNameResponse,
+//							serviceTagResponse, appSrvList);
+//					
+//				}
+//			}
+//		}
+//	}
 
-	private void createServiceList(DepartmentResponse depResp, ProductResponse prdResp,
-			DeploymentEnvironmentResponse deploymentEnvironmentResponse, ServiceCategoryResponse scResp,
-			ServiceNameResponse serviceNameResponse, ServiceTagResponse serviceTagResponse,
-			ServiceDetailReportResponse appSrvList) {
-		for(ServiceDetail commonSd: appSrvList.getServices()) {
-			if(serviceNameResponse.getName().equals(commonSd.getDetails().getAssociatedCommonService())
-					&& depResp.getName().equals(commonSd.getDetails().getAssociatedDept())
-					&& prdResp.getName().equals(commonSd.getDetails().getAssociatedProduct())
-					&& deploymentEnvironmentResponse.getName().equals(commonSd.getDetails().getAssociatedEnv())
-					&& scResp.getName().equals(commonSd.getDetails().getServiceNature())
-					&& serviceTagResponse.getTagName().equals(commonSd.getDetails().getServiceType())) {
-				ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(commonSd);
-				serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
-				serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
-				serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
-				serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
-				serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
-				serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(commonSd.getId(), RandomUtil.getRandom().doubleValue(), null));
-				if(serviceTagResponse.getServiceList() == null) {
-					List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
-					srvRespList.add(serviceTagLinkResponse);
-					serviceTagResponse.setServiceList(srvRespList);
-				}else {
-					serviceTagResponse.getServiceList().add(serviceTagLinkResponse);
-				}
-			}
-			
-		}
-	}
+//	private void createServiceList(DepartmentResponse depResp, ProductResponse prdResp,
+//			DeploymentEnvironmentResponse deploymentEnvironmentResponse, ServiceCategoryResponse scResp,
+//			ServiceNameResponse serviceNameResponse, ServiceTagResponse serviceTagResponse,
+//			ServiceDetailReportResponse appSrvList) {
+//		for(ServiceDetail commonSd: appSrvList.getServices()) {
+//			if(serviceNameResponse.getName().equals(commonSd.getDetails().getAssociatedCommonService())
+//					&& depResp.getName().equals(commonSd.getDetails().getAssociatedDept())
+//					&& prdResp.getName().equals(commonSd.getDetails().getAssociatedProduct())
+//					&& deploymentEnvironmentResponse.getName().equals(commonSd.getDetails().getAssociatedEnv())
+//					&& scResp.getName().equals(commonSd.getDetails().getServiceNature())
+//					&& serviceTagResponse.getTagName().equals(commonSd.getDetails().getServiceType())) {
+//				ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(commonSd);
+//				serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
+//				serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
+//				serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
+//				serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
+//				serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
+//				serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(commonSd.getId(), RandomUtil.getRandom().doubleValue(), null));
+//				if(serviceTagResponse.getServiceList() == null) {
+//					List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
+//					srvRespList.add(serviceTagLinkResponse);
+//					serviceTagResponse.setServiceList(srvRespList);
+//				}else {
+//					serviceTagResponse.getServiceList().add(serviceTagLinkResponse);
+//				}
+//			}
+//			
+//		}
+//	}
 
 	private List<ServiceTagResponse> getTagList(Map<String, String>serviceTagMap) {
 		List<ServiceTagResponse> srvTagRespList = new ArrayList<>();
