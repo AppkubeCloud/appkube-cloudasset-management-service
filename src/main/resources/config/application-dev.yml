@@ -39,7 +39,7 @@ spring:
     type: com.zaxxer.hikari.HikariDataSource
     url: jdbc:postgresql://postgresql.ch8wfucynpvq.us-east-1.rds.amazonaws.com:5431/cloudassetdb
     username: postgres
-    password: P0$tGr3$&s3qua1$#n3t!k5
+    password: P0$tGr3$&s3qua1$n3t!k5
     hikari:
       poolName: Hikari
       auto-commit: false
