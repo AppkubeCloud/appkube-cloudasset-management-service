@@ -1,10 +1,12 @@
 package com.synectiks.asset.controller;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -27,6 +29,7 @@ import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.response.ViewJsonResponse;
+import com.synectiks.asset.util.CryptoUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -96,5 +99,34 @@ public class ServicesDetailController {
 			serviceDetailService.createBulkData(node);
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+	
+	@GetMapping("/service-detail/search-with-filter")
+	public ResponseEntity<ServiceDetailReportResponse> searchServiceDetailWithFilter(@RequestParam Map<String, String> obj){
+//		logger.info("Request to search service-detail with filter parameters");
+//		Map<String, String> obj = null;
+//		if(!StringUtils.isBlank(params)) {
+//			String keyValuePairs = CryptoUtil.decrypt(params);
+//			if(!StringUtils.isBlank(keyValuePairs)) {
+//				obj = convertKeyValuePairToMap(keyValuePairs);
+//			}else {
+//				logger.error("Decryption failed. Returning error FAILED_DEPENDENCY. Error code: "+HttpStatus.FAILED_DEPENDENCY);
+//				return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(null);
+//			}
+//		}else {
+//			obj = new HashMap<>();
+//		}
+		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(sdr);
+	}
+	
+	public Map<String, String> convertKeyValuePairToMap(String keyValuePairs) {
+		String dt[] = keyValuePairs.split("&");
+		Map<String, String> obj = new HashMap<>();
+		for(String pair: dt) {
+			String tmp [] = pair.split("=");
+			obj.put(tmp[0], tmp[1]);
+		}
+		return obj;
 	}
 }
