@@ -22,7 +22,7 @@ public class CredentialController {
 	public ResponseEntity<Map<String, String>> getCredential(@PathVariable Long accountId) {
 		logger.info("Request to get credential. AccountId: "+accountId);
 		Map<String, String> map = new HashMap<>();
-		map.put("secureCreds", "ew0KCSJ2YXVsdElkIjoiMTIzNDU2IiwNCgkiY2xvdWRUeXBlIjogImF3cyIsDQoJImFjY291bnRJZCI6ICIxMjM0NTY3ODkiLA0KCSJjcmVkZW50aWFscyI6IHsNCgkJImFjY2Vzc0tleSI6ICIxMjM0NTY3ODkiLA0KCQkic2VjcmV0S2V5IjogImlka0lsZTA5OGtsZGxramZCIg0KCX0NCn0");
+		map.put("secureCreds", "ew0KCSJ2YXVsdElkIjogIjEyMzQ1NiIsDQoJImNsb3VkVHlwZSI6ICJhd3MiLA0KCSJhY2NvdW50SWQiOiAiMTIzNDU2Nzg5IiwNCgkiY3JlZGVudGlhbHMiOiBbDQoJCXsNCgkJCSJhY2Nlc3NLZXkiOiAiMTIzNDU2Nzg5IiwNCgkJCSJzZWNyZXRLZXkiOiAiaWRrSWxlMDk4a2xkbGtqZkIiDQoJCX0sDQoJCXsNCgkJCSJhY2Nlc3NLZXkiOiAiOTg3NjUiLA0KCQkJInNlY3JldEtleSI6ICJmdmJndDY3dWoiDQoJCX0NCgldDQp9");
 		return ResponseEntity.status(HttpStatus.OK).body(map);
 	}
 	
