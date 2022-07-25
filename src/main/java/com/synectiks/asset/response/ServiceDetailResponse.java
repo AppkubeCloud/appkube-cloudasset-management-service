@@ -36,7 +36,8 @@ public class ServiceDetailResponse implements Serializable {
   private String serviceHostingType;        
   private String associatedClusterNamespace;
   private String associatedManagedCloudServiceLocation;
-  private String associatedCloudElementId;    
+  private String associatedCloudElementId;
+  private String associatedCloudElement;
   private String associatedGlobalServiceLocation;  
 //  private String status;
 //  private Instant createdOn;
@@ -93,6 +94,7 @@ public class ServiceDetailResponse implements Serializable {
 	  .associatedClusterNamespace("NA".equalsIgnoreCase(node.get("associatedClusterNamespace").asText()) ? "": node.get("associatedClusterNamespace").asText())
 	  .associatedManagedCloudServiceLocation("NA".equalsIgnoreCase(node.get("associatedManagedCloudServiceLocation").asText()) ? "": node.get("associatedManagedCloudServiceLocation").asText())
 	  .associatedCloudElementId("NA".equalsIgnoreCase(node.get("associatedCloudElementId").asText()) ? "": node.get("associatedCloudElementId").asText())
+	  .associatedCloudElement("NA".equalsIgnoreCase(node.get("associatedCloudElement").asText()) ? "": node.get("associatedCloudElement").asText())
 	  .associatedGlobalServiceLocation("NA".equalsIgnoreCase(node.get("associatedGlobalServiceLocation").asText()) ? "": node.get("associatedGlobalServiceLocation").asText())
 	  .performance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build())
 	  .availability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build())
