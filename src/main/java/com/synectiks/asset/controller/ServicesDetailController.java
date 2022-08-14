@@ -6,7 +6,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,7 +28,6 @@ import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.response.ViewJsonResponse;
-import com.synectiks.asset.util.CryptoUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -93,12 +91,10 @@ public class ServicesDetailController {
 	}
 	
 	@PostMapping("/service-detail/create-bulk-data")
-	public ResponseEntity<ViewJsonResponse> createBulkData(@RequestBody ObjectNode objNode) throws IOException {
-		JsonNode objArray = objNode.get("services");
-		for(JsonNode node: objArray) {
-			serviceDetailService.createBulkData(node);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+	public ResponseEntity<List<ServiceDetail>> createBulkData(@RequestBody ObjectNode objNode) throws IOException {
+		logger.info("Request to create bulk service-detail data");
+		serviceDetailService.createBulkData(objNode);
+		return getAllServiceDetail();
 	}
 	
 	@GetMapping("/service-detail/search-with-filter")
@@ -128,5 +124,12 @@ public class ServicesDetailController {
 			obj.put(tmp[0], tmp[1]);
 		}
 		return obj;
+	}
+	
+	@GetMapping("/service-detail/change")
+	public ResponseEntity<Object> change() throws IOException {
+		logger.info("Request to transform service-detail data");
+		Object m =serviceDetailService.transformServiceDetailsListToTree();
+		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
 }

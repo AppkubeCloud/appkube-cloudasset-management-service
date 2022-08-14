@@ -16,8 +16,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.synectiks.asset.business.service.CustomeHashMapConverter;
-import com.synectiks.asset.business.service.ViewJsonConverter;
-import com.synectiks.asset.response.ViewJsonResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -26,17 +24,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A ServiceDetail.
+ * A AccountServices.
  */
 @Entity
-@Table(name = "service_detail")
+@Table(name = "account_services")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class ServiceDetail implements Serializable {
+public class AccountServices implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
@@ -46,24 +44,11 @@ public class ServiceDetail implements Serializable {
   @Column(name = "id")
   private Long id;
 
-//  @Convert(converter = ServiceDetailConverter.class)
-//  @Column(columnDefinition = "jsonb")
-//  private ServiceDetailResponse metadata_json;
-  
+  @Column(name = "account_id")
+  private String accountId;
+
   @Convert(converter = CustomeHashMapConverter.class)
   @Column(columnDefinition = "jsonb")
-  private Map<String, Object> metadata_json;
-  
-  @Convert(converter = ViewJsonConverter.class)
-  @Column(columnDefinition = "jsonb")
-  private ViewJsonResponse view_json;
-  
-//  @Convert(converter = SlaJsonConverter.class)
-//  @Column(columnDefinition = "jsonb")
-//  private SlaJsonResponse sla_json;
-  
-  @Convert(converter = CustomeHashMapConverter.class)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> sla_json;
+  private Map<String, Object> account_services_json;
   
 }

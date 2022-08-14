@@ -331,8 +331,8 @@ public class DepartmentWiseAnalyticsService {
 		//unique list of all the departments 
 		Map<String, String> depMap = new HashMap<>();
 		for(ServiceDetail sd: sdr.getServices()) {
-			org = OrganizationResponse.builder().name(sd.getDetails().getAssociatedOU()).build();
-			depMap.put(sd.getDetails().getAssociatedDept(), sd.getDetails().getAssociatedDept());
+			org = OrganizationResponse.builder().name((String)sd.getMetadata_json().get("associatedOU")).build();
+			depMap.put((String)sd.getMetadata_json().get("associatedDept"), (String)sd.getMetadata_json().get("associatedDept"));
 		}
 		
 		// product list of each department
@@ -347,7 +347,7 @@ public class DepartmentWiseAnalyticsService {
 			ServiceDetailReportResponse productJson = serviceDetailService.searchAllServiceDetail(productSearch);
 			Map<String, String> uniqueProductMap = new HashMap<>();
 			for(ServiceDetail prdSd: productJson.getServices() ) {
-				uniqueProductMap.put(prdSd.getDetails().getAssociatedProduct(), prdSd.getDetails().getAssociatedProduct());
+				uniqueProductMap.put((String)prdSd.getMetadata_json().get("associatedProduct"), (String)prdSd.getMetadata_json().get("associatedProduct"));
 			}
 			
 			List<ProductResponse> productResponseList = new ArrayList<>();
@@ -368,7 +368,7 @@ public class DepartmentWiseAnalyticsService {
 				ServiceDetailReportResponse depEnvJson = serviceDetailService.searchAllServiceDetail(depEnvSearch);
 				Map<String, String> deploymentEnvironmentMap = new HashMap<>(); 
 				for(ServiceDetail depEnvSd: depEnvJson.getServices()) {
-					deploymentEnvironmentMap.put(depEnvSd.getDetails().getAssociatedEnv(), depEnvSd.getDetails().getAssociatedEnv());
+					deploymentEnvironmentMap.put((String)depEnvSd.getMetadata_json().get("associatedEnv"), (String)depEnvSd.getMetadata_json().get("associatedEnv"));
 				}
 				List<DeploymentEnvironmentResponse> deploymentEnvironmentResponseList = new ArrayList<>();
 				for(Map.Entry<String, String> depEnvEntry: deploymentEnvironmentMap.entrySet()) {
@@ -394,7 +394,7 @@ public class DepartmentWiseAnalyticsService {
 					
 					Map<String, String> serviceCatMap = new HashMap<>(); // filter all categories of this product
 					for(ServiceDetail depEnvSpecificSd: serivesOfdepPrdDepEnvJson.getServices()) {
-						serviceCatMap.put(depEnvSpecificSd.getDetails().getServiceNature(), depEnvSpecificSd.getDetails().getServiceNature());
+						serviceCatMap.put((String)depEnvSpecificSd.getMetadata_json().get("serviceNature"), (String)depEnvSpecificSd.getMetadata_json().get("serviceNature"));
 					}
 					
 					List<ServiceCategoryResponse> srvCatRespList = new ArrayList<>();
@@ -422,9 +422,9 @@ public class DepartmentWiseAnalyticsService {
 						for(ServiceDetail sd: json.getServices()) {
 							ServiceNameResponse serviceNameResponse = null;
 							if("Common".equalsIgnoreCase(serCatResp.getName())) {
-								serviceNameResponse = ServiceNameResponse.from(null, sd.getDetails().getAssociatedCommonService());
+								serviceNameResponse = ServiceNameResponse.from(null, (String)sd.getMetadata_json().get("associatedCommonService"));
 							}else if("Business".equalsIgnoreCase(serCatResp.getName())) {
-								serviceNameResponse = ServiceNameResponse.from(null, sd.getDetails().getAssociatedBusinessService());
+								serviceNameResponse = ServiceNameResponse.from(null, (String)sd.getMetadata_json().get("associatedBusinessService"));
 							}
 							if(serCatResp.getServiceNameList() == null) {
 								List<ServiceNameResponse> snRespList = new ArrayList<>();
@@ -458,7 +458,7 @@ public class DepartmentWiseAnalyticsService {
 						for(ServiceNameResponse snResp: serCatResp.getServiceNameList()) {
 							Map<String, String> serviceTagMap = new HashMap<>(); // filter all tags of this product
 							for(ServiceDetail sd: json.getServices()) {
-								serviceTagMap.put(sd.getDetails().getServiceType(), sd.getDetails().getServiceType());
+								serviceTagMap.put((String)sd.getMetadata_json().get("serviceType"), (String)sd.getMetadata_json().get("serviceType"));
 							}
 							snResp.setTagList(getTagList(serviceTagMap));
 						}
@@ -488,12 +488,12 @@ public class DepartmentWiseAnalyticsService {
 								leafQryMap.put("serviceType", tag.getTagName()); // app/data
 								ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(leafQryMap);
 								for(ServiceDetail sd: json.getServices()) {
-									if(depResp.getName().equals(sd.getDetails().getAssociatedDept())
-											&& prdResp.getName().equals(sd.getDetails().getAssociatedProduct())
-											&& depEnvResp.getName().equals(sd.getDetails().getAssociatedEnv())
-											&& serCatResp.getName().equals(sd.getDetails().getServiceNature())
+									if(depResp.getName().equals((String)sd.getMetadata_json().get("associatedDept"))
+											&& prdResp.getName().equals((String)sd.getMetadata_json().get("associatedProduct"))
+											&& depEnvResp.getName().equals((String)sd.getMetadata_json().get("associatedEnv"))
+											&& serCatResp.getName().equals((String)sd.getMetadata_json().get("serviceNature"))
 //											&& snResp.getName().equals(sd.getDetails().getAssociatedCommonService())
-											&& tag.getTagName().equals(sd.getDetails().getServiceType())) {
+											&& tag.getTagName().equals((String)sd.getMetadata_json().get("serviceType"))) {
 										ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(sd);
 										serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
 										serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());

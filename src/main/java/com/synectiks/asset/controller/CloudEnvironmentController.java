@@ -111,7 +111,7 @@ public class CloudEnvironmentController {
 		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
 		Map<String, String> landingZone = new HashMap<>();
 		for(ServiceDetail sd: sdr.getServices()) {
-			landingZone.put(sd.getDetails().getAssociatedLandingZone(), sd.getDetails().getAssociatedLandingZone());
+			landingZone.put((String)sd.getMetadata_json().get("associatedLandingZone"), (String)sd.getMetadata_json().get("associatedLandingZone"));
 		}
 		List<CloudEnvironment> list = new ArrayList<>();
 		
@@ -125,14 +125,14 @@ public class CloudEnvironmentController {
 			Map<String, String> productMap = new HashMap<String, String>();
 			Map<String, String> productEnclaveMap = new HashMap<String, String>();
 			for(ServiceDetail sdDetail: lzone.getServices()) {
-				if("APP".equalsIgnoreCase(sdDetail.getDetails().getServiceType()) && !StringUtils.isBlank(sdDetail.getDetails().getAssociatedProductEnclave())) {
+				if("APP".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) && !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
 					totalApp = totalApp + 1;
-				}else if("DATA".equalsIgnoreCase(sdDetail.getDetails().getServiceType()) 
-						&& !StringUtils.isBlank(sdDetail.getDetails().getAssociatedProductEnclave())) {
+				}else if("DATA".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) 
+						&& !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
 					totalData = totalData + 1;
 				}
-				productMap.put(sdDetail.getDetails().getAssociatedProduct(), sdDetail.getDetails().getAssociatedProduct());
-				productEnclaveMap.put(sdDetail.getDetails().getAssociatedProductEnclave(), sdDetail.getDetails().getAssociatedProductEnclave());
+				productMap.put((String)sdDetail.getMetadata_json().get("associatedProduct"), (String)sdDetail.getMetadata_json().get("associatedProduct"));
+				productEnclaveMap.put((String)sdDetail.getMetadata_json().get("associatedProductEnclave"), (String)sdDetail.getMetadata_json().get("associatedProductEnclave"));
 			}
 			
 			CloudEnvironment ce = new CloudEnvironment();

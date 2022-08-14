@@ -85,25 +85,25 @@ public class ServiceTagLinkResponse implements Serializable {
   public static ServiceTagLinkResponse from (ServiceDetail sd) {
 	  ServiceTagLinkResponse stlr = ServiceTagLinkResponse.builder().build();
 	    stlr.setId(sd.getId());
-	    stlr.setName(sd.getDetails().getName());
-		stlr.setHostingType(sd.getDetails().getServiceHostingType());
-	    stlr.setDescription(sd.getDetails().getDescription());
+	    stlr.setName((String)sd.getMetadata_json().get("name"));
+		stlr.setHostingType((String)sd.getMetadata_json().get("serviceHostingType"));
+	    stlr.setDescription((String)sd.getMetadata_json().get("description"));
 	    
-	    stlr.setAssociatedOU(sd.getDetails().getAssociatedOU());
-	    stlr.setAssociatedDept(sd.getDetails().getAssociatedDept());
-	    stlr.setAssociatedProduct(sd.getDetails().getAssociatedProduct());
-	    stlr.setAssociatedEnv(sd.getDetails().getAssociatedEnv());
-	    stlr.setAssociatedLandingZone(sd.getDetails().getAssociatedLandingZone());
-	    stlr.setAssociatedProductEnclave(sd.getDetails().getAssociatedProductEnclave());
-	    stlr.setAssociatedCluster(sd.getDetails().getAssociatedCluster());
-	    stlr.setServiceNature(sd.getDetails().getServiceNature());
-	    stlr.setAssociatedCommonService(sd.getDetails().getAssociatedCommonService());
-	    stlr.setAssociatedBusinessService(sd.getDetails().getAssociatedBusinessService());
-	    stlr.setServiceType(sd.getDetails().getServiceType());
-	    stlr.setAssociatedClusterNamespace(sd.getDetails().getAssociatedClusterNamespace());
-	    stlr.setAssociatedManagedCloudServiceLocation(sd.getDetails().getAssociatedManagedCloudServiceLocation());
-	    stlr.setAssociatedCloudElementId(sd.getDetails().getAssociatedCloudElementId());
-	    stlr.setAssociatedGlobalServiceLocation(sd.getDetails().getAssociatedGlobalServiceLocation());
+	    stlr.setAssociatedOU((String)sd.getMetadata_json().get("associatedOU"));
+	    stlr.setAssociatedDept((String)sd.getMetadata_json().get("associatedDept"));
+	    stlr.setAssociatedProduct((String)sd.getMetadata_json().get("associatedProduct"));
+	    stlr.setAssociatedEnv((String)sd.getMetadata_json().get("associatedEnv"));
+	    stlr.setAssociatedLandingZone((String)sd.getMetadata_json().get("associatedLandingZone"));
+	    stlr.setAssociatedProductEnclave((String)sd.getMetadata_json().get("associatedProductEnclave"));
+	    stlr.setAssociatedCluster((String)sd.getMetadata_json().get("associatedCluster"));
+	    stlr.setServiceNature((String)sd.getMetadata_json().get("serviceNature"));
+	    stlr.setAssociatedCommonService((String)sd.getMetadata_json().get("associatedCommonService"));
+	    stlr.setAssociatedBusinessService((String)sd.getMetadata_json().get("associatedBusinessService"));
+	    stlr.setServiceType((String)sd.getMetadata_json().get("serviceType"));
+	    stlr.setAssociatedClusterNamespace((String)sd.getMetadata_json().get("associatedClusterNamespace"));
+	    stlr.setAssociatedManagedCloudServiceLocation((String)sd.getMetadata_json().get("associatedManagedCloudServiceLocation"));
+	    stlr.setAssociatedCloudElementId((String)sd.getMetadata_json().get("associatedCloudElementId"));
+	    stlr.setAssociatedGlobalServiceLocation((String)sd.getMetadata_json().get("associatedGlobalServiceLocation"));
 	    
 	  return stlr;
   }
