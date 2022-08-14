@@ -126,7 +126,7 @@ public class ServicesDetailController {
 		return obj;
 	}
 	
-	@GetMapping("/service-detail/change")
+	@GetMapping("/service-detail/transform")
 	public ResponseEntity<Object> change() throws IOException {
 		logger.info("Request to transform service-detail data");
 		Object m =serviceDetailService.transformServiceDetailsListToTree();

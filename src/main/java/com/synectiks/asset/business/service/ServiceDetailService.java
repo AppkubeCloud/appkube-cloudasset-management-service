@@ -16,9 +16,14 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
+import com.synectiks.asset.config.Converter;
+import com.synectiks.asset.domain.AccountServices;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.AccountTree;
@@ -42,6 +47,9 @@ public class ServiceDetailService {
 	@Autowired
 	ServiceDetailRepository serviceDetailJsonRepository;
 	
+	@Autowired
+	AccountServicesService accountServicesService;
+	
 	public Optional<ServiceDetail> getServiceDetail(Long id) {
 		logger.info("Get service detail by id: {}", id);
 		return serviceDetailJsonRepository.findById(id);
@@ -60,12 +68,15 @@ public class ServiceDetailService {
 			return oObj;
 		}
 		serviceDetailJsonRepository.deleteById(id);
+		transformServiceDetailsListToTree();
 		return oObj;
 	}
 	
 	public ServiceDetail createServiceDetail(ServiceDetail obj){
 		logger.info("Create new service detail");
-		return serviceDetailJsonRepository.save(obj);
+		ServiceDetail sd = serviceDetailJsonRepository.save(obj);
+		transformServiceDetailsListToTree();
+		return sd;
 	}
 	
 	public ServiceDetail updateServiceDetail(ServiceDetail obj){
@@ -73,7 +84,9 @@ public class ServiceDetailService {
 		if(!serviceDetailJsonRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "ServiceDetail", "idnotfound");
 		}
-		return serviceDetailJsonRepository.save(obj);
+		ServiceDetail sd= serviceDetailJsonRepository.save(obj);
+		transformServiceDetailsListToTree();
+		return sd;
 	}
 	
 	public Optional<ServiceDetail> partialUpdateServiceDetail(ServiceDetail obj){
@@ -86,6 +99,7 @@ public class ServiceDetailService {
 				return existingObj;
 			})
 			.map(serviceDetailJsonRepository::save);
+		transformServiceDetailsListToTree();
 		return result;
 	}
 	
@@ -114,6 +128,7 @@ public class ServiceDetailService {
 			sd.setMetadata_json(ServiceDetailResponse.toMap(node));
 			createServiceDetail(sd);
 		}
+		transformServiceDetailsListToTree();
 	}
 	
 	public ServiceDetailReportResponse searchServiceDetailWithFilter(Map<String, String> obj) {
@@ -225,6 +240,7 @@ public class ServiceDetailService {
 	}
 
 	public List<AccountTree> transformServiceDetailsListToTree() {
+		logger.info("Transforming service details to account specific tree");
 		List<ServiceDetail> listSd = getAllServiceDetail();
 		Map<String, List<ServiceDetail>> acMap = filterAccountSpecificList(listSd);
 		List<AccountTree> treeList = filterVpcs(acMap);
@@ -232,7 +248,25 @@ public class ServiceDetailService {
 		filterProducts(acMap, treeList);
 		filterEnvironments(acMap, treeList);
 		filterServiceNature(acMap, treeList);
-		
+		filterAppAndDataServices(acMap, treeList);
+		logger.info("Service detail transformation completed. Now updating account services");
+		logger.debug("Cleaning up account services");
+		for(AccountServices as: accountServicesService.getAllAccountServices()) {
+			accountServicesService.deleteAccountServices(as.getId());
+		}
+		logger.debug("Account service clean up completed. Now updating account services");
+		Gson gson = new Gson();    
+		for(AccountTree at: treeList) {
+			AccountServices as = AccountServices.builder().accountId(at.getAccount()).build();
+			Map<String,Object> attributes = gson.fromJson(gson.toJson(at),Map.class);
+			as.setAccount_services_json(attributes);
+			accountServicesService.createAccountServices(as);
+		}
+		logger.info("Account services updated completed");
+		return treeList;
+	}
+
+	private void filterAppAndDataServices(Map<String, List<ServiceDetail>> acMap, List<AccountTree> treeList) {
 		for(AccountTree account: treeList) {
 			for(Vpc vpc: account.getVpcs()) {
 				for(Cluster cluster: vpc.getClusters()) {
@@ -363,8 +397,6 @@ public class ServiceDetailService {
 				}
 			}
 		}
-		
-		return treeList;
 	}
 
 	private void filterServiceNature(Map<String, List<ServiceDetail>> acMap, List<AccountTree> treeList) {
