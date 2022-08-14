@@ -1,6 +1,7 @@
 package com.synectiks.asset.controller;
 
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
@@ -16,6 +17,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.service.AccountServicesService;
@@ -75,12 +77,12 @@ public class AccountServicesController {
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
 	
-//	@GetMapping("/product-service-detail/search")
-//	public ResponseEntity<ProductServiceDetailReportResponse> searchAllProductServiceDetail(@RequestParam Map<String, String> obj){
-//		logger.info("Request to search product-service-detail");
-//		ProductServiceDetailReportResponse sdr = productServiceDetailService.searchAllProductServiceDetail(obj);
-//		return ResponseEntity.status(HttpStatus.OK).body(sdr);
-//	}
+	@GetMapping("/account-services/search")
+	public ResponseEntity<List<AccountServices>> searchAllAccountServices(@RequestParam Map<String, String> obj){
+		logger.info("Request to search account-services");
+		List<AccountServices> asList = accountServicesService.searchAccountServices(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(asList);
+	}
 	
 //	@PostMapping("/account-services/create-bulk-data")
 //	public ResponseEntity<Void> createBulkData(@RequestBody ObjectNode objNode) throws IOException {

@@ -1,12 +1,15 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
@@ -81,5 +84,26 @@ public class AccountServicesService {
 	}
 	
 
+	public List<AccountServices> searchAccountServices(Map<String, String> obj) {
+		logger.info("Search account services ");
+		
+		if(obj.size() == 0 ) {
+			return accountServicesRepository.findAll();
+		}
+		if(obj.containsKey("id")) {
+			Optional<AccountServices> oas = getAccountServices(Long.parseLong(obj.get("id")));
+			if(oas.isPresent()) {
+				List<AccountServices> list = new ArrayList<>();
+				list.add(oas.get());
+				return list;
+			}
+		}
+		if(obj.containsKey("accountId")) {
+			AccountServices as = AccountServices.builder().accountId(obj.get("accountId")).build();
+			Example<AccountServices> example = Example.of(as);
+			return accountServicesRepository.findAll(example);
+		}
+		return null;
+	}
 
 }
