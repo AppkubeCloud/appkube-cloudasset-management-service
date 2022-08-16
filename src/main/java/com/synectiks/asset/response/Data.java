@@ -30,4 +30,16 @@ public class Data implements Serializable{
 	private String serviceHostingType;
 	private String associatedCloudElementId;
 	
+	private String associatedOU;
+	private String associatedDept;
+	private String associatedProduct;
+	private String associatedEnv;
+	private String serviceType;
+	
+	private PerformanceResponse performance;
+	private AvailabilityResponse availability;
+	private SecurityResponse security;
+	private DataProtectionResponse dataProtection;
+	private UserExperianceResponse userExperiance;
+	
 }

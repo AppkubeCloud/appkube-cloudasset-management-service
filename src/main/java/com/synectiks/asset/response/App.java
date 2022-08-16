@@ -2,6 +2,8 @@ package com.synectiks.asset.response;
 
 import java.io.Serializable;
 
+import com.synectiks.asset.util.RandomUtil;
+
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,4 +31,18 @@ public class App implements Serializable{
 	private String associatedGlobalServiceLocation;
 	private String serviceHostingType;
 	private String associatedCloudElementId;
+	
+	private String associatedOU;
+	private String associatedDept;
+	private String associatedProduct;
+	private String associatedEnv;
+	private String serviceType;
+	
+
+	private PerformanceResponse performance;
+	private AvailabilityResponse availability;
+	private SecurityResponse security;
+	private DataProtectionResponse dataProtection;
+	private UserExperianceResponse userExperiance;
+	
 }

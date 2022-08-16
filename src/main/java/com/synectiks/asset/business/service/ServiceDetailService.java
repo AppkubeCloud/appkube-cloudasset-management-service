@@ -18,27 +18,29 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.core.type.TypeReference;
 import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
-import com.synectiks.asset.config.Converter;
 import com.synectiks.asset.domain.AccountServices;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.AccountTree;
 import com.synectiks.asset.response.App;
+import com.synectiks.asset.response.AvailabilityResponse;
 import com.synectiks.asset.response.BusinessService;
 import com.synectiks.asset.response.Cluster;
 import com.synectiks.asset.response.CommonService;
 import com.synectiks.asset.response.Data;
+import com.synectiks.asset.response.DataProtectionResponse;
 import com.synectiks.asset.response.Environment;
+import com.synectiks.asset.response.PerformanceResponse;
 import com.synectiks.asset.response.Product;
+import com.synectiks.asset.response.SecurityResponse;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.response.ServiceDetailResponse;
+import com.synectiks.asset.response.UserExperianceResponse;
 import com.synectiks.asset.response.Vpc;
+import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
@@ -279,6 +281,11 @@ public class ServiceDetailService {
 								com.synectiks.asset.response.Service service = environment.getServices();
 								if(service.getBusiness() != null) {
 									for(BusinessService bs: service.getBusiness()) {
+										List<App> appList = new ArrayList<>();
+										List<Data> dataList = new ArrayList<>();
+										bs.setApp(appList);
+										bs.setData(dataList);
+										
 										for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
 											if(entry.getKey().equals(account.getAccount())) {
 												for(ServiceDetail sd: entry.getValue()) {
@@ -307,14 +314,26 @@ public class ServiceDetailService {
 																		.associatedGlobalServiceLocation((String)sd.getMetadata_json().get("associatedGlobalServiceLocation"))
 																		.serviceHostingType((String)sd.getMetadata_json().get("serviceHostingType"))
 																		.associatedCloudElementId((String)sd.getMetadata_json().get("associatedCloudElementId"))
+																		
+																		.associatedOU((String)sd.getMetadata_json().get("associatedOU"))
+																		.associatedDept((String)sd.getMetadata_json().get("associatedDept"))
+																		.associatedProduct((String)sd.getMetadata_json().get("associatedProduct"))
+																		.associatedEnv((String)sd.getMetadata_json().get("associatedEnv"))
+																		.serviceType((String)sd.getMetadata_json().get("serviceType"))
+																		.performance(PerformanceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("performance")).get("score")).build())
+																		.availability(AvailabilityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("availability")).get("score")).build())
+																		.security(SecurityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("security")).get("score")).build())
+																		.dataProtection(DataProtectionResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score")).build())
+																		.userExperiance(UserExperianceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score")).build())
+																		  
 																		.build();
-																if(bs.getApp() == null) {
-																	List<App> appList = new ArrayList<>();
-																	appList.add(app);
-																	bs.setApp(appList);
-																}else {
+//																if(bs.getApp() == null) {
+//																	List<App> appList = new ArrayList<>();
+//																	appList.add(app);
+//																	bs.setApp(appList);
+//																}else {
 																	bs.getApp().add(app);
-																}
+//																}
 															}else if(serviceType.equalsIgnoreCase("Data")) {
 																Data data = Data.builder()
 																		.id(envName+"_"+(String)sd.getMetadata_json().get("name"))
@@ -327,14 +346,25 @@ public class ServiceDetailService {
 																		.associatedGlobalServiceLocation((String)sd.getMetadata_json().get("associatedGlobalServiceLocation"))
 																		.serviceHostingType((String)sd.getMetadata_json().get("serviceHostingType"))
 																		.associatedCloudElementId((String)sd.getMetadata_json().get("associatedCloudElementId"))
+																		.associatedOU((String)sd.getMetadata_json().get("associatedOU"))
+																		.associatedDept((String)sd.getMetadata_json().get("associatedDept"))
+																		.associatedProduct((String)sd.getMetadata_json().get("associatedProduct"))
+																		.associatedEnv((String)sd.getMetadata_json().get("associatedEnv"))
+																		.serviceType((String)sd.getMetadata_json().get("serviceType"))
+																		.performance(PerformanceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("performance")).get("score")).build())
+																		.availability(AvailabilityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("availability")).get("score")).build())
+																		.security(SecurityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("security")).get("score")).build())
+																		.dataProtection(DataProtectionResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score")).build())
+																		.userExperiance(UserExperianceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score")).build())
+																		
 																		.build();
-																if(bs.getData() == null) {
-																	List<Data> dataList = new ArrayList<>();
-																	dataList.add(data);
-																	bs.setData(dataList);
-																}else {
+//																if(bs.getData() == null) {
+//																	List<Data> dataList = new ArrayList<>();
+//																	dataList.add(data);
+//																	bs.setData(dataList);
+//																}else {
 																	bs.getData().add(data);
-																}
+//																}
 															}
 														}
 													}
@@ -345,6 +375,10 @@ public class ServiceDetailService {
 								}
 								if(service.getCommon() != null) {
 									for(CommonService cs: service.getCommon()) {
+										List<App> appList = new ArrayList<>();
+										List<Data> dataList = new ArrayList<>();
+										cs.setApp(appList);
+										cs.setData(dataList);
 										
 										for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
 											if(entry.getKey().equals(account.getAccount())) {
@@ -364,25 +398,71 @@ public class ServiceDetailService {
 																&& associatedCommonService.equalsIgnoreCase(cs.getName())){
 															String serviceType = (String)sd.getMetadata_json().get("serviceType");
 															if(serviceType.equalsIgnoreCase("App")) {
-																if(cs.getApp() == null) {
-																	List<App> appList = new ArrayList<>();
-																	App app = App.builder().name((String)sd.getMetadata_json().get("name")).build();
-																	appList.add(app);
-																	cs.setApp(appList);
-																}else {
-																	App app = App.builder().name((String)sd.getMetadata_json().get("name")).build();
+																App app = App.builder()
+																.id(envName+"_"+(String)sd.getMetadata_json().get("name"))
+																.name((String)sd.getMetadata_json().get("name"))
+																.serviceDetailId(sd.getId())
+																.description((String)sd.getMetadata_json().get("description"))
+																.associatedCloudElement((String)sd.getMetadata_json().get("associatedCloudElement"))
+																.associatedClusterNamespace((String)sd.getMetadata_json().get("associatedClusterNamespace"))
+																.associatedManagedCloudServiceLocation((String)sd.getMetadata_json().get("associatedManagedCloudServiceLocation"))
+																.associatedGlobalServiceLocation((String)sd.getMetadata_json().get("associatedGlobalServiceLocation"))
+																.serviceHostingType((String)sd.getMetadata_json().get("serviceHostingType"))
+																.associatedCloudElementId((String)sd.getMetadata_json().get("associatedCloudElementId"))
+																.associatedOU((String)sd.getMetadata_json().get("associatedOU"))
+																.associatedDept((String)sd.getMetadata_json().get("associatedDept"))
+																.associatedProduct((String)sd.getMetadata_json().get("associatedProduct"))
+																.associatedEnv((String)sd.getMetadata_json().get("associatedEnv"))
+																.serviceType((String)sd.getMetadata_json().get("serviceType"))
+																.performance(PerformanceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("performance")).get("score")).build())
+																.availability(AvailabilityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("availability")).get("score")).build())
+																.security(SecurityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("security")).get("score")).build())
+																.dataProtection(DataProtectionResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score")).build())
+																.userExperiance(UserExperianceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score")).build())
+																
+																.build();
+//																if(cs.getApp() == null) {
+//																	List<App> appList = new ArrayList<>();
+//																	App app = App.builder().name((String)sd.getMetadata_json().get("name")).build();
+//																	appList.add(app);
+//																	cs.setApp(appList);
+//																}else {
+//																	App app = App.builder().name((String)sd.getMetadata_json().get("name")).build();
 																	cs.getApp().add(app);
-																}
+//																}
 															}else if(serviceType.equalsIgnoreCase("Data")) {
-																if(cs.getData() == null) {
-																	List<Data> dataList = new ArrayList<>();
-																	Data data = Data.builder().name((String)sd.getMetadata_json().get("name")).build();
-																	dataList.add(data);
-																	cs.setData(dataList);
-																}else {
-																	Data data = Data.builder().name((String)sd.getMetadata_json().get("name")).build();
+																Data data = Data.builder()
+																		.id(envName+"_"+(String)sd.getMetadata_json().get("name"))
+																		.name((String)sd.getMetadata_json().get("name"))
+																		.serviceDetailId(sd.getId())
+																		.description((String)sd.getMetadata_json().get("description"))
+																		.associatedCloudElement((String)sd.getMetadata_json().get("associatedCloudElement"))
+																		.associatedClusterNamespace((String)sd.getMetadata_json().get("associatedClusterNamespace"))
+																		.associatedManagedCloudServiceLocation((String)sd.getMetadata_json().get("associatedManagedCloudServiceLocation"))
+																		.associatedGlobalServiceLocation((String)sd.getMetadata_json().get("associatedGlobalServiceLocation"))
+																		.serviceHostingType((String)sd.getMetadata_json().get("serviceHostingType"))
+																		.associatedCloudElementId((String)sd.getMetadata_json().get("associatedCloudElementId"))
+																		.associatedOU((String)sd.getMetadata_json().get("associatedOU"))
+																		.associatedDept((String)sd.getMetadata_json().get("associatedDept"))
+																		.associatedProduct((String)sd.getMetadata_json().get("associatedProduct"))
+																		.associatedEnv((String)sd.getMetadata_json().get("associatedEnv"))
+																		.serviceType((String)sd.getMetadata_json().get("serviceType"))
+																		.performance(PerformanceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("performance")).get("score")).build())
+																		.availability(AvailabilityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("availability")).get("score")).build())
+																		.security(SecurityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("security")).get("score")).build())
+																		.dataProtection(DataProtectionResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score")).build())
+																		.userExperiance(UserExperianceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score")).build())
+																		
+																		.build();
+//																if(cs.getData() == null) {
+//																	List<Data> dataList = new ArrayList<>();
+//																	Data data = Data.builder().name((String)sd.getMetadata_json().get("name")).build();
+//																	dataList.add(data);
+//																	cs.setData(dataList);
+//																}else {
+//																	Data data = Data.builder().name((String)sd.getMetadata_json().get("name")).build();
 																	cs.getData().add(data);
-																}
+//																}
 															}
 														}
 													}
