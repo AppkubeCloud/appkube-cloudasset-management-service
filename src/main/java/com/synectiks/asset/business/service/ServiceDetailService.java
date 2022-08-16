@@ -8,6 +8,8 @@ import java.util.Map;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
+import javax.transaction.Transactional;
+
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -239,6 +241,7 @@ public class ServiceDetailService {
 		return resp;
 	}
 
+	@Transactional
 	public List<AccountTree> transformServiceDetailsListToTree() {
 		logger.info("Transforming service details to account specific tree");
 		List<ServiceDetail> listSd = getAllServiceDetail();

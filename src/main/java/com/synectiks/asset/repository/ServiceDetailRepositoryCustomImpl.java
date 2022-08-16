@@ -25,7 +25,7 @@ public class ServiceDetailRepositoryCustomImpl implements ServiceDetailRepositor
 	public List<ServiceDetail> findServiceDetails(String whereCondition){
 		String QUERY = "SELECT * FROM service_detail ";
 		if(!StringUtils.isBlank(whereCondition)) {
-			QUERY = QUERY + " WHERE details @> '"+whereCondition+"'";
+			QUERY = QUERY + " WHERE metadata_json @> '"+whereCondition+"'";
 		}
 		logger.debug("Jsonb query: {} ",QUERY);
 		Query query = entityManager.createNativeQuery(QUERY, ServiceDetail.class);
