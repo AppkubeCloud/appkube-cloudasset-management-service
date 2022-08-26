@@ -1,6 +1,7 @@
 package com.synectiks.asset.controller;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -24,6 +25,12 @@ import com.google.gson.Gson;
 import com.synectiks.asset.business.service.AwsService;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
+import com.synectiks.asset.response.AvailabilityResponse;
+import com.synectiks.asset.response.DataProtectionResponse;
+import com.synectiks.asset.response.PerformanceResponse;
+import com.synectiks.asset.response.SecurityResponse;
+import com.synectiks.asset.response.UserExperianceResponse;
+import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @RestController
@@ -75,5 +82,26 @@ public class SlaJsonController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(new HashMap<>());
 	}
+	
+	@GetMapping("/service-detail/test-sla-json")
+	public ResponseEntity<String> testSlaJson() throws JsonProcessingException {
+		logger.info("Start testing sla_json");
+        Map<String, Object> map = new HashMap<>();
+    	List<ServiceDetail> list = serviceDetailService.getAllServiceDetail();
+    	logger.debug("Updating sla_json");
+        for(ServiceDetail sd: list) {
+			map.put("performance",(PerformanceResponse.builder().score(RandomUtil.getRandom()).build()));
+			map.put("availability",(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build()));
+			map.put("security",(SecurityResponse.builder().score(RandomUtil.getRandom()).build()));
+			map.put("dataProtection",(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build()));
+			map.put("userExperiance",(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build()));
+			sd.setSla_json(map);
+			serviceDetailService.updateServiceDetailSlaJson(sd);
+		}
+        logger.info("End testing sla_json");
+		return ResponseEntity.status(HttpStatus.OK).body("sla_json updated");
+	}
+	
+	
 	
 }
