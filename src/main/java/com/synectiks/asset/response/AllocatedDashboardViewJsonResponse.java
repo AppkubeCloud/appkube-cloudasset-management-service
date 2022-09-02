@@ -25,6 +25,10 @@ public class AllocatedDashboardViewJsonResponse implements Serializable {
 	private String slug;
 	private String uid;
 	private Long dashboardCatalogueId;
+	private String cloudElement;
+	private String accountId;
+	private String url;
+	
 	
 	public static AllocatedDashboardViewJsonResponse from(JsonNode node) {
 		return AllocatedDashboardViewJsonResponse.builder()
@@ -32,6 +36,9 @@ public class AllocatedDashboardViewJsonResponse implements Serializable {
 				.slug(node.get("slug").asText())
 				.uid(node.get("uid").asText())
 				.dashboardCatalogueId(node.get("dashboardCatalogueId").asLong())
+				.cloudElement(node.get("cloudElement") != null ? node.get("cloudElement").asText() : null)
+				.accountId(node.get("accountId") != null ? node.get("accountId").asText() : null)
+				.url(node.get("url") != null ? node.get("url").asText() : null)
 				.build();
 	}
 }

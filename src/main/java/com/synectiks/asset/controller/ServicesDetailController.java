@@ -22,12 +22,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
-import com.synectiks.asset.response.ViewJsonResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -131,5 +129,12 @@ public class ServicesDetailController {
 		logger.info("Request to transform service-detail data");
 		Object m =serviceDetailService.transformServiceDetailsListToTree();
 		return ResponseEntity.status(HttpStatus.OK).body(m);
+	}
+	
+	@GetMapping("/service-detail/enable-monitoring")
+	public ResponseEntity<Object> enableMonitoring() throws Exception {
+		logger.info("Request to deploy all the dashboards for each service");
+		serviceDetailService.enableMonitoring();
+		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 }

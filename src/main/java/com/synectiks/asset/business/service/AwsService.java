@@ -130,6 +130,79 @@ public class AwsService {
 		return dashboard;
 	}
 	
+	public Dashboard getDashboardFromAwsS3(Map<String, String> object, AmazonS3 s3Client) throws Exception {
+		logger.info("Downloading dashboard json from AWS");
+		
+		if (StringUtils.isBlank(object.get("dataSourceName")) || StringUtils.isBlank(object.get("associatedCloudElementType")) ||
+				StringUtils.isBlank(object.get("associatedSLAType")) || StringUtils.isBlank(object.get("jsonLocation")) ||
+				StringUtils.isBlank(object.get("associatedCloud")) || StringUtils.isBlank(object.get("accountId")) ) {
+			logger.error("Mandatory fields missing");
+			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
+		}
+		
+//		String dashboardId = object.get("dashboardId");
+//		String dashboardName = object.get("dashboardName");
+//		String dataSourceId = object.get("dataSourceId");
+		String dataSourceName = object.get("dataSourceName");
+		String associatedCloudElementType = object.get("associatedCloudElementType");
+		String associatedSLAType = object.get("associatedSLAType");
+		String jsonLocation = object.get("jsonLocation");
+		String associatedCloud = object.get("associatedCloud");
+//		String associatedCreds = object.get("associatedCreds");
+		String accountId = object.get("accountId");
+		
+		String bucket = getBucket(jsonLocation);
+		String fileName = getFileName(jsonLocation);
+		
+		Map<String, String> searchMap = new HashMap<>();
+		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
+		
+		Dashboard dashboard = new Dashboard();
+		try {
+			S3Object file = s3Client.getObject(bucket, fileName);
+			
+			dashboard.setCloudName(associatedCloud);
+			dashboard.setElementType(associatedCloudElementType);
+	//		dashboard.setTenantId(tenantId);
+			dashboard.setAccountId(accountId);
+			dashboard.setInputType(associatedSLAType);
+			dashboard.setFileName(fileName);
+			dashboard.setInputSourceId(dataSourceName);
+			String dName = associatedCloud+"_"+associatedCloudElementType+"_"+dataSourceName;
+			dashboard.setTitle(dName);
+			dashboard.setSlug(dName);
+			String data = displayTextInputStream(file.getObjectContent());
+			
+			ObjectMapper mapper = new ObjectMapper();
+			ArrayNode arrayNode = mapper.createArrayNode();
+			
+			ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
+			for(JsonNode panel : dataNode.get("panels")) {
+				ObjectNode oPanel = (ObjectNode)panel;
+				oPanel.put("datasource", dataSourceName);
+				arrayNode.add(oPanel);
+	        }
+			dataNode.put("panels", arrayNode);
+			dataNode.put("id", 0);
+			dataNode.put("uid", "");
+			data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataNode);
+			logger.debug("Datasource updated. Json : "+ data);
+			
+			String uid = RandomStringUtils.random(8, true, true);
+			dashboard.setUid(uid);
+			dashboard.setData(data);
+			
+			DashboardMeta meta = new DashboardMeta();
+			meta.setSlug(dashboard.getSlug());
+			
+			dashboard.setDashboardMeta(meta);
+		}catch(Exception e) {
+			throw e;
+		}
+		
+		return dashboard;
+	}
+	
 	private String displayTextInputStream(InputStream input) throws IOException {
         // Read the text input stream one line at a time and display each line.
 		BufferedReader reader = new BufferedReader(new InputStreamReader(input));

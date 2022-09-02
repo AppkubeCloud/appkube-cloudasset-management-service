@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.Random;
 import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
@@ -16,13 +17,24 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
+import org.springframework.http.HttpEntity;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
+import org.springframework.web.client.RestTemplate;
 
+import com.amazonaws.services.s3.AmazonS3;
 import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
+import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.domain.AccountServices;
+import com.synectiks.asset.domain.Catalogue;
+import com.synectiks.asset.domain.Dashboard;
 import com.synectiks.asset.domain.ServiceDetail;
+import com.synectiks.asset.domain.ServiceProviderCloudAccount;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.AccountTree;
 import com.synectiks.asset.response.App;
@@ -39,7 +51,10 @@ import com.synectiks.asset.response.SecurityResponse;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.response.ServiceDetailResponse;
 import com.synectiks.asset.response.UserExperianceResponse;
+import com.synectiks.asset.response.ViewJsonResponse;
 import com.synectiks.asset.response.Vpc;
+import com.synectiks.asset.response.catalogue.CloudDashboard;
+import com.synectiks.asset.util.Utils;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
@@ -48,10 +63,23 @@ public class ServiceDetailService {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDetailService.class);
 		
 	@Autowired
-	ServiceDetailRepository serviceDetailJsonRepository;
+	private ServiceDetailRepository serviceDetailJsonRepository;
 	
 	@Autowired
-	AccountServicesService accountServicesService;
+	private AccountServicesService accountServicesService;
+	
+	@Autowired
+	private CatalogueService catalogueService;
+	
+	@Autowired
+	private AwsService awsService;
+	
+	@Autowired
+	private RestTemplate restTemplate;
+	
+	@Autowired
+	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
+	
 	
 	public Optional<ServiceDetail> getServiceDetail(Long id) {
 		logger.info("Get service detail by id: {}", id);
@@ -390,11 +418,13 @@ public class ServiceDetailService {
 				.associatedProduct((String)sd.getMetadata_json().get("associatedProduct"))
 				.associatedEnv((String)sd.getMetadata_json().get("associatedEnv"))
 				.serviceType((String)sd.getMetadata_json().get("serviceType"))
-				.performance(PerformanceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("performance")).get("score")).build())
-				.availability(AvailabilityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("availability")).get("score")).build())
-				.security(SecurityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("security")).get("score")).build())
-				.dataProtection(DataProtectionResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score")).build())
-				.userExperiance(UserExperianceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score")).build())
+				
+				.performance(PerformanceResponse.builder().score(sd.getMetadata_json().get("performance") != null ? (Integer)((Map)sd.getMetadata_json().get("performance")).get("score") : 0).build())
+				.availability(AvailabilityResponse.builder().score(sd.getMetadata_json().get("availability") != null ? (Integer)((Map)sd.getMetadata_json().get("availability")).get("score") : 0).build())
+				.security(SecurityResponse.builder().score(sd.getMetadata_json().get("security") != null ? (Integer)((Map)sd.getMetadata_json().get("security")).get("score") : 0).build())
+				.dataProtection(DataProtectionResponse.builder().score(sd.getMetadata_json().get("dataProtection") != null ? (Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score") : 0).build())
+				.userExperiance(UserExperianceResponse.builder().score(sd.getMetadata_json().get("userExperiance") != null ? (Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score") : 0).build())
+				
 				
 				.build();
 		return data;
@@ -418,11 +448,11 @@ public class ServiceDetailService {
 				.associatedProduct((String)sd.getMetadata_json().get("associatedProduct"))
 				.associatedEnv((String)sd.getMetadata_json().get("associatedEnv"))
 				.serviceType((String)sd.getMetadata_json().get("serviceType"))
-				.performance(PerformanceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("performance")).get("score")).build())
-				.availability(AvailabilityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("availability")).get("score")).build())
-				.security(SecurityResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("security")).get("score")).build())
-				.dataProtection(DataProtectionResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score")).build())
-				.userExperiance(UserExperianceResponse.builder().score((Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score")).build())
+				.performance(PerformanceResponse.builder().score(sd.getMetadata_json().get("performance") != null ? (Integer)((Map)sd.getMetadata_json().get("performance")).get("score") : 0).build())
+				.availability(AvailabilityResponse.builder().score(sd.getMetadata_json().get("availability") != null ? (Integer)((Map)sd.getMetadata_json().get("availability")).get("score") : 0).build())
+				.security(SecurityResponse.builder().score(sd.getMetadata_json().get("security") != null ? (Integer)((Map)sd.getMetadata_json().get("security")).get("score") : 0).build())
+				.dataProtection(DataProtectionResponse.builder().score(sd.getMetadata_json().get("dataProtection") != null ? (Integer)((Map)sd.getMetadata_json().get("dataProtection")).get("score") : 0).build())
+				.userExperiance(UserExperianceResponse.builder().score(sd.getMetadata_json().get("userExperiance") != null ? (Integer)((Map)sd.getMetadata_json().get("userExperiance")).get("score") : 0).build())
 				  
 				.build();
 		return app;
@@ -635,4 +665,125 @@ public class ServiceDetailService {
 //	}
 //	return vpcMap;
 //}
+	
+	public void enableMonitoring() throws Exception {
+		logger.info("Start auto deployment of dashboards for each service");
+		Map<String, List<ServiceDetail>> acMap = filterAccountSpecificList(getAllServiceDetail());
+		Map<String, String> criteriaMap = new HashMap<>();
+		Map<String, String> cdCriteriaMap = new HashMap<>();
+		ObjectMapper mapper = new ObjectMapper();
+		
+		HttpHeaders headers = new HttpHeaders();
+	    headers.setContentType(MediaType.APPLICATION_JSON);
+	    headers.setBasicAuth("YWRtaW46YWRtaW4=");
+	    
+	    Map<String, String> searchMap = new HashMap<>();
+		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
+		AmazonS3 s3Client = Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
+		if(s3Client == null) {
+			throw new BadRequestAlertException("AWS S3 client connection failed", "Dashboard", "aws.s3.connection.failed");
+		}
+		
+		for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
+			String accountId = entry.getKey();
+			for(ServiceDetail sd: entry.getValue()) {
+				ObjectNode viewJsonNode = mapper.createObjectNode();
+				viewJsonNode.put("serviceId", String.valueOf(sd.getId()));
+				viewJsonNode.put(Constants.PERFORMANCE, mapper.createArrayNode());
+				viewJsonNode.put(Constants.AVAILABILITY, mapper.createArrayNode());
+				viewJsonNode.put(Constants.RELIABILITY, mapper.createArrayNode());
+				viewJsonNode.put(Constants.ENDUSAGE, mapper.createArrayNode());
+				viewJsonNode.put(Constants.SECURITY, mapper.createArrayNode());
+				viewJsonNode.put(Constants.COMPLIANCE, mapper.createArrayNode());
+				viewJsonNode.put(Constants.ALERTS, mapper.createArrayNode());
+				
+				criteriaMap.clear();
+				criteriaMap.put("associatedCloudElementType", (String)sd.getMetadata_json().get("associatedCloudElement"));
+				Catalogue catalogue = catalogueService.searchCatalogue(criteriaMap);
+				List<CloudDashboard> cloudDashBoards = catalogue.getDetails().getOps().getCloudDashBoards();
+				for(CloudDashboard cd: cloudDashBoards) {
+					cdCriteriaMap.clear();
+					cdCriteriaMap.put("dataSourceName", cd.getAssociatedDataSourceType()); 
+					cdCriteriaMap.put("associatedCloudElementType",cd.getAssociatedCloudElementType());
+					cdCriteriaMap.put("associatedSLAType",cd.getAssociatedSLAType());
+					cdCriteriaMap.put("jsonLocation", cd.getJsonLocation());
+					cdCriteriaMap.put("associatedCloud",cd.getAssociatedCloud()); 
+					cdCriteriaMap.put("accountId",accountId);
+					
+					Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client);
+					ObjectNode dashboardNode = (ObjectNode)mapper.readTree(dashboard.getData());
+					dashboardNode.put("id",0);
+					dashboardNode.put("uid","");
+		            String slug = dashboard.getInputType() + "_" + dashboard.getElementType() + "_" + randomAlphabeticString();
+		            dashboardNode.put("slug", slug);
+		            dashboardNode.put("title",slug);
+		            
+		            ObjectNode dataJs = mapper.createObjectNode();
+					dataJs.put("Dashboard", dashboardNode);
+					dataJs.put("UserId", 0);
+					dataJs.put("Overwrite", false);
+					dataJs.put("Message", "");
+					dataJs.put("OrgId", 1);
+					dataJs.put("PluginId", "");
+					dataJs.put("FolderId", 0);
+					dataJs.put("IsFolder", false);
+					
+				    HttpEntity<String> request = new HttpEntity<String>(dataJs.toString(), headers);
+				    String resp = restTemplate.postForObject("http://34.199.12.114:3000/api/dashboards/importAssets", request, String.class);
+				    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
+				    respNode.put("dashboardCatalogueId", cd.getId());
+				    respNode.put("accountId", accountId);
+				    respNode.put("cloudElement", cd.getAssociatedCloudElementType());
+				    respNode.put("url", respNode.get("url").asText());
+				    ArrayNode jnArray = (ArrayNode)viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
+				    jnArray.add(respNode);
+					
+				}
+				
+				// update array here
+				updateViewJson(viewJsonNode);
+			}
+		}
+	}
+		
+	public String randomAlphabeticString() {
+	    int leftLimit = 97; // letter 'a'
+	    int rightLimit = 122; // letter 'z'
+	    int targetStringLength = 5;
+	    Random random = new Random();
+
+	    String generatedString = random.ints(leftLimit, rightLimit + 1)
+	      .limit(targetStringLength)
+	      .collect(StringBuilder::new, StringBuilder::appendCodePoint, StringBuilder::append)
+	      .toString();
+
+	    System.out.println(generatedString);
+	    return generatedString;
+	}
+	
+	public void updateViewJson(ObjectNode objectNode) {
+		Long serviceId = Long.parseLong(objectNode.get("serviceId").asText());
+		
+		for(String keyType: Constants.DASHBOARD_TYPE) {
+			JsonNode jsonNode = objectNode.get(keyType.toLowerCase());
+			
+			if(jsonNode != null) {
+				Optional<ServiceDetail> osd = getServiceDetail(serviceId);
+				if(osd.isPresent()) {
+					ServiceDetail sd = osd.get();
+					if(sd.getView_json() == null) {
+						logger.info("Adding new view json");
+						ViewJsonResponse vjr = ViewJsonResponse.from(objectNode.get("serviceId").asText(), jsonNode, keyType);
+						sd.setView_json(vjr);
+					}else {
+						logger.info("Updating view json");
+						ViewJsonResponse vjr = sd.getView_json();
+						ViewJsonResponse.updateFrom(jsonNode, objectNode.get("serviceId").asText(), vjr, keyType);
+						sd.setView_json(vjr);
+					}
+					updateServiceDetail(sd);
+				}
+			}
+		}
+	}
 }

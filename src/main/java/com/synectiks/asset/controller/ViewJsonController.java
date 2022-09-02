@@ -42,31 +42,7 @@ public class ViewJsonController {
 		if(StringUtils.isBlank(objectNode.get("serviceId").asText())) {
 			throw new BadRequestAlertException("Service id not provided", "ViewJson", "idnotprovided");
 		}
-		Long serviceId = Long.parseLong(objectNode.get("serviceId").asText());
-		String dashboardType [] = {"performance","availability", "reliability", "endUsage", "security", "compliance", "alerts"};
-		
-		for(String keyType: dashboardType) {
-			JsonNode jsonNode = objectNode.get(keyType);
-			
-			if(jsonNode != null) {
-				Optional<ServiceDetail> osd = serviceDetailService.getServiceDetail(serviceId);
-				if(osd.isPresent()) {
-					ServiceDetail sd = osd.get();
-					if(sd.getView_json() == null) {
-						logger.info("Adding new view json");
-						ViewJsonResponse vjr = ViewJsonResponse.from(objectNode.get("serviceId").asText(), jsonNode, keyType);
-						sd.setView_json(vjr);
-					}else {
-						logger.info("Updating view json");
-						ViewJsonResponse vjr = sd.getView_json();
-						ViewJsonResponse.updateFrom(jsonNode, objectNode.get("serviceId").asText(), vjr, keyType);
-						sd.setView_json(vjr);
-					}
-					serviceDetailService.updateServiceDetail(sd);
-					return ResponseEntity.status(HttpStatus.OK).body(sd.getView_json());
-				}
-			}
-		}
+		serviceDetailService.updateViewJson(objectNode);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 	

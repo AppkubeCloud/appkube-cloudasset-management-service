@@ -42,6 +42,17 @@ public final class Constants {
     public static final String DATE_FORMAT_DD_MM_YYYY = "dd-MM-yyyy";
     public static final String DEFAULT_DATE_FORMAT =  DATE_FORMAT_MM_DD_YYYY;
     
+    public static final String PERFORMANCE  = "performance";
+    public static final String AVAILABILITY = "availability";
+    public static final String RELIABILITY  = "reliability";
+    public static final String ENDUSAGE     = "endusage";
+    public static final String SECURITY     = "security";
+    public static final String COMPLIANCE   = "compliance";
+    public static final String ALERTS       = "alerts";
+    
+    public static final String DASHBOARD_TYPE[] = {PERFORMANCE,AVAILABILITY, RELIABILITY, ENDUSAGE, SECURITY, COMPLIANCE, ALERTS};
+	
+    
 //    public static final Map<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache > AWS_DISCOVERED_ASSET_CACHE = new HashMap<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache>();
     
 //    static {

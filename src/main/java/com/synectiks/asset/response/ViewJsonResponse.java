@@ -5,6 +5,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.fasterxml.jackson.databind.JsonNode;
+import com.synectiks.asset.config.Constants;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -35,37 +36,37 @@ public class ViewJsonResponse implements Serializable {
   public static ViewJsonResponse from(String serviceId, JsonNode jsonNode, String key) {
 	  ViewJsonResponse vrj = ViewJsonResponse.builder().serviceId(serviceId).build();
 	  if(jsonNode.isArray()) {
-		if("performance".equalsIgnoreCase(key)) { 
+		if(Constants.PERFORMANCE.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setPerformance(list);
 		}
-		if("availability".equalsIgnoreCase(key)) { 
+		if(Constants.AVAILABILITY.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setAvailability(list);
 		}
-		if("reliability".equalsIgnoreCase(key)) { 
+		if(Constants.RELIABILITY.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setReliability(list);
 		}
-		if("endUsage".equalsIgnoreCase(key)) { 
+		if(Constants.ENDUSAGE.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setEndUsage(list);
 		}
-		if("security".equalsIgnoreCase(key)) { 
+		if(Constants.SECURITY.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setSecurity(list);
 		}
-		if("compliance".equalsIgnoreCase(key)) { 
+		if(Constants.COMPLIANCE.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setCompliance(list);
 		}
-		if("alerts".equalsIgnoreCase(key)) { 
+		if(Constants.ALERTS.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> list = new ArrayList<>();
 			createViewJson(jsonNode, list);
 			vrj.setAlerts(list);
@@ -88,7 +89,7 @@ public class ViewJsonResponse implements Serializable {
 		createViewJson(jsonNode, newList);
 	  }
 	 
-	  if("performance".equalsIgnoreCase(key)) { 
+	  if(Constants.PERFORMANCE.equalsIgnoreCase(key)) { 
 		  List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getPerformance();
 		  if(existingViewJsonList == null) {
 			  existingViewJsonList = new ArrayList<>(); 
@@ -98,7 +99,7 @@ public class ViewJsonResponse implements Serializable {
 		  }
 		  viewJsonResponse.setPerformance(existingViewJsonList);
 	  }
-	  if("availability".equalsIgnoreCase(key)) { 
+	  if(Constants.AVAILABILITY.equalsIgnoreCase(key)) { 
 		  List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getAvailability();
 		  if(existingViewJsonList == null) {
 			  existingViewJsonList = new ArrayList<>(); 
@@ -108,7 +109,7 @@ public class ViewJsonResponse implements Serializable {
 		  }
 		  viewJsonResponse.setAvailability(existingViewJsonList);
 	  }
-	  if("reliability".equalsIgnoreCase(key)) { 
+	  if(Constants.RELIABILITY.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getReliability();
 			if(existingViewJsonList == null) {
 				existingViewJsonList = new ArrayList<>(); 
@@ -118,7 +119,7 @@ public class ViewJsonResponse implements Serializable {
 			}
 			viewJsonResponse.setReliability(existingViewJsonList);
 	  }
-	  if("endUsage".equalsIgnoreCase(key)) { 
+	  if(Constants.ENDUSAGE.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getEndUsage();
 			if(existingViewJsonList == null) {
 				existingViewJsonList = new ArrayList<>(); 
@@ -128,7 +129,7 @@ public class ViewJsonResponse implements Serializable {
 			}
 			viewJsonResponse.setEndUsage(existingViewJsonList);
 	  }
-	  if("security".equalsIgnoreCase(key)) { 
+	  if(Constants.SECURITY.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getSecurity();
 			if(existingViewJsonList == null) {
 				existingViewJsonList = new ArrayList<>(); 
@@ -138,7 +139,7 @@ public class ViewJsonResponse implements Serializable {
 			}
 			viewJsonResponse.setSecurity(existingViewJsonList);
 	  }
-	  if("compliance".equalsIgnoreCase(key)) { 
+	  if(Constants.COMPLIANCE.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getCompliance();
 			if(existingViewJsonList == null) {
 				existingViewJsonList = new ArrayList<>(); 
@@ -148,7 +149,7 @@ public class ViewJsonResponse implements Serializable {
 			}
 			viewJsonResponse.setCompliance(existingViewJsonList);
 	  }
-	  if("alerts".equalsIgnoreCase(key)) { 
+	  if(Constants.ALERTS.equalsIgnoreCase(key)) { 
 			List<AllocatedDashboardViewJsonResponse> existingViewJsonList = viewJsonResponse.getAlerts();
 			if(existingViewJsonList == null) {
 				existingViewJsonList = new ArrayList<>(); 
