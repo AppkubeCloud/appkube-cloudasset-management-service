@@ -43,7 +43,7 @@ public class ViewJsonController {
 			throw new BadRequestAlertException("Service id not provided", "ViewJson", "idnotprovided");
 		}
 		serviceDetailService.updateViewJson(objectNode);
-		return ResponseEntity.status(HttpStatus.OK).body(null);
+		return getViewJson(objectNode.get("serviceId").asText());
 	}
 	
 	@GetMapping("/dashboard/view-json")
