@@ -1,5 +1,6 @@
 package com.synectiks.asset.business.service;
 
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,11 +15,9 @@ import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
 import com.synectiks.asset.domain.Catalogue;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.CatalogueRepository;
-import com.synectiks.asset.response.catalogue.CatalogueResponse;
 import com.synectiks.asset.response.catalogue.CloudDashboard;
-import com.synectiks.asset.response.catalogue.OpsResponse;
+import com.synectiks.asset.response.catalogue.Datasource;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
@@ -153,5 +152,82 @@ public class CatalogueService {
 		}
 		catalogue.getDetails().getOps().setCloudDashBoards(list2);
 		return catalogue;
+	}
+	
+	public List<CloudDashboard> searchCatalogue(Map<String, String> obj, List<CloudDashboard> cloudDashBoards) {
+		logger.info("Search catalogue from provided list of dashboards");
+//		List<Catalogue> catalogueList = getAllCatalogue();
+//		if(catalogueList == null || (catalogueList != null && catalogueList.size() ==0)) {
+//			return Catalogue.builder().build();
+//		}
+//		Catalogue catalogue = catalogueList.get(0);
+//		List<CloudDashboard> cloudDashBoards = catalogue.getDetails().getOps().getCloudDashBoards();
+		List<CloudDashboard> list2 = cloudDashBoards;
+		if(obj.containsKey("id")) {
+			int id = Integer.parseInt(obj.get("id"));
+			list2 = list2.stream()
+					.filter(cd -> (cd.getId() == id))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("name")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getName()).equals(obj.get("name")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("description")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getDescription()).equals(obj.get("description")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("associatedDataSourceType")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getAssociatedDataSourceType()).equals(obj.get("associatedDataSourceType")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("associatedDataType")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getAssociatedDataType()).equals(obj.get("associatedDataType")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("associatedSLAType")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getAssociatedSLAType()).equals(obj.get("associatedSLAType")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("associatedCloud")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getAssociatedCloud()).equals(obj.get("associatedCloud")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("associatedCloudElementType")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getAssociatedCloudElementType()).equals(obj.get("associatedCloudElementType")))
+					.collect(Collectors.toList());
+		}
+		if(obj.containsKey("jsonLocation")) {
+			list2 = list2.stream()
+					.filter(cd -> (cd.getJsonLocation()).equals(obj.get("jsonLocation")))
+					.collect(Collectors.toList());
+		}
+		
+		return list2;
+	}
+	
+	public Map<String, List<CloudDashboard>> filterCatalogueByDataSource(){
+		Map<String, List<CloudDashboard>> result = new HashMap<>();
+		List<Catalogue> catalogueList = getAllCatalogue();
+		if(catalogueList == null || (catalogueList != null && catalogueList.size() ==0)) {
+			return null;
+		}
+		Catalogue catalogue = catalogueList.get(0);
+		List<Datasource> datasourceList = catalogue.getDetails().getOps().getDataSources();
+		Map<String, String> searchMap = new HashMap<>();
+		for(Datasource ds: datasourceList) {
+			searchMap.clear();
+			searchMap.put("associatedDataSourceType", ds.getName());
+			Catalogue resultCatalogue = searchCatalogue(searchMap);
+			result.put(ds.getName(), resultCatalogue.getDetails().getOps().getCloudDashBoards());
+		}
+		return result;
 	}
 }

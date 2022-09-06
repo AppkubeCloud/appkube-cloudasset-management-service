@@ -84,7 +84,7 @@ public class AwsService {
 			throw new BadRequestAlertException("AWS S3 client connection could not be establised", "Dashboard", "aws.s3.connection.failed");
 		}
 		
-		try {
+//		try {
 			S3Object file = s3Client.getObject(bucket, fileName);
 			
 			dashboard.setCloudName(associatedCloud);
@@ -122,11 +122,12 @@ public class AwsService {
 			meta.setSlug(dashboard.getSlug());
 			
 			dashboard.setDashboardMeta(meta);
-		}finally {
-			if(s3Client != null) {
-				s3Client.shutdown();
-			}
-		}
+//		}
+//		finally {
+//			if(s3Client != null) {
+//				s3Client.shutdown();
+//			}
+//		}
 		return dashboard;
 	}
 	

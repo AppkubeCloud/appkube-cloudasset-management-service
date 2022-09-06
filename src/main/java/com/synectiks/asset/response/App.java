@@ -22,6 +22,7 @@ public class App implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private String id;
+	private Long dbid;
 	private String name;
 	private Long serviceDetailId;
 	private String description;

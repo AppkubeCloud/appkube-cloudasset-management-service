@@ -120,4 +120,11 @@ public class AssetserviceApp {
 		return Integer.parseInt(ctx.getEnvironment().getProperty("server.port"));
 	}
 	
+//	private static void initConstants(Environment env) {
+//        String protocol = "http";
+//        if (env.getProperty("grafana.protocol") != null) {
+//            protocol = "https";
+//        }
+//        
+//    }
 }

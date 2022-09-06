@@ -28,7 +28,7 @@ public class AllocatedDashboardViewJsonResponse implements Serializable {
 	private String cloudElement;
 	private String accountId;
 	private String url;
-	
+	private String arn;
 	
 	public static AllocatedDashboardViewJsonResponse from(JsonNode node) {
 		return AllocatedDashboardViewJsonResponse.builder()
@@ -39,6 +39,7 @@ public class AllocatedDashboardViewJsonResponse implements Serializable {
 				.cloudElement(node.get("cloudElement") != null ? node.get("cloudElement").asText() : null)
 				.accountId(node.get("accountId") != null ? node.get("accountId").asText() : null)
 				.url(node.get("url") != null ? node.get("url").asText() : null)
+				.arn(node.get("arn") != null ? node.get("arn").asText() : null)
 				.build();
 	}
 }

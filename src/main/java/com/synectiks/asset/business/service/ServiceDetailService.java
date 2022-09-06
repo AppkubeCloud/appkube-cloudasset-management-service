@@ -404,6 +404,7 @@ public class ServiceDetailService {
 	private Data buildData(ServiceDetail sd, String envName) {
 		Data data = Data.builder()
 				.id(envName+"_"+(String)sd.getMetadata_json().get("name"))
+				.dbid(sd.getId())
 				.name((String)sd.getMetadata_json().get("name"))
 				.serviceDetailId(sd.getId())
 				.description((String)sd.getMetadata_json().get("description"))
@@ -433,6 +434,7 @@ public class ServiceDetailService {
 	private App buildApp(ServiceDetail sd, String envName) {
 		App app = App.builder()
 				.id(envName+"_"+(String)sd.getMetadata_json().get("name"))
+				.dbid(sd.getId())
 				.name((String)sd.getMetadata_json().get("name"))
 				.serviceDetailId(sd.getId())
 				.description((String)sd.getMetadata_json().get("description"))
@@ -671,6 +673,8 @@ public class ServiceDetailService {
 		Map<String, List<ServiceDetail>> acMap = filterAccountSpecificList(getAllServiceDetail());
 		Map<String, String> criteriaMap = new HashMap<>();
 		Map<String, String> cdCriteriaMap = new HashMap<>();
+		Map<String, String> dataSourceCriteriaMap = new HashMap<>();
+		
 		ObjectMapper mapper = new ObjectMapper();
 		
 		HttpHeaders headers = new HttpHeaders();
@@ -700,8 +704,17 @@ public class ServiceDetailService {
 				criteriaMap.clear();
 				criteriaMap.put("associatedCloudElementType", (String)sd.getMetadata_json().get("associatedCloudElement"));
 				Catalogue catalogue = catalogueService.searchCatalogue(criteriaMap);
-				List<CloudDashboard> cloudDashBoards = catalogue.getDetails().getOps().getCloudDashBoards();
-				for(CloudDashboard cd: cloudDashBoards) {
+				List<CloudDashboard> cloudElementSpeficCloudDashBoards = catalogue.getDetails().getOps().getCloudDashBoards();
+				
+//				List<CloudDashboard> resultList = new ArrayList<>();
+				
+//				for(CloudDashboard cd: cloudElementSpeficCloudDashBoards) {
+//					dataSourceCriteriaMap.clear();
+//					dataSourceCriteriaMap.put("associatedDataSourceType", cd.getAssociatedDataSourceType());
+//					Catalogue dsSpecifCatalogue = catalogueService.searchCatalogue(dataSourceCriteriaMap, cloudElementSpeficCloudDashBoards);
+//					List<CloudDashboard> resultCdList = dsSpecifCatalogue.getDetails().getOps().getCloudDashBoards();
+//					resultList.addAll(resultCdList);//
+				for(CloudDashboard cd: cloudElementSpeficCloudDashBoards) {
 					cdCriteriaMap.clear();
 					cdCriteriaMap.put("dataSourceName", cd.getAssociatedDataSourceType()); 
 					cdCriteriaMap.put("associatedCloudElementType",cd.getAssociatedCloudElementType());
@@ -717,6 +730,8 @@ public class ServiceDetailService {
 		            String slug = dashboard.getInputType() + "_" + dashboard.getElementType() + "_" + randomAlphabeticString();
 		            dashboardNode.put("slug", slug);
 		            dashboardNode.put("title",slug);
+		            dashboardNode.put("cloudElement",cd.getAssociatedCloudElementType());
+		            dashboardNode.put("arn", (String)sd.getMetadata_json().get("associatedCloudElementId"));
 		            
 		            ObjectNode dataJs = mapper.createObjectNode();
 					dataJs.put("Dashboard", dashboardNode);
@@ -727,13 +742,16 @@ public class ServiceDetailService {
 					dataJs.put("PluginId", "");
 					dataJs.put("FolderId", 0);
 					dataJs.put("IsFolder", false);
+					dataJs.put("CloudElement",cd.getAssociatedCloudElementType());
+					dataJs.put("arn", (String)sd.getMetadata_json().get("associatedCloudElementId"));
 					
 				    HttpEntity<String> request = new HttpEntity<String>(dataJs.toString(), headers);
-				    String resp = restTemplate.postForObject("http://34.199.12.114:3000/api/dashboards/importAssets", request, String.class);
+				    String resp = restTemplate.postForObject("http://localhost:3000/api/dashboards/importAssets", request, String.class);
 				    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
 				    respNode.put("dashboardCatalogueId", cd.getId());
 				    respNode.put("accountId", accountId);
 				    respNode.put("cloudElement", cd.getAssociatedCloudElementType());
+				    respNode.put("arn", (String)sd.getMetadata_json().get("associatedCloudElementId"));
 				    respNode.put("url", respNode.get("url").asText());
 				    ArrayNode jnArray = (ArrayNode)viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
 				    jnArray.add(respNode);
