@@ -54,7 +54,7 @@ public class ViewJsonController {
 		}
 		Long id = Long.parseLong(serviceId);
 		Optional<ServiceDetail> osd = serviceDetailService.getServiceDetail(id);
-		if(osd.isPresent()) {
+		if(osd.isPresent() && osd.get().getView_json() != null) {
 			return ResponseEntity.status(HttpStatus.OK).body(osd.get().getView_json());
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(ViewJsonResponse.builder().build());
