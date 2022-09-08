@@ -136,7 +136,8 @@ public class AwsService {
 		
 		if (StringUtils.isBlank(object.get("dataSourceName")) || StringUtils.isBlank(object.get("associatedCloudElementType")) ||
 				StringUtils.isBlank(object.get("associatedSLAType")) || StringUtils.isBlank(object.get("jsonLocation")) ||
-				StringUtils.isBlank(object.get("associatedCloud")) || StringUtils.isBlank(object.get("accountId")) ) {
+				StringUtils.isBlank(object.get("associatedCloud")) || StringUtils.isBlank(object.get("accountId")) || 
+				StringUtils.isBlank(object.get("associatedCloudElementId"))) {
 			logger.error("Mandatory fields missing");
 			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
 		}
@@ -151,6 +152,7 @@ public class AwsService {
 		String associatedCloud = object.get("associatedCloud");
 //		String associatedCreds = object.get("associatedCreds");
 		String accountId = object.get("accountId");
+		String associatedCloudElementId = object.get("associatedCloudElementId");
 		
 		String bucket = getBucket(jsonLocation);
 		String fileName = getFileName(jsonLocation);
@@ -182,6 +184,20 @@ public class AwsService {
 				ObjectNode oPanel = (ObjectNode)panel;
 				oPanel.put("datasource", dataSourceName);
 				arrayNode.add(oPanel);
+				if(oPanel.get("targets") != null) {
+					ArrayNode targetArray = mapper.createArrayNode();
+					for(JsonNode targetNode: oPanel.get("targets")) {
+						ObjectNode oTn = (ObjectNode)targetNode;
+						ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
+//						ObjectNode oApiId = (ObjectNode)oDimension.get("ApiId");
+						if(oDimension.get("ApiId") != null) {
+							oDimension.put("ApiId", associatedCloudElementId);
+						}
+						oTn.put("dimensions", oDimension);
+						targetArray.add(oTn);
+					}
+					oPanel.put("targets",targetArray);
+				}
 	        }
 			dataNode.put("panels", arrayNode);
 			dataNode.put("id", 0);

@@ -673,7 +673,7 @@ public class ServiceDetailService {
 		Map<String, List<ServiceDetail>> acMap = filterAccountSpecificList(getAllServiceDetail());
 		Map<String, String> criteriaMap = new HashMap<>();
 		Map<String, String> cdCriteriaMap = new HashMap<>();
-		Map<String, String> dataSourceCriteriaMap = new HashMap<>();
+//		Map<String, String> dataSourceCriteriaMap = new HashMap<>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
@@ -706,14 +706,6 @@ public class ServiceDetailService {
 				Catalogue catalogue = catalogueService.searchCatalogue(criteriaMap);
 				List<CloudDashboard> cloudElementSpeficCloudDashBoards = catalogue.getDetails().getOps().getCloudDashBoards();
 				
-//				List<CloudDashboard> resultList = new ArrayList<>();
-				
-//				for(CloudDashboard cd: cloudElementSpeficCloudDashBoards) {
-//					dataSourceCriteriaMap.clear();
-//					dataSourceCriteriaMap.put("associatedDataSourceType", cd.getAssociatedDataSourceType());
-//					Catalogue dsSpecifCatalogue = catalogueService.searchCatalogue(dataSourceCriteriaMap, cloudElementSpeficCloudDashBoards);
-//					List<CloudDashboard> resultCdList = dsSpecifCatalogue.getDetails().getOps().getCloudDashBoards();
-//					resultList.addAll(resultCdList);//
 				for(CloudDashboard cd: cloudElementSpeficCloudDashBoards) {
 					cdCriteriaMap.clear();
 					cdCriteriaMap.put("dataSourceName", cd.getAssociatedDataSourceType()); 
@@ -722,6 +714,7 @@ public class ServiceDetailService {
 					cdCriteriaMap.put("jsonLocation", cd.getJsonLocation());
 					cdCriteriaMap.put("associatedCloud",cd.getAssociatedCloud()); 
 					cdCriteriaMap.put("accountId",accountId);
+					cdCriteriaMap.put("associatedCloudElementId",(String)sd.getMetadata_json().get("associatedCloudElementId"));
 					
 					Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client);
 					ObjectNode dashboardNode = (ObjectNode)mapper.readTree(dashboard.getData());
@@ -730,8 +723,8 @@ public class ServiceDetailService {
 		            String slug = dashboard.getInputType() + "_" + dashboard.getElementType() + "_" + randomAlphabeticString();
 		            dashboardNode.put("slug", slug);
 		            dashboardNode.put("title",slug);
-		            dashboardNode.put("cloudElement",cd.getAssociatedCloudElementType());
-		            dashboardNode.put("arn", (String)sd.getMetadata_json().get("associatedCloudElementId"));
+//		            dashboardNode.put("cloudElement",cd.getAssociatedCloudElementType());
+//		            dashboardNode.put("arn", (String)sd.getMetadata_json().get("associatedCloudElementId"));
 		            
 		            ObjectNode dataJs = mapper.createObjectNode();
 					dataJs.put("Dashboard", dashboardNode);
@@ -742,11 +735,10 @@ public class ServiceDetailService {
 					dataJs.put("PluginId", "");
 					dataJs.put("FolderId", 0);
 					dataJs.put("IsFolder", false);
-					dataJs.put("CloudElement",cd.getAssociatedCloudElementType());
-					dataJs.put("arn", (String)sd.getMetadata_json().get("associatedCloudElementId"));
+					dataJs.put("ServiceId",String.valueOf(sd.getId()));
 					
 				    HttpEntity<String> request = new HttpEntity<String>(dataJs.toString(), headers);
-				    String resp = restTemplate.postForObject("http://localhost:3000/api/dashboards/importAssets", request, String.class);
+				    String resp = restTemplate.postForObject("http://34.199.12.114:3000/api/dashboards/importAssets", request, String.class);
 				    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
 				    respNode.put("dashboardCatalogueId", cd.getId());
 				    respNode.put("accountId", accountId);
