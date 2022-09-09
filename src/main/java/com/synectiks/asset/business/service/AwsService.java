@@ -184,20 +184,43 @@ public class AwsService {
 				ObjectNode oPanel = (ObjectNode)panel;
 				oPanel.put("datasource", dataSourceName);
 				arrayNode.add(oPanel);
-				if(oPanel.get("targets") != null) {
-					ArrayNode targetArray = mapper.createArrayNode();
-					for(JsonNode targetNode: oPanel.get("targets")) {
-						ObjectNode oTn = (ObjectNode)targetNode;
-						ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
-//						ObjectNode oApiId = (ObjectNode)oDimension.get("ApiId");
-						if(oDimension.get("ApiId") != null) {
-							oDimension.put("ApiId", associatedCloudElementId);
+				
+				if(associatedCloudElementType.equalsIgnoreCase("API-Gateway")) {
+					if(oPanel.get("targets") != null) {
+						ArrayNode targetArray = mapper.createArrayNode();
+						for(JsonNode targetNode: oPanel.get("targets")) {
+							ObjectNode oTn = (ObjectNode)targetNode;
+							ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
+							if(oDimension.get("ApiId") != null) {
+								oDimension.put("ApiId", associatedCloudElementId);
+							}
+							oTn.put("dimensions", oDimension);
+							targetArray.add(oTn);
 						}
-						oTn.put("dimensions", oDimension);
-						targetArray.add(oTn);
+						oPanel.put("targets",targetArray);
 					}
-					oPanel.put("targets",targetArray);
+				}else if(associatedCloudElementType.equalsIgnoreCase("Dynamodb")) {
+					if(oPanel.get("targets") != null) {
+						ArrayNode targetArray = mapper.createArrayNode();
+						for(JsonNode targetNode: oPanel.get("targets")) {
+							ObjectNode oTn = (ObjectNode)targetNode;
+							
+							ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
+							if(oDimension != null && oDimension.get("TableName") != null) {
+								oDimension.put("TableName", associatedCloudElementId);
+							}
+							if(oDimension != null && oDimension.get("Operation") != null) {
+								oDimension.put("Operation", "Query");
+							}
+							oTn.put("dimensions", oDimension);
+							
+							targetArray.add(oTn);
+						}
+						oPanel.put("targets",targetArray);
+					}
 				}
+				
+				
 	        }
 			dataNode.put("panels", arrayNode);
 			dataNode.put("id", 0);

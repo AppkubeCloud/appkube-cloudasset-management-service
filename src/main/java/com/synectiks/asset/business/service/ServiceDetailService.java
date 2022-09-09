@@ -315,12 +315,14 @@ public class ServiceDetailService {
 						for(Environment environment: product.getEnvironments()) {
 							if(environment.getServices() != null) {
 								com.synectiks.asset.response.Service service = environment.getServices();
+								
 								if(service.getBusiness() != null) {
+//									List<App> appList = new ArrayList<>();
+//									List<Data> dataList = new ArrayList<>();
 									for(BusinessService bs: service.getBusiness()) {
-										List<App> appList = new ArrayList<>();
-										List<Data> dataList = new ArrayList<>();
-										bs.setApp(appList);
-										bs.setData(dataList);
+										
+//										bs.setApp(appList);
+//										bs.setData(dataList);
 										
 										for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
 											if(entry.getKey().equals(account.getAccount())) {
@@ -340,10 +342,24 @@ public class ServiceDetailService {
 															String serviceType = (String)sd.getMetadata_json().get("serviceType");
 															if(serviceType.equalsIgnoreCase("App")) {
 																App app = buildApp(sd, envName);
-																bs.getApp().add(app);
+																if(bs.getApp() == null) {
+																	List<App> appList = new ArrayList<>();
+																	appList.add(app);
+																	bs.setApp(appList);
+																}else {
+																	bs.getApp().add(app);
+																}
+//																bs.getApp().add(app);
 															}else if(serviceType.equalsIgnoreCase("Data")) {
 																Data data = buildData(sd, envName);
-																bs.getData().add(data);
+																if(bs.getData() == null) {
+																	List<Data> dataList = new ArrayList<>();
+																	dataList.add(data);
+																	bs.setData(dataList);
+																}else {
+																	bs.getData().add(data);
+																}
+//																bs.getData().add(data);
 															}
 														}
 													}
@@ -353,11 +369,11 @@ public class ServiceDetailService {
 									}
 								}
 								if(service.getCommon() != null) {
+//									List<App> appList = new ArrayList<>();
+//									List<Data> dataList = new ArrayList<>();
 									for(CommonService cs: service.getCommon()) {
-										List<App> appList = new ArrayList<>();
-										List<Data> dataList = new ArrayList<>();
-										cs.setApp(appList);
-										cs.setData(dataList);
+//										cs.setApp(appList);
+//										cs.setData(dataList);
 										
 										for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
 											if(entry.getKey().equals(account.getAccount())) {
@@ -378,10 +394,24 @@ public class ServiceDetailService {
 															String serviceType = (String)sd.getMetadata_json().get("serviceType");
 															if(serviceType.equalsIgnoreCase("App")) {
 																App app = buildApp(sd, envName);
-																cs.getApp().add(app);
+																if(cs.getApp() == null) {
+																	List<App> appList = new ArrayList<>();
+																	appList.add(app);
+																	cs.setApp(appList);
+																}else {
+																	cs.getApp().add(app);
+																}
+																
 															}else if(serviceType.equalsIgnoreCase("Data")) {
 																Data data = buildData(sd, envName);
-																cs.getData().add(data);
+																if(cs.getData() == null) {
+																	List<Data> dataList = new ArrayList<>();
+																	dataList.add(data);
+																	cs.setData(dataList);
+																}else {
+																	cs.getData().add(data);
+																}
+																
 															}
 														}
 													}
