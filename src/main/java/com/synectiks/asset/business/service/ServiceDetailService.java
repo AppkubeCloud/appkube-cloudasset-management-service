@@ -342,23 +342,9 @@ public class ServiceDetailService {
 															String serviceType = (String)sd.getMetadata_json().get("serviceType");
 															if(serviceType.equalsIgnoreCase("App")) {
 																App app = buildApp(sd, envName);
-//																if(bs.getApp() == null) {
-//																	List<App> appList = new ArrayList<>();
-//																	appList.add(app);
-//																	bs.setApp(appList);
-//																}else {
-//																	bs.getApp().add(app);
-//																}
 																bs.getApp().add(app);
 															}else if(serviceType.equalsIgnoreCase("Data")) {
 																Data data = buildData(sd, envName);
-//																if(bs.getData() == null) {
-//																	List<Data> dataList = new ArrayList<>();
-//																	dataList.add(data);
-//																	bs.setData(dataList);
-//																}else {
-//																	bs.getData().add(data);
-//																}
 																bs.getData().add(data);
 															}
 														}
@@ -394,23 +380,9 @@ public class ServiceDetailService {
 															String serviceType = (String)sd.getMetadata_json().get("serviceType");
 															if(serviceType.equalsIgnoreCase("App")) {
 																App app = buildApp(sd, envName);
-//																if(cs.getApp() == null) {
-//																	List<App> appList = new ArrayList<>();
-//																	appList.add(app);
-//																	cs.setApp(appList);
-//																}else {
-//																	cs.getApp().add(app);
-//																}
 																cs.getApp().add(app);
 															}else if(serviceType.equalsIgnoreCase("Data")) {
 																Data data = buildData(sd, envName);
-//																if(cs.getData() == null) {
-//																	List<Data> dataList = new ArrayList<>();
-//																	dataList.add(data);
-//																	cs.setData(dataList);//
-//																}else {
-//																	cs.getData().add(data);
-//																}
 																cs.getData().add(data);
 															}
 														}
@@ -501,6 +473,8 @@ public class ServiceDetailService {
 							List<CommonService> commonServiceList = new ArrayList<>();
 							service.setBusiness(businessServiceList);
 							service.setCommon(commonServiceList);
+							Map<String, BusinessService> bsMap = new HashMap();
+							Map<String, CommonService> csMap = new HashMap();
 							
 							for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
 								if(entry.getKey().equals(account.getAccount())) {
@@ -518,36 +492,44 @@ public class ServiceDetailService {
 												String serviceNature = (String)sd.getMetadata_json().get("serviceNature");
 												if(serviceNature.equalsIgnoreCase("Business")) {
 													String associatedBusinessService = (String)sd.getMetadata_json().get("associatedBusinessService");
-													String description = (String)sd.getMetadata_json().get("description");
+//													String description = (String)sd.getMetadata_json().get("description");
 													String associatedOU = (String)sd.getMetadata_json().get("associatedOU");
 													String associatedDept = (String)sd.getMetadata_json().get("associatedDept");
 													
 													BusinessService bs = BusinessService.builder()
 															.name(associatedBusinessService)
-															.description(description)
+//															.description(description)
 															.associatedOU(associatedOU)
 															.associatedDept(associatedDept)
 															.build();
-														service.getBusiness().add(bs);
+//													service.getBusiness().add(bs);
+													bsMap.put(associatedBusinessService, bs);
 												}else if(serviceNature.equalsIgnoreCase("Common")) {
 													String associatedCommonService = (String)sd.getMetadata_json().get("associatedCommonService");
-													String description = (String)sd.getMetadata_json().get("description");
+//													String description = (String)sd.getMetadata_json().get("description");
 													String associatedOU = (String)sd.getMetadata_json().get("associatedOU");
 													String associatedDept = (String)sd.getMetadata_json().get("associatedDept");
 													
 													CommonService cs = CommonService.builder()
 															.name(associatedCommonService)
-															.description(description)
+//															.description(description)
 															.associatedOU(associatedOU)
 															.associatedDept(associatedDept)
 															.build(); 
-														service.getCommon().add(cs);
+//													service.getCommon().add(cs);
+													csMap.put(associatedCommonService, cs);
 												}
 												
 											}
 										}
 									}
 								}
+							}
+							for(Map.Entry<String, BusinessService> entry: bsMap.entrySet()) {
+								service.getBusiness().add(entry.getValue());
+							}
+							for(Map.Entry<String, CommonService> entry: csMap.entrySet()) {
+								service.getCommon().add(entry.getValue());
 							}
 							environment.setServices(service);
 						}
