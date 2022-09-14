@@ -20,6 +20,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonMappingException;
+import com.fasterxml.jackson.databind.JsonNode;
 import com.synectiks.asset.business.service.DataSourceService;
 import com.synectiks.asset.domain.DataSource;
 
@@ -84,4 +87,10 @@ public class DataSourceController {
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 	
+	@GetMapping("/proxy-grafana-data-source")
+	public ResponseEntity<JsonNode> getGrafanaDataSource(@RequestParam Map<String, String> obj) throws JsonMappingException, JsonProcessingException{
+		logger.info("Request to search grafana data-source");
+		JsonNode objectNode = dataSourceService.testGrafanaDatasource(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+	}
 }
