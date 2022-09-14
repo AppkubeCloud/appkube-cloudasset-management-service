@@ -180,9 +180,19 @@ public class DataSourceService {
 	}
 	
 
-	public JsonNode testGrafanaDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
+	public JsonNode getGrafanaDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
 	    ObjectMapper mapper = new ObjectMapper();
 	    String theUrl = "http://34.199.12.114:3000/api/datasources/accountid/"+obj.get("accountId");
+	    HttpHeaders headers = createHttpHeaders("admin","password");
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
+        JsonNode respNode = mapper.readTree(response.getBody());
+	    return respNode;
+	}
+	
+	public JsonNode getGrafanaMasterDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
+	    ObjectMapper mapper = new ObjectMapper();
+	    String theUrl = "http://34.199.12.114:3000/api/datasources/master-datasources";
 	    HttpHeaders headers = createHttpHeaders("admin","password");
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
         ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);

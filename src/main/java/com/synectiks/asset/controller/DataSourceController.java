@@ -90,7 +90,14 @@ public class DataSourceController {
 	@GetMapping("/proxy-grafana-data-source")
 	public ResponseEntity<JsonNode> getGrafanaDataSource(@RequestParam Map<String, String> obj) throws JsonMappingException, JsonProcessingException{
 		logger.info("Request to search grafana data-source");
-		JsonNode objectNode = dataSourceService.testGrafanaDatasource(obj);
+		JsonNode objectNode = dataSourceService.getGrafanaDatasource(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(objectNode);
+	}
+	
+	@GetMapping("/proxy-grafana-master-data-source")
+	public ResponseEntity<JsonNode> getGrafanaMasterDataSource(@RequestParam Map<String, String> obj) throws JsonMappingException, JsonProcessingException{
+		logger.info("Request to search grafana master-data-source");
+		JsonNode objectNode = dataSourceService.getGrafanaMasterDatasource(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(objectNode);
 	}
 }
