@@ -1,7 +1,6 @@
 package com.synectiks.asset.business.service;
 
 import java.time.Instant;
-import java.util.Base64;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
@@ -15,19 +14,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.HttpMethod;
-import org.springframework.http.MediaType;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
-import org.springframework.web.client.RestTemplate;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
-import com.fasterxml.jackson.databind.JsonMappingException;
-import com.fasterxml.jackson.databind.JsonNode;
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.domain.CloudEnvironment;
 import com.synectiks.asset.domain.DataSource;
 import com.synectiks.asset.repository.DataSourceRepository;
@@ -43,9 +31,6 @@ public class DataSourceService {
 	
 	@Autowired
 	private CloudEnvironmentService cloudEnvironmentService;
-	
-	@Autowired
-	private RestTemplate restTemplate;
 	
 	public Optional<DataSource> getDataSource(Long id) {
 		logger.info("Get data source by id: {}", id);
@@ -180,33 +165,5 @@ public class DataSourceService {
 	}
 	
 
-	public JsonNode getGrafanaDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
-	    ObjectMapper mapper = new ObjectMapper();
-	    String theUrl = "http://34.199.12.114:3000/api/datasources/accountid/"+obj.get("accountId");
-	    HttpHeaders headers = createHttpHeaders("admin","password");
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
-        JsonNode respNode = mapper.readTree(response.getBody());
-	    return respNode;
-	}
 	
-	public JsonNode getGrafanaMasterDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
-	    ObjectMapper mapper = new ObjectMapper();
-	    String theUrl = "http://34.199.12.114:3000/api/datasources/master-datasources";
-	    HttpHeaders headers = createHttpHeaders("admin","password");
-        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
-        ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
-        JsonNode respNode = mapper.readTree(response.getBody());
-	    return respNode;
-	}
-	
-	private HttpHeaders createHttpHeaders(String user, String password)
-	{
-	    String notEncoded = user + ":" + password;
-	    String encodedAuth = "Basic " + Base64.getEncoder().encodeToString(notEncoded.getBytes());
-	    HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.add("Authorization", encodedAuth);
-	    return headers;
-	}
 }

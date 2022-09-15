@@ -52,6 +52,9 @@ public final class Constants {
     
     public static final String DASHBOARD_TYPE[] = {PERFORMANCE,AVAILABILITY, RELIABILITY, ENDUSAGE, SECURITY, COMPLIANCE, ALERTS};
 	
+    public static String PROXY_GRAFANA_BASE_API = "http://34.199.12.114:3000/api";
+    public static String PROXY_GRAFANA_USER = "admin";
+    public static String PROXY_GRAFANA_PASSWORD = "password";
     
 //    public static final Map<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache > AWS_DISCOVERED_ASSET_CACHE = new HashMap<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache>();
     

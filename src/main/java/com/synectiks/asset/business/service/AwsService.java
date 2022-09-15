@@ -31,9 +31,6 @@ public class AwsService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AwsService.class);
 	
-//	@Autowired
-//	private CloudEnvironmentService cloudEnvironmentService;
-	
 	@Autowired
 	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
 	
@@ -43,7 +40,8 @@ public class AwsService {
 		
 		if (StringUtils.isBlank(object.get("dataSourceName")) || StringUtils.isBlank(object.get("associatedCloudElementType")) ||
 				StringUtils.isBlank(object.get("associatedSLAType")) || StringUtils.isBlank(object.get("jsonLocation")) ||
-				StringUtils.isBlank(object.get("associatedCloud")) || StringUtils.isBlank(object.get("accountId")) ) {
+				StringUtils.isBlank(object.get("associatedCloud")) || StringUtils.isBlank(object.get("accountId")) || 
+				StringUtils.isBlank(object.get("associatedCloudElementId"))) {
 			logger.error("Mandatory fields missing");
 			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
 		}
@@ -58,22 +56,10 @@ public class AwsService {
 		String associatedCloud = object.get("associatedCloud");
 //		String associatedCreds = object.get("associatedCreds");
 		String accountId = object.get("accountId");
+		String associatedCloudElementId = object.get("associatedCloudElementId");
 		
 		String bucket = getBucket(jsonLocation);
 		String fileName = getFileName(jsonLocation);
-		
-//		try {
-//			String ary[] = jsonLocation.split("/");
-//			if(ary.length < 2) {
-//				throw new BadRequestAlertException("Mandatory fields jsonLocation either missing or not correct. Its should be bucket/filename.json", "Dashboard", "mandatory.field.missing");
-//			}
-//			bucket = ary[0];
-//			fileName = ary[1];
-//		}catch(BadRequestAlertException e) {
-//			throw e;
-//		}catch(Exception e) {
-//			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
-//		}
 		
 		Map<String, String> searchMap = new HashMap<>();
 		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
@@ -84,51 +70,88 @@ public class AwsService {
 			throw new BadRequestAlertException("AWS S3 client connection could not be establised", "Dashboard", "aws.s3.connection.failed");
 		}
 		
-//		try {
-			S3Object file = s3Client.getObject(bucket, fileName);
+		S3Object file = s3Client.getObject(bucket, fileName);
+		
+		dashboard.setCloudName(associatedCloud);
+		dashboard.setElementType(associatedCloudElementType);
+//		dashboard.setTenantId(tenantId);
+		dashboard.setAccountId(accountId);
+		dashboard.setInputType(associatedSLAType);
+		dashboard.setFileName(fileName);
+		dashboard.setInputSourceId(dataSourceName);
+		String dName = associatedCloud+"_"+associatedCloudElementType+"_"+dataSourceName;
+		dashboard.setTitle(dName);
+		dashboard.setSlug(dName);
+		String data = displayTextInputStream(file.getObjectContent());
+		
+		ObjectMapper mapper = new ObjectMapper();
+		ArrayNode arrayNode = mapper.createArrayNode();
+		
+		ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
+		for(JsonNode panel : dataNode.get("panels")) {
+			ObjectNode oPanel = (ObjectNode)panel;
+			oPanel.put("datasource", dataSourceName);
+			arrayNode.add(oPanel);
 			
-			dashboard.setCloudName(associatedCloud);
-			dashboard.setElementType(associatedCloudElementType);
-	//		dashboard.setTenantId(tenantId);
-			dashboard.setAccountId(accountId);
-			dashboard.setInputType(associatedSLAType);
-			dashboard.setFileName(fileName);
-			dashboard.setInputSourceId(dataSourceName);
-			String dName = associatedCloud+"_"+associatedCloudElementType+"_"+dataSourceName;
-			dashboard.setTitle(dName);
-			dashboard.setSlug(dName);
-			String data = displayTextInputStream(file.getObjectContent());
+			if(associatedCloudElementType.equalsIgnoreCase("API-Gateway")) {
+				fillApiGatewayKey(associatedCloudElementId, mapper, oPanel);
+			}else if(associatedCloudElementType.equalsIgnoreCase("Dynamodb")) {
+				fillDynamoDbKey(associatedCloudElementId, mapper, oPanel);
+			}
 			
-			ObjectMapper mapper = new ObjectMapper();
-			ArrayNode arrayNode = mapper.createArrayNode();
-			
-			ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
-			for(JsonNode panel : dataNode.get("panels")) {
-				ObjectNode oPanel = (ObjectNode)panel;
-				oPanel.put("datasource", dataSourceName);
-				arrayNode.add(oPanel);
-	        }
-			dataNode.put("panels", arrayNode);
-			dataNode.put("id", 0);
-			dataNode.put("uid", "");
-			data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataNode);
-			logger.debug("Datasource updated. Json : "+ data);
-			
-			String uid = RandomStringUtils.random(8, true, true);
-			dashboard.setUid(uid);
-			dashboard.setData(data);
-			
-			DashboardMeta meta = new DashboardMeta();
-			meta.setSlug(dashboard.getSlug());
-			
-			dashboard.setDashboardMeta(meta);
-//		}
-//		finally {
-//			if(s3Client != null) {
-//				s3Client.shutdown();
-//			}
-//		}
+        }
+		dataNode.put("panels", arrayNode);
+		dataNode.put("id", 0);
+		dataNode.put("uid", "");
+		data = mapper.writerWithDefaultPrettyPrinter().writeValueAsString(dataNode);
+		logger.debug("Datasource updated. Json : "+ data);
+		
+		String uid = RandomStringUtils.random(8, true, true);
+		dashboard.setUid(uid);
+		dashboard.setData(data);
+		
+		DashboardMeta meta = new DashboardMeta();
+		meta.setSlug(dashboard.getSlug());
+		
+		dashboard.setDashboardMeta(meta);
 		return dashboard;
+	}
+
+	private void fillDynamoDbKey(String associatedCloudElementId, ObjectMapper mapper, ObjectNode oPanel) {
+		if(oPanel.get("targets") != null) {
+			ArrayNode targetArray = mapper.createArrayNode();
+			for(JsonNode targetNode: oPanel.get("targets")) {
+				ObjectNode oTn = (ObjectNode)targetNode;
+				
+				ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
+				if(oDimension != null && oDimension.get("TableName") != null) {
+					oDimension.put("TableName", associatedCloudElementId);
+				}
+				if(oDimension != null && oDimension.get("Operation") != null) {
+					oDimension.put("Operation", "Query");
+				}
+				oTn.put("dimensions", oDimension);
+				
+				targetArray.add(oTn);
+			}
+			oPanel.put("targets",targetArray);
+		}
+	}
+
+	private void fillApiGatewayKey(String associatedCloudElementId, ObjectMapper mapper, ObjectNode oPanel) {
+		if(oPanel.get("targets") != null) {
+			ArrayNode targetArray = mapper.createArrayNode();
+			for(JsonNode targetNode: oPanel.get("targets")) {
+				ObjectNode oTn = (ObjectNode)targetNode;
+				ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
+				if(oDimension.get("ApiId") != null) {
+					oDimension.put("ApiId", associatedCloudElementId);
+				}
+				oTn.put("dimensions", oDimension);
+				targetArray.add(oTn);
+			}
+			oPanel.put("targets",targetArray);
+		}
 	}
 	
 	public Dashboard getDashboardFromAwsS3(Map<String, String> object, AmazonS3 s3Client) throws Exception {
@@ -186,42 +209,12 @@ public class AwsService {
 				arrayNode.add(oPanel);
 				
 				if(associatedCloudElementType.equalsIgnoreCase("API-Gateway")) {
-					if(oPanel.get("targets") != null) {
-						ArrayNode targetArray = mapper.createArrayNode();
-						for(JsonNode targetNode: oPanel.get("targets")) {
-							ObjectNode oTn = (ObjectNode)targetNode;
-							ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
-							if(oDimension.get("ApiId") != null) {
-								oDimension.put("ApiId", associatedCloudElementId);
-							}
-							oTn.put("dimensions", oDimension);
-							targetArray.add(oTn);
-						}
-						oPanel.put("targets",targetArray);
-					}
+					fillApiGatewayKey(associatedCloudElementId, mapper, oPanel);
 				}else if(associatedCloudElementType.equalsIgnoreCase("Dynamodb")) {
-					if(oPanel.get("targets") != null) {
-						ArrayNode targetArray = mapper.createArrayNode();
-						for(JsonNode targetNode: oPanel.get("targets")) {
-							ObjectNode oTn = (ObjectNode)targetNode;
-							
-							ObjectNode oDimension = (ObjectNode)oTn.get("dimensions");
-							if(oDimension != null && oDimension.get("TableName") != null) {
-								oDimension.put("TableName", associatedCloudElementId);
-							}
-							if(oDimension != null && oDimension.get("Operation") != null) {
-								oDimension.put("Operation", "Query");
-							}
-							oTn.put("dimensions", oDimension);
-							
-							targetArray.add(oTn);
-						}
-						oPanel.put("targets",targetArray);
-					}
+					fillDynamoDbKey(associatedCloudElementId, mapper, oPanel);
 				}
-				
-				
 	        }
+			
 			dataNode.put("panels", arrayNode);
 			dataNode.put("id", 0);
 			dataNode.put("uid", "");
@@ -275,6 +268,5 @@ public class AwsService {
 	private String getFileName(String jsonLocation) {
 		String f = jsonLocation.substring(jsonLocation.indexOf("//")+2);
 		return f.substring(f.lastIndexOf("/")+1);
-		
 	}
 }
