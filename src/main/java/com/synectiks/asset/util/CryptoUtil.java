@@ -77,4 +77,14 @@ public class CryptoUtil {
         String secretKeyString = Base64.getEncoder().encodeToString(secKey.getEncoded());
         return secretKeyString;
     }
+	
+	public static String encodeBase64(String source) {
+		return Base64.getEncoder().encodeToString(source.getBytes());
+	}
+	
+	public static String decodeBase64(String source) {
+		byte[] decodedBytes = Base64.getDecoder().decode(source);
+		return new String(decodedBytes);
+	}
+	
 }
