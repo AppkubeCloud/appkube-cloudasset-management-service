@@ -34,7 +34,6 @@ public class AwsService {
 	@Autowired
 	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
 	
-	
 	public Dashboard getDashboardFromAwsS3(Map<String, String> object) throws IOException {
 		logger.info("Downloading dashboard json from AWS");
 		
@@ -46,15 +45,11 @@ public class AwsService {
 			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
 		}
 		
-//		String dashboardId = object.get("dashboardId");
-//		String dashboardName = object.get("dashboardName");
-//		String dataSourceId = object.get("dataSourceId");
 		String dataSourceName = object.get("dataSourceName");
 		String associatedCloudElementType = object.get("associatedCloudElementType");
 		String associatedSLAType = object.get("associatedSLAType");
 		String jsonLocation = object.get("jsonLocation");
 		String associatedCloud = object.get("associatedCloud");
-//		String associatedCreds = object.get("associatedCreds");
 		String accountId = object.get("accountId");
 		String associatedCloudElementId = object.get("associatedCloudElementId");
 		
@@ -74,7 +69,6 @@ public class AwsService {
 		
 		dashboard.setCloudName(associatedCloud);
 		dashboard.setElementType(associatedCloudElementType);
-//		dashboard.setTenantId(tenantId);
 		dashboard.setAccountId(accountId);
 		dashboard.setInputType(associatedSLAType);
 		dashboard.setFileName(fileName);
@@ -86,7 +80,6 @@ public class AwsService {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		ArrayNode arrayNode = mapper.createArrayNode();
-		
 		ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
 		for(JsonNode panel : dataNode.get("panels")) {
 			ObjectNode oPanel = (ObjectNode)panel;
@@ -154,7 +147,7 @@ public class AwsService {
 		}
 	}
 	
-	public Dashboard getDashboardFromAwsS3(Map<String, String> object, AmazonS3 s3Client) throws Exception {
+	public Dashboard getDashboardFromAwsS3(Map<String, String> object, AmazonS3 s3Client, JsonNode dsInstanceJson) throws Exception {
 		logger.info("Downloading dashboard json from AWS");
 		
 		if (StringUtils.isBlank(object.get("dataSourceName")) || StringUtils.isBlank(object.get("associatedCloudElementType")) ||
@@ -165,15 +158,11 @@ public class AwsService {
 			throw new BadRequestAlertException("Mandatory fields missing", "Dashboard", "mandatory.field.missing");
 		}
 		
-//		String dashboardId = object.get("dashboardId");
-//		String dashboardName = object.get("dashboardName");
-//		String dataSourceId = object.get("dataSourceId");
 		String dataSourceName = object.get("dataSourceName");
 		String associatedCloudElementType = object.get("associatedCloudElementType");
 		String associatedSLAType = object.get("associatedSLAType");
 		String jsonLocation = object.get("jsonLocation");
 		String associatedCloud = object.get("associatedCloud");
-//		String associatedCreds = object.get("associatedCreds");
 		String accountId = object.get("accountId");
 		String associatedCloudElementId = object.get("associatedCloudElementId");
 		
@@ -189,7 +178,6 @@ public class AwsService {
 			
 			dashboard.setCloudName(associatedCloud);
 			dashboard.setElementType(associatedCloudElementType);
-	//		dashboard.setTenantId(tenantId);
 			dashboard.setAccountId(accountId);
 			dashboard.setInputType(associatedSLAType);
 			dashboard.setFileName(fileName);
@@ -201,11 +189,12 @@ public class AwsService {
 			
 			ObjectMapper mapper = new ObjectMapper();
 			ArrayNode arrayNode = mapper.createArrayNode();
-			
 			ObjectNode dataNode = (ObjectNode)mapper.readTree(data);
 			for(JsonNode panel : dataNode.get("panels")) {
 				ObjectNode oPanel = (ObjectNode)panel;
-				oPanel.put("datasource", dataSourceName);
+				for(JsonNode dsNode: dsInstanceJson) {
+					oPanel.put("datasource", dsNode.get("name").asText());
+				}
 				arrayNode.add(oPanel);
 				
 				if(associatedCloudElementType.equalsIgnoreCase("API-Gateway")) {

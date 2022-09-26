@@ -80,6 +80,9 @@ public class ServiceDetailService {
 	@Autowired
 	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
 	
+	@Autowired
+	private ProxyGrafanaApiService proxyGrafanaApiService;
+	
 	
 	public Optional<ServiceDetail> getServiceDetail(Long id) {
 		logger.info("Get service detail by id: {}", id);
@@ -689,9 +692,9 @@ public class ServiceDetailService {
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-		HttpHeaders headers = new HttpHeaders();
-	    headers.setContentType(MediaType.APPLICATION_JSON);
-	    headers.setBasicAuth("YWRtaW46YWRtaW4=");
+//		HttpHeaders headers = new HttpHeaders();
+//	    headers.setContentType(MediaType.APPLICATION_JSON);
+//	    headers.setBasicAuth("YWRtaW46YWRtaW4=");
 	    
 	    Map<String, String> searchMap = new HashMap<>();
 		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
@@ -719,6 +722,11 @@ public class ServiceDetailService {
 				List<CloudDashboard> cloudElementSpeficCloudDashBoards = catalogue.getDetails().getOps().getCloudDashBoards();
 				
 				for(CloudDashboard cd: cloudElementSpeficCloudDashBoards) {
+					JsonNode dsInstanceJson = proxyGrafanaApiService.getGrafanaDatasourceByAccountIdAndInputType(accountId, cd.getAssociatedDataSourceType());
+					if(dsInstanceJson.isArray() && dsInstanceJson.isEmpty()) {
+						logger.warn("Datasource not configured in grafana. Dashboard cannot be imported");
+						continue;
+					}
 					cdCriteriaMap.clear();
 					cdCriteriaMap.put("dataSourceName", cd.getAssociatedDataSourceType()); 
 					cdCriteriaMap.put("associatedCloudElementType",cd.getAssociatedCloudElementType());
@@ -728,7 +736,7 @@ public class ServiceDetailService {
 					cdCriteriaMap.put("accountId",accountId);
 					cdCriteriaMap.put("associatedCloudElementId",(String)sd.getMetadata_json().get("associatedCloudElementId"));
 					
-					Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client);
+					Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client, dsInstanceJson);
 					ObjectNode dashboardNode = (ObjectNode)mapper.readTree(dashboard.getData());
 					dashboardNode.put("id",0);
 					dashboardNode.put("uid","");
@@ -749,9 +757,11 @@ public class ServiceDetailService {
 					dataJs.put("IsFolder", false);
 					dataJs.put("ServiceId",String.valueOf(sd.getId()));
 					
-				    HttpEntity<String> request = new HttpEntity<String>(dataJs.toString(), headers);
-				    String resp = restTemplate.postForObject("http://34.199.12.114:3000/api/dashboards/importAssets", request, String.class);
-				    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
+//					HttpEntity<String> request = new HttpEntity<String>(dataJs.toString(), headers);
+//				    String resp = restTemplate.postForObject("http://34.199.12.114:3000/api/dashboards/importAssets", request, String.class);
+//				    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
+				    ObjectNode respNode = proxyGrafanaApiService.importDashboardInGrafana(dataJs);
+				    
 				    respNode.put("dashboardCatalogueId", cd.getId());
 				    respNode.put("accountId", accountId);
 				    respNode.put("cloudElement", cd.getAssociatedCloudElementType());

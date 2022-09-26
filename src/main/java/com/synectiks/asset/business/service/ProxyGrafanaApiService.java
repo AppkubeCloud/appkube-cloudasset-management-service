@@ -62,6 +62,17 @@ public class ProxyGrafanaApiService {
 	    return respNode;
 	}
 	
+	public JsonNode getGrafanaDatasourceByAccountIdAndInputType(String accountId, String inputType) throws JsonMappingException, JsonProcessingException {
+		logger.info("Search grafana data-source by account id {} and input type {}", accountId, inputType);
+		ObjectMapper mapper = new ObjectMapper();
+	    String theUrl = Constants.PROXY_GRAFANA_BASE_API+"/datasources/accountid/"+accountId+"/inputType/"+inputType;
+	    HttpHeaders headers = createHttpHeaders();
+        HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
+        ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
+        JsonNode respNode = mapper.readTree(response.getBody());
+	    return respNode;
+	}
+	
 	private HttpHeaders createHttpHeaders()	{
 		String notEncoded = Constants.PROXY_GRAFANA_USER + ":" + Constants.PROXY_GRAFANA_PASSWORD;
 	    String encodedAuth = "Basic " + Base64.getEncoder().encodeToString(notEncoded.getBytes());
