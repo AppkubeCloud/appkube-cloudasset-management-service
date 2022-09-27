@@ -34,7 +34,7 @@ public class ServicesDetailController {
 	private static final Logger logger = LoggerFactory.getLogger(ServicesDetailController.class);
 	
 	@Autowired
-	ServiceDetailService serviceDetailService;
+	private ServiceDetailService serviceDetailService;
 	
 	@GetMapping("/service-detail/{id}")
 	public ResponseEntity<ServiceDetail> getServiceDetail(@PathVariable Long id) {
@@ -97,19 +97,6 @@ public class ServicesDetailController {
 	
 	@GetMapping("/service-detail/search-with-filter")
 	public ResponseEntity<ServiceDetailReportResponse> searchServiceDetailWithFilter(@RequestParam Map<String, String> obj){
-//		logger.info("Request to search service-detail with filter parameters");
-//		Map<String, String> obj = null;
-//		if(!StringUtils.isBlank(params)) {
-//			String keyValuePairs = CryptoUtil.decrypt(params);
-//			if(!StringUtils.isBlank(keyValuePairs)) {
-//				obj = convertKeyValuePairToMap(keyValuePairs);
-//			}else {
-//				logger.error("Decryption failed. Returning error FAILED_DEPENDENCY. Error code: "+HttpStatus.FAILED_DEPENDENCY);
-//				return ResponseEntity.status(HttpStatus.FAILED_DEPENDENCY).body(null);
-//			}
-//		}else {
-//			obj = new HashMap<>();
-//		}
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(sdr);
 	}
@@ -132,9 +119,9 @@ public class ServicesDetailController {
 	}
 	
 	@GetMapping("/service-detail/enable-monitoring")
-	public ResponseEntity<Object> enableMonitoring() throws Exception {
+	public ResponseEntity<Object> enableMonitoring(@RequestParam Map<String, String> obj) throws Exception {
 		logger.info("Request to deploy all the dashboards for each service");
-		serviceDetailService.enableMonitoring();
+		serviceDetailService.enableMonitoring(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 }

@@ -17,9 +17,6 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
-import org.springframework.http.HttpEntity;
-import org.springframework.http.HttpHeaders;
-import org.springframework.http.MediaType;
 import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 
@@ -666,36 +663,14 @@ public class ServiceDetailService {
 		return acMap;
 	}
 	
-//	private Map<String, List<String>> simplifyVpcMap(Map<String, List<ServiceDetail>> acMap) {
-//	Map<String, List<String>> vpcMap = new HashMap<>();
-//	
-//	for(Map.Entry<String, List<ServiceDetail>> entry: acMap.entrySet()) {
-//		for(ServiceDetail sd: entry.getValue()) {
-//			if(vpcMap.containsKey(entry.getKey())) {
-//				vpcMap.get(entry.getKey()).add((String)sd.getMetadata_json().get("associatedProductEnclave"));
-//			}else {
-//				List<String> vpcList = new ArrayList<>();
-//				vpcList.add((String)sd.getMetadata_json().get("associatedProductEnclave"));
-//				vpcMap.put(entry.getKey(), vpcList);
-//			}
-//		}
-//	}
-//	return vpcMap;
-//}
-	
-	public void enableMonitoring() throws Exception {
+	public void enableMonitoring(Map<String, String> obj) throws Exception {
 		logger.info("Start auto deployment of dashboards for each service");
-		Map<String, List<ServiceDetail>> acMap = filterAccountSpecificList(getAllServiceDetail());
+		Map<String, List<ServiceDetail>> acMap = filterAccountSpecificList(searchServiceDetailWithFilter(obj).getServices());
 		Map<String, String> criteriaMap = new HashMap<>();
 		Map<String, String> cdCriteriaMap = new HashMap<>();
-//		Map<String, String> dataSourceCriteriaMap = new HashMap<>();
 		
 		ObjectMapper mapper = new ObjectMapper();
 		
-//		HttpHeaders headers = new HttpHeaders();
-//	    headers.setContentType(MediaType.APPLICATION_JSON);
-//	    headers.setBasicAuth("YWRtaW46YWRtaW4=");
-	    
 	    Map<String, String> searchMap = new HashMap<>();
 		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
 		AmazonS3 s3Client = Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
@@ -757,9 +732,6 @@ public class ServiceDetailService {
 					dataJs.put("IsFolder", false);
 					dataJs.put("ServiceId",String.valueOf(sd.getId()));
 					
-//					HttpEntity<String> request = new HttpEntity<String>(dataJs.toString(), headers);
-//				    String resp = restTemplate.postForObject("http://34.199.12.114:3000/api/dashboards/importAssets", request, String.class);
-//				    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
 				    ObjectNode respNode = proxyGrafanaApiService.importDashboardInGrafana(dataJs);
 				    
 				    respNode.put("dashboardCatalogueId", cd.getId());
