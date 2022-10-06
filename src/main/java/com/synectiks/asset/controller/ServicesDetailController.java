@@ -6,6 +6,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -22,10 +23,12 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
+import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @RestController
 @RequestMapping("/api")
@@ -82,10 +85,9 @@ public class ServicesDetailController {
 	}
 	
 	@GetMapping("/service-detail/search")
-	public ResponseEntity<ServiceDetailReportResponse> searchAllServiceDetail(@RequestParam Map<String, String> obj){
+	public ResponseEntity<ServiceDetailReportResponse> search(@RequestParam Map<String, String> obj){
 		logger.info("Request to search service-detail");
-		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(sdr);
+		return searchServiceDetailWithFilter(obj);
 	}
 	
 	@PostMapping("/service-detail/create-bulk-data")
@@ -124,4 +126,28 @@ public class ServicesDetailController {
 		serviceDetailService.enableMonitoring(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
+	
+	@PostMapping("/service-detail/view-json")
+	public ResponseEntity<Map<String, Object>> viewJson(@RequestBody ObjectNode objectNode) throws IOException {
+		if(StringUtils.isBlank(objectNode.get("serviceId").asText())) {
+			throw new BadRequestAlertException("Service id not provided", "ViewJson", "idnotprovided");
+		}
+		serviceDetailService.updateViewJson(objectNode);
+		return getViewJson(objectNode.get("serviceId").asText());
+	}
+	
+	@GetMapping("/service-detail/view-json")
+	public ResponseEntity<Map<String, Object>> getViewJson(@RequestParam String serviceId) throws JsonProcessingException {
+		logger.info("Getting view json. Service id {}: ", serviceId);
+		if(StringUtils.isBlank(serviceId)) {
+			throw new BadRequestAlertException("Service id not provided", "ViewJson", "idnotprovided");
+		}
+		Long id = Long.parseLong(serviceId);
+		Optional<ServiceDetail> osd = serviceDetailService.getServiceDetail(id);
+		if(osd.isPresent() && osd.get().getView_json() != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(osd.get().getView_json());
+		}
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
+	
 }

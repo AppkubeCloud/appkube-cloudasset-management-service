@@ -108,7 +108,7 @@ public class CloudEnvironmentController {
 		CloudEnvironment ceObj = cloudEnvironmentService.searchAllCloudEnvironment(obj).get(0);
 		Cloud cloud = cloudService.searchAllCloud(new HashMap<>()).get(0);
 		
-		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
+		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		Map<String, String> landingZone = new HashMap<>();
 		for(ServiceDetail sd: sdr.getServices()) {
 			landingZone.put((String)sd.getMetadata_json().get("associatedLandingZone"), (String)sd.getMetadata_json().get("associatedLandingZone"));
@@ -119,7 +119,7 @@ public class CloudEnvironmentController {
 		for (String key: landingZone.keySet()) {
 			searchMap.clear();
 			searchMap.put("associatedLandingZone", key);
-			ServiceDetailReportResponse lzone = serviceDetailService.searchAllServiceDetail(searchMap);
+			ServiceDetailReportResponse lzone = serviceDetailService.searchServiceDetailWithFilter(searchMap);
 			int totalApp = 0 ;
 			int totalData = 0;
 			Map<String, String> productMap = new HashMap<String, String>();

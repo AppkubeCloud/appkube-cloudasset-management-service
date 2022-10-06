@@ -61,7 +61,7 @@ public class ServiceAnalyticsService {
 	public void createBulkAnalyticData(String startDateTime, String endDateTime, String type) throws ParseException, InterruptedException {
 		Date startDate = DateFormatUtil.convertStringToUtilDate("MM-dd-yyyy hh:mm", startDateTime);
 		Date endDate = DateFormatUtil.convertStringToUtilDate("MM-dd-yyyy hh:mm", endDateTime);
-		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(new HashMap());
+		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(new HashMap());
 		for(ServiceDetail sd: sdr.getServices()) {
 			long pause = 10000L;
 			long endTime = endDate.getTime();

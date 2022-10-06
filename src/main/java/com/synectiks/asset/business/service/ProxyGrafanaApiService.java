@@ -36,8 +36,7 @@ public class ProxyGrafanaApiService {
 		HttpEntity<String> request = new HttpEntity<String>(obj.toString(), headers);
 	    String theUrl = Constants.PROXY_GRAFANA_BASE_API+"/dashboards/importAssets";
 		String resp = restTemplate.postForObject(theUrl, request, String.class);
-	    ObjectNode respNode = (ObjectNode)mapper.readTree(resp);
-	    return respNode;
+		return (ObjectNode)mapper.readTree(resp);
 	}
 	
 	public JsonNode getGrafanaDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
@@ -47,8 +46,7 @@ public class ProxyGrafanaApiService {
 	    HttpHeaders headers = createHttpHeaders();
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
         ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
-        JsonNode respNode = mapper.readTree(response.getBody());
-	    return respNode;
+        return mapper.readTree(response.getBody());
 	}
 	
 	public JsonNode getGrafanaMasterDatasource(Map<String, String> obj) throws JsonMappingException, JsonProcessingException {
@@ -58,8 +56,7 @@ public class ProxyGrafanaApiService {
 	    HttpHeaders headers = createHttpHeaders();
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
         ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
-        JsonNode respNode = mapper.readTree(response.getBody());
-	    return respNode;
+        return mapper.readTree(response.getBody());
 	}
 	
 	public JsonNode getGrafanaDatasourceByAccountIdAndInputType(String accountId, String inputType) throws JsonMappingException, JsonProcessingException {
@@ -69,8 +66,7 @@ public class ProxyGrafanaApiService {
 	    HttpHeaders headers = createHttpHeaders();
         HttpEntity<String> entity = new HttpEntity<String>("parameters", headers);
         ResponseEntity<String> response = restTemplate.exchange(theUrl, HttpMethod.GET, entity, String.class);
-        JsonNode respNode = mapper.readTree(response.getBody());
-	    return respNode;
+        return mapper.readTree(response.getBody());
 	}
 	
 	private HttpHeaders createHttpHeaders()	{

@@ -76,6 +76,7 @@ public class AwsService {
 		String dName = associatedCloud+"_"+associatedCloudElementType+"_"+dataSourceName;
 		dashboard.setTitle(dName);
 		dashboard.setSlug(dName);
+		dashboard.setCloudElementId(associatedCloudElementId);
 		String data = displayTextInputStream(file.getObjectContent());
 		
 		ObjectMapper mapper = new ObjectMapper();

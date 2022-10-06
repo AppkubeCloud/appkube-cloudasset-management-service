@@ -16,8 +16,6 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.synectiks.asset.business.service.CustomeHashMapConverter;
-import com.synectiks.asset.business.service.ViewJsonConverter;
-import com.synectiks.asset.response.ViewJsonResponse;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -46,21 +44,13 @@ public class ServiceDetail implements Serializable {
   @Column(name = "id")
   private Long id;
 
-//  @Convert(converter = ServiceDetailConverter.class)
-//  @Column(columnDefinition = "jsonb")
-//  private ServiceDetailResponse metadata_json;
-  
   @Convert(converter = CustomeHashMapConverter.class)
   @Column(columnDefinition = "jsonb")
   private Map<String, Object> metadata_json;
   
-  @Convert(converter = ViewJsonConverter.class)
+  @Convert(converter = CustomeHashMapConverter.class)
   @Column(columnDefinition = "jsonb")
-  private ViewJsonResponse view_json;
-  
-//  @Convert(converter = SlaJsonConverter.class)
-//  @Column(columnDefinition = "jsonb")
-//  private SlaJsonResponse sla_json;
+  private Map<String, Object> view_json;
   
   @Convert(converter = CustomeHashMapConverter.class)
   @Column(columnDefinition = "jsonb")

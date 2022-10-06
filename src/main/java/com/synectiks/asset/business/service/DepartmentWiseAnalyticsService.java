@@ -325,7 +325,7 @@ public class DepartmentWiseAnalyticsService {
 	// department wise analytics by service.json
 	public DepartmentWiseAnaliticResponse getAnalyticalDataFromJson(Map<String, String> obj) {
 		
-		ServiceDetailReportResponse sdr = serviceDetailService.searchAllServiceDetail(obj);
+		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		OrganizationResponse org = null;
 		
 		//unique list of all the departments 
@@ -344,7 +344,7 @@ public class DepartmentWiseAnalyticsService {
 			
 			productSearch.clear();
 			productSearch.put("associatedDept", entry.getKey());
-			ServiceDetailReportResponse productJson = serviceDetailService.searchAllServiceDetail(productSearch);
+			ServiceDetailReportResponse productJson = serviceDetailService.searchServiceDetailWithFilter(productSearch);
 			Map<String, String> uniqueProductMap = new HashMap<>();
 			for(ServiceDetail prdSd: productJson.getServices() ) {
 				uniqueProductMap.put((String)prdSd.getMetadata_json().get("associatedProduct"), (String)prdSd.getMetadata_json().get("associatedProduct"));
@@ -365,7 +365,7 @@ public class DepartmentWiseAnalyticsService {
 				depEnvSearch.clear();
 				depEnvSearch.put("associatedDept", depResp.getName());
 				depEnvSearch.put("associatedProduct", prdResp.getName());
-				ServiceDetailReportResponse depEnvJson = serviceDetailService.searchAllServiceDetail(depEnvSearch);
+				ServiceDetailReportResponse depEnvJson = serviceDetailService.searchServiceDetailWithFilter(depEnvSearch);
 				Map<String, String> deploymentEnvironmentMap = new HashMap<>(); 
 				for(ServiceDetail depEnvSd: depEnvJson.getServices()) {
 					deploymentEnvironmentMap.put((String)depEnvSd.getMetadata_json().get("associatedEnv"), (String)depEnvSd.getMetadata_json().get("associatedEnv"));
@@ -390,7 +390,7 @@ public class DepartmentWiseAnalyticsService {
 					queryMap.put("associatedDept", depResp.getName());
 					queryMap.put("associatedProduct", prdResp.getName());
 					queryMap.put("associatedEnv", deploymentEnvironmentResponse.getName());
-					ServiceDetailReportResponse serivesOfdepPrdDepEnvJson = serviceDetailService.searchAllServiceDetail(queryMap);
+					ServiceDetailReportResponse serivesOfdepPrdDepEnvJson = serviceDetailService.searchServiceDetailWithFilter(queryMap);
 					
 					Map<String, String> serviceCatMap = new HashMap<>(); // filter all categories of this product
 					for(ServiceDetail depEnvSpecificSd: serivesOfdepPrdDepEnvJson.getServices()) {
@@ -418,7 +418,7 @@ public class DepartmentWiseAnalyticsService {
 						queryMap.put("associatedProduct", prdResp.getName());
 						queryMap.put("associatedEnv", depEnvResp.getName());
 						queryMap.put("serviceNature", serCatResp.getName());
-						ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(queryMap);
+						ServiceDetailReportResponse json = serviceDetailService.searchServiceDetailWithFilter(queryMap);
 						for(ServiceDetail sd: json.getServices()) {
 							ServiceNameResponse serviceNameResponse = null;
 							if("Common".equalsIgnoreCase(serCatResp.getName())) {
@@ -454,7 +454,7 @@ public class DepartmentWiseAnalyticsService {
 						queryMap.put("associatedProduct", prdResp.getName());
 						queryMap.put("associatedEnv", depEnvResp.getName());
 						queryMap.put("serviceNature", serCatResp.getName());
-						ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(queryMap);
+						ServiceDetailReportResponse json = serviceDetailService.searchServiceDetailWithFilter(queryMap);
 						for(ServiceNameResponse snResp: serCatResp.getServiceNameList()) {
 							Map<String, String> serviceTagMap = new HashMap<>(); // filter all tags of this product
 							for(ServiceDetail sd: json.getServices()) {
@@ -486,7 +486,7 @@ public class DepartmentWiseAnalyticsService {
 									leafQryMap.put("associatedBusinessService", snResp.getName());
 								}
 								leafQryMap.put("serviceType", tag.getTagName()); // app/data
-								ServiceDetailReportResponse json = serviceDetailService.searchAllServiceDetail(leafQryMap);
+								ServiceDetailReportResponse json = serviceDetailService.searchServiceDetailWithFilter(leafQryMap);
 								for(ServiceDetail sd: json.getServices()) {
 									if(depResp.getName().equals((String)sd.getMetadata_json().get("associatedDept"))
 											&& prdResp.getName().equals((String)sd.getMetadata_json().get("associatedProduct"))

@@ -55,11 +55,6 @@ public class Converter {
 	public static OffsetTime parseTimeString(String str) {
 		return ZonedDateTime.from(Converter.TIME_FORMATTER.parse(str)).toOffsetDateTime().toOffsetTime();
 	}
-	// Serialize/deserialize helpers
-
-//    public static XformVpc fromJsonString(String json) throws IOException {
-//        return getObjectReader().readValue(json);
-//    }
 
 	public static <T> T fromJsonString(String json, Class cls) throws IOException {
 		return getObjectReader(cls).readValue(json);
@@ -77,19 +72,7 @@ public class Converter {
 	private static ObjectWriter writer;
 
 	private static void instantiateMapper(Class cls) {
-		ObjectMapper mapper = new ObjectMapper();
-		mapper.findAndRegisterModules();
-		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
-		SimpleModule module = new SimpleModule();
-		module.addDeserializer(OffsetDateTime.class, new JsonDeserializer<OffsetDateTime>() {
-			@Override
-			public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
-					throws IOException, JsonProcessingException {
-				String value = jsonParser.getText();
-				return Converter.parseDateTimeString(value);
-			}
-		});
-		mapper.registerModule(module);
+		ObjectMapper mapper = Constants.instantiateMapper();
 		reader = mapper.readerFor(cls);
 		writer = mapper.writerFor(cls);
 	}

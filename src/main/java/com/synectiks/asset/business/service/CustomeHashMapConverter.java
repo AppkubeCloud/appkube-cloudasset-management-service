@@ -5,41 +5,45 @@ import java.util.Map;
 
 import javax.persistence.AttributeConverter;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.synectiks.asset.config.Constants;
+
 
 public class CustomeHashMapConverter implements AttributeConverter<Map<String, Object>, String> {
 	private static final Logger logger = LoggerFactory.getLogger(CustomeHashMapConverter.class);
-//	private ObjectReader objectMapper;
-	ObjectMapper objectMapper = new ObjectMapper();
+	ObjectMapper objectMapper = Constants.instantiateMapper();
 	
     @Override
-    public String convertToDatabaseColumn(Map<String, Object> customerInfo) {
+    public String convertToDatabaseColumn(Map<String, Object> map) {
 
-        String customerInfoJson = null;
+        String strJson = null;
         try {
-            customerInfoJson = objectMapper.writeValueAsString(customerInfo);
+        	strJson = objectMapper.writeValueAsString(map);
         } catch (final JsonProcessingException e) {
             logger.error("JSON writing error", e);
         }
 
-        return customerInfoJson;
+        return strJson;
     }
 
     @Override
-    public Map<String, Object> convertToEntityAttribute(String customerInfoJSON) {
-
-        Map<String, Object> customerInfo = null;
+    public Map<String, Object> convertToEntityAttribute(String strJson) {
+    	Map<String, Object> map = null;
+    	if(StringUtils.isBlank(strJson)) {
+    		return map;
+    	}
         try {
-            customerInfo = objectMapper.readValue(customerInfoJSON, Map.class);
+            map = objectMapper.readValue(strJson, Map.class);
         } catch (final IOException e) {
             logger.error("JSON reading error", e);
         }
 
-        return customerInfo;
+        return map;
     }
 
 }

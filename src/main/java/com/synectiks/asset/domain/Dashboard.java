@@ -33,6 +33,7 @@ public class Dashboard implements Serializable {
     private Long id;
     private String url;
     private DashboardMeta dashboardMeta; 
+    private String cloudElementId;
     
 	public String getCloudName() {
 		return cloudName;
@@ -182,6 +183,12 @@ public class Dashboard implements Serializable {
 	}
 	public void setDashboardMeta(DashboardMeta dashboardMeta) {
 		this.dashboardMeta = dashboardMeta;
+	}
+	public String getCloudElementId() {
+		return cloudElementId;
+	}
+	public void setCloudElementId(String cloudElementId) {
+		this.cloudElementId = cloudElementId;
 	}
 	
  }

@@ -10,6 +10,6 @@ import com.synectiks.asset.domain.ServiceDetail;
  */
 @SuppressWarnings("unused")
 @Repository
-public interface ServiceDetailRepository extends JpaRepository<ServiceDetail, Long>, ServiceDetailRepositoryCustom {
+public interface ServiceDetailRepository extends JpaRepository<ServiceDetail, Long> {
 	 
 }

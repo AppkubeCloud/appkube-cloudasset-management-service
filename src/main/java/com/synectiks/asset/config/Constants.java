@@ -1,10 +1,20 @@
 package com.synectiks.asset.config;
 
+import java.io.IOException;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import com.fasterxml.jackson.core.JsonParser;
+import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.DeserializationContext;
+import com.fasterxml.jackson.databind.JsonDeserializer;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.synectiks.asset.domain.Dashboard;
 
 /**
@@ -29,6 +39,7 @@ public final class Constants {
     
     public static final List<String> AWS_DISCOVERED_ASSETS = new ArrayList<>();
     
+    public static final String SERVICE_ID = "serviceId";
     public static final String STATUS_UNPAID = "UNPAID";
     public static final String SERVICE_FIREWALL = "Firewall";
     public static final String SERVICE_LOAD_BALANCER = "Load Balancer";
@@ -51,20 +62,29 @@ public final class Constants {
     public static final String ALERTS       = "alerts";
     
     public static final String DASHBOARD_TYPE[] = {PERFORMANCE,AVAILABILITY, RELIABILITY, ENDUSAGE, SECURITY, COMPLIANCE, ALERTS};
+	public static final List<String> VIEW_JSON_KEYS = Arrays.asList("id", "slug", "uid", "cloudElement", "accountId", "url", "cloudElementId");
+	public static final List<String> DASHBOARD_TYPE_KEYS = Arrays.asList(DASHBOARD_TYPE);
 	
-    public static String PROXY_GRAFANA_BASE_API = "http://34.199.12.114:3000/api"; //34.199.12.114
+	public static ObjectMapper instantiateMapper() {
+		ObjectMapper mapper = new ObjectMapper();
+		mapper.findAndRegisterModules();
+		mapper.configure(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS, false);
+		SimpleModule module = new SimpleModule();
+		module.addDeserializer(OffsetDateTime.class, new JsonDeserializer<OffsetDateTime>() {
+			@Override
+			public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
+					throws IOException, JsonProcessingException {
+				String value = jsonParser.getText();
+				return Converter.parseDateTimeString(value);
+			}
+		});
+		mapper.registerModule(module);
+		return mapper;
+	}
+	
+    public static String PROXY_GRAFANA_BASE_API = "http://34.199.12.114:3000/api"; 
     public static String PROXY_GRAFANA_USER = "admin";
-    public static String PROXY_GRAFANA_PASSWORD = "password"; //password
-    
-//    public static final Map<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache > AWS_DISCOVERED_ASSET_CACHE = new HashMap<AwsDiscoveredAssetKey, AwsDiscoveredAssetCache>();
-    
-//    static {
-//    	initAwsDiscoveredAssetItemsList();
-//    }
-    
-//    private static void initAwsDiscoveredAssetItemsList() {
-//    	AWS_DISCOVERED_ASSETS.add(VPC);
-//    }
+    public static String PROXY_GRAFANA_PASSWORD = "password"; 
     
     private Constants() {
     }

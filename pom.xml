@@ -112,6 +112,14 @@
 	        </exclusions>
         </dependency>
         -->
+        <!-- dependencies for xml to json conversion. only for test -->
+        <dependency>
+			<groupId>org.json</groupId>
+			<artifactId>json</artifactId>
+			<version>20210307</version>
+		</dependency>
+        
+		<!-- dependencies for xml to json conversion. only for test -->
         <dependency>
 		    <groupId>com.fasterxml.jackson.dataformat</groupId>
 		    <artifactId>jackson-dataformat-csv</artifactId>
