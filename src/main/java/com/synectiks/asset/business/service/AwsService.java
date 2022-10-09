@@ -77,6 +77,8 @@ public class AwsService {
 		dashboard.setTitle(dName);
 		dashboard.setSlug(dName);
 		dashboard.setCloudElementId(associatedCloudElementId);
+		
+		
 		String data = displayTextInputStream(file.getObjectContent());
 		
 		ObjectMapper mapper = new ObjectMapper();
@@ -233,22 +235,11 @@ public class AwsService {
 		String line = null;
         while ((line = reader.readLine()) != null) {
             sb.append(line).append(" ");
-//        	logger.debug(sb.toString());
         }
         return sb.toString();
 	}
 	
-//	public static void main(String a[]) {
-//		String jsonLocation ="s3://updated-dashboards-bucket/NewDashboards/CloudTrail/AWS CloudTrail - Overview.txt";
-////		String f = jsonLocation.substring(jsonLocation.indexOf("//")+2);
-////		System.out.println(f);
-////		String fName = f.substring(f.lastIndexOf("/")+1);
-//		System.out.println("File : "+getFileName(jsonLocation));
-//		
-////		String bPath = f.substring(0,f.lastIndexOf("/"));
-//		System.out.println("Path : "+getBucket(jsonLocation));
-//		
-//	}
+
 	
 	private String getBucket(String jsonLocation) {
 		String f = jsonLocation.substring(jsonLocation.indexOf("//")+2);

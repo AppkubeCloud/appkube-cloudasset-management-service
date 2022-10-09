@@ -1,6 +1,7 @@
 package com.synectiks.asset;
 
 import com.synectiks.asset.config.ApplicationProperties;
+import com.synectiks.asset.config.Constants;
 
 import io.github.jhipster.config.DefaultProfileUtil;
 import io.github.jhipster.config.JHipsterConstants;
@@ -67,7 +68,7 @@ public class AssetserviceApp {
         
         ctx  = app.run(args);
         Environment env = ctx.getEnvironment();
-        
+        initConstants(env);
         logApplicationStartup(env);
     }
 
@@ -120,11 +121,9 @@ public class AssetserviceApp {
 		return Integer.parseInt(ctx.getEnvironment().getProperty("server.port"));
 	}
 	
-//	private static void initConstants(Environment env) {
-//        String protocol = "http";
-//        if (env.getProperty("grafana.protocol") != null) {
-//            protocol = "https";
-//        }
-//        
-//    }
+	private static void initConstants(Environment env) {
+        Constants.PROXY_GRAFANA_BASE_API = env.getProperty("proxy-grafana.protocol")+"://"+env.getProperty("proxy-grafana.address")+":"+env.getProperty("proxy-grafana.port")+"/api";
+        Constants.PROXY_GRAFANA_USER = env.getProperty("proxy-grafana.grafana-user");
+        Constants.PROXY_GRAFANA_PASSWORD = env.getProperty("proxy-grafana.grafana-password");
+    }
 }

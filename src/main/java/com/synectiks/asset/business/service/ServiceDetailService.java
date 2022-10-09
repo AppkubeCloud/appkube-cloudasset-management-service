@@ -719,6 +719,7 @@ public class ServiceDetailService {
 		for (Map.Entry<String, List<ServiceDetail>> entry : acMap.entrySet()) {
 			String accountId = entry.getKey();
 			for (ServiceDetail sd : entry.getValue()) {
+				
 				ObjectNode viewJsonNode = mapper.createObjectNode();
 				viewJsonNode.put("serviceId", String.valueOf(sd.getId()));
 				viewJsonNode.put(Constants.PERFORMANCE, mapper.createArrayNode());
@@ -737,10 +738,29 @@ public class ServiceDetailService {
 						.getCloudDashBoards();
 
 				for (CloudDashboard cd : cloudElementSpeficCloudDashBoards) {
+					boolean isDashboardExists = false;
 					JsonNode dsInstanceJson = proxyGrafanaApiService
 							.getGrafanaDatasourceByAccountIdAndInputType(accountId, cd.getAssociatedDataSourceType());
 					if (dsInstanceJson.isArray() && dsInstanceJson.isEmpty()) {
 						logger.warn("Datasource not configured in grafana. Dashboard cannot be imported");
+						continue;
+					}
+					// check if dashboard exists
+					String serviceName = null;
+					if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
+						serviceName = (String) sd.getMetadata_json().get("associatedCommonService");
+					}else {
+						serviceName = (String) sd.getMetadata_json().get("associatedBusinessService");
+					}
+					isDashboardExists = checkDashboardExists(sd, (String) sd.getMetadata_json().get("associatedOU"),
+							(String) sd.getMetadata_json().get("associatedDept"),(String) sd.getMetadata_json().get("associatedProduct"),
+							(String) sd.getMetadata_json().get("associatedEnv"), (String) sd.getMetadata_json().get("serviceType"),
+							(String) sd.getMetadata_json().get("serviceNature"), serviceName, (String) sd.getMetadata_json().get("name"),
+							accountId, cd.getAssociatedCloudElementType(), (String) sd.getMetadata_json().get("associatedCloudElementId"),
+							cd.getAssociatedSLAType(), mapper);
+					
+					if(isDashboardExists) {
+						logger.warn("Dashboard already exists. Skipping import");
 						continue;
 					}
 					cdCriteriaMap.clear();
@@ -774,12 +794,26 @@ public class ServiceDetailService {
 					dataJs.put("ServiceId", String.valueOf(sd.getId()));
 
 					ObjectNode respNode = proxyGrafanaApiService.importDashboardInGrafana(dataJs);
-
+					
 //					respNode.put("dashboardCatalogueId", cd.getId());
 					respNode.put("accountId", accountId);
 					respNode.put("cloudElement", cd.getAssociatedCloudElementType());
 					respNode.put("cloudElementId", (String) sd.getMetadata_json().get("associatedCloudElementId"));
 					respNode.put("url", respNode.get("url").asText());
+					
+					respNode.put("associatedOU", (String) sd.getMetadata_json().get("associatedOU"));
+					respNode.put("associatedDept", (String) sd.getMetadata_json().get("associatedDept"));
+					respNode.put("associatedProduct", (String) sd.getMetadata_json().get("associatedProduct"));
+					respNode.put("associatedEnv", (String) sd.getMetadata_json().get("associatedEnv"));
+					respNode.put("serviceType", (String) sd.getMetadata_json().get("serviceType"));
+					respNode.put("serviceNature", (String) sd.getMetadata_json().get("serviceNature"));
+					if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
+						respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedCommonService"));
+					}else {
+						respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedBusinessService"));
+					}
+					respNode.put("serviceInstance", (String) sd.getMetadata_json().get("name"));
+					
 					ArrayNode jnArray = (ArrayNode) viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
 					jnArray.add(respNode);
 
@@ -787,10 +821,50 @@ public class ServiceDetailService {
 
 				// update array here
 				updateViewJson(viewJsonNode);
+				
 			}
 		}
 	}
 
+	private boolean checkDashboardExists(ServiceDetail sd, String associatedOU, String associatedDept, 
+			String associatedProduct, String associatedEnv, String serviceType, String serviceNature, String serviceName, 
+			String serviceInstance, String accountId, String cloudElement, String cloudElementId, String associatedSLAType,
+			ObjectMapper mapper) {
+		
+		if(sd.getView_json() == null) {
+			return false;
+		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) == null) {
+			return false;
+		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) != null 
+				&& ((List)sd.getView_json().get(associatedSLAType.toLowerCase())).isEmpty()) {
+			return false;
+		}
+		if(mapper == null) {
+			mapper = Constants.instantiateMapper();
+		}
+		List jsonNodeList = (List)sd.getView_json().get(associatedSLAType.toLowerCase());
+		for (Object objNode : jsonNodeList) {
+			Map node = (Map)objNode;
+			if(associatedOU.equalsIgnoreCase((String)node.get("associatedOU"))
+					&& associatedDept.equalsIgnoreCase((String)node.get("associatedDept"))
+					&& associatedProduct.equalsIgnoreCase((String)node.get("associatedProduct"))
+					&& associatedEnv.equalsIgnoreCase((String)node.get("associatedEnv"))
+					&& serviceType.equalsIgnoreCase((String)node.get("serviceType"))
+					&& serviceNature.equalsIgnoreCase((String)node.get("serviceNature"))
+					&& serviceName.equalsIgnoreCase((String)node.get("serviceName"))
+					&& serviceInstance.equalsIgnoreCase((String)node.get("serviceInstance"))
+					&& accountId.equalsIgnoreCase((String)node.get("accountId"))
+					&& cloudElement.equalsIgnoreCase((String)node.get("cloudElement"))) {
+				if(("API-Gateway".equalsIgnoreCase((String)node.get("cloudElement")) || 
+						"Dynamodb".equalsIgnoreCase((String)node.get("cloudElement")))
+						&& cloudElementId.equalsIgnoreCase((String)node.get("cloudElementId"))) {
+						return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public void updateViewJson(ObjectNode objectNode) throws JsonParseException, JsonMappingException, IOException {
 		Long serviceId = Long.parseLong(objectNode.get("serviceId").asText());
 		ObjectMapper mapper = Constants.instantiateMapper();

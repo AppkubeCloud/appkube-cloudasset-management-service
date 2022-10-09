@@ -115,6 +115,12 @@ jhipster:
   audit-events:
     retention-period: 30 # Number of days before audit events are deleted.
 
+proxy-grafana:
+  protocol: http
+  address: 34.199.12.114
+  port: 3000
+  grafana-user: admin
+  grafana-password: password
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

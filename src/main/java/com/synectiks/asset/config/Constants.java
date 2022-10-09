@@ -62,7 +62,8 @@ public final class Constants {
     public static final String ALERTS       = "alerts";
     
     public static final String DASHBOARD_TYPE[] = {PERFORMANCE,AVAILABILITY, RELIABILITY, ENDUSAGE, SECURITY, COMPLIANCE, ALERTS};
-	public static final List<String> VIEW_JSON_KEYS = Arrays.asList("id", "slug", "uid", "cloudElement", "accountId", "url", "cloudElementId");
+	public static final List<String> VIEW_JSON_KEYS = Arrays.asList("id", "slug", "uid", "cloudElement", "accountId", "url", "cloudElementId"
+			, "associatedOU","associatedDept","associatedProduct","associatedEnv","serviceType","serviceNature","serviceName","serviceInstance");
 	public static final List<String> DASHBOARD_TYPE_KEYS = Arrays.asList(DASHBOARD_TYPE);
 	
 	public static ObjectMapper instantiateMapper() {
@@ -82,9 +83,10 @@ public final class Constants {
 		return mapper;
 	}
 	
-    public static String PROXY_GRAFANA_BASE_API = "http://34.199.12.114:3000/api"; 
-    public static String PROXY_GRAFANA_USER = "admin";
-    public static String PROXY_GRAFANA_PASSWORD = "password"; 
+    public static String PROXY_GRAFANA_BASE_API = ""; 
+    public static String PROXY_GRAFANA_USER = "";
+    public static String PROXY_GRAFANA_PASSWORD = ""; 
+//    public static String IMPORT_DASHBOARD_TO_GRAFANA_API = ""; 
     
     private Constants() {
     }
