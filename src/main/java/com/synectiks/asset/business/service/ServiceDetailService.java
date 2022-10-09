@@ -645,14 +645,22 @@ public class ServiceDetailService {
 						for (ServiceDetail sd : entry.getValue()) {
 							String vpcName = (String) sd.getMetadata_json().get("associatedProductEnclave");
 							if (!StringUtils.isBlank(vpcName)) {
-								if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())) {
-									String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
-									Cluster cl = new Cluster();
-									cl.setName(clusterName.substring(clusterName.lastIndexOf("-") + 1));
+								if("Cluster".equalsIgnoreCase((String) sd.getMetadata_json().get("serviceHostingType"))) {
+									if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())) {
+										String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
+										Cluster cl = Cluster.builder().name(clusterName.substring(clusterName.lastIndexOf("-") + 1)).build();
+										if (!clusterList.contains(cl)) {
+											clusterList.add(cl);
+										}
+									}
+								}else {
+									String clusterName = (String) sd.getMetadata_json().get("serviceHostingType");
+									Cluster cl = Cluster.builder().name(clusterName).build();
 									if (!clusterList.contains(cl)) {
 										clusterList.add(cl);
 									}
 								}
+								
 							}
 						}
 						vpc.setClusters(clusterList);
