@@ -1,6 +1,7 @@
 package com.synectiks.asset.controller;
 
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -27,7 +28,13 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.domain.ServiceDetail;
+import com.synectiks.asset.response.AvailabilityResponse;
+import com.synectiks.asset.response.DataProtectionResponse;
+import com.synectiks.asset.response.PerformanceResponse;
+import com.synectiks.asset.response.SecurityResponse;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
+import com.synectiks.asset.response.UserExperianceResponse;
+import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @RestController
@@ -87,7 +94,22 @@ public class ServicesDetailController {
 	@GetMapping("/service-detail/search")
 	public ResponseEntity<ServiceDetailReportResponse> search(@RequestParam Map<String, String> obj){
 		logger.info("Request to search service-detail");
-		return searchServiceDetailWithFilter(obj);
+		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
+		List<ServiceDetail> list = new ArrayList<>();
+		
+		if(sdr.getServices() != null && sdr.getServices().size() > 0) {
+			for(ServiceDetail sdObj: sdr.getServices()) {
+				sdObj.getMetadata_json().put("performance", PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadata_json().put("availability", AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadata_json().put("security", SecurityResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadata_json().put("dataProtection", DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadata_json().put("userExperiance", UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
+				list.add(sdObj);
+			}
+			sdr.setServices(list);
+		}
+		
+		return ResponseEntity.status(HttpStatus.OK).body(sdr);
 	}
 	
 	@PostMapping("/service-detail/create-bulk-data")
@@ -150,4 +172,5 @@ public class ServicesDetailController {
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
 	
+
 }

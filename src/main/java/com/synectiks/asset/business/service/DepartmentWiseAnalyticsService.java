@@ -536,7 +536,9 @@ public class DepartmentWiseAnalyticsService {
 //				}
 //			}
 //		}
-		
+		if(org == null) {
+			org = OrganizationResponse.builder().build();
+		}
 		org.setTotalDepartment(departmentResponseList.size());
 		org.setDepartmentList(departmentResponseList);
 		return DepartmentWiseAnaliticResponse.builder().organization(org).build();
