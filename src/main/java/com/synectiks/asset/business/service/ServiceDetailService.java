@@ -105,7 +105,7 @@ public class ServiceDetailService {
 	public ServiceDetail createServiceDetail(ServiceDetail obj) {
 		logger.info("Create new service detail");
 		ServiceDetail sd = serviceDetailJsonRepository.save(obj);
-		transformServiceDetailsListToTree();
+//		transformServiceDetailsListToTree();
 		return sd;
 	}
 
@@ -145,11 +145,9 @@ public class ServiceDetailService {
 		for (JsonNode node : objArray) {
 			ServiceDetail sd = ServiceDetail.builder()
 					.metadata_json(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node)).build();
-//			sd.setMetadata_json(ServiceDetailResponse.toMap(node));
-//			sd.setMetadata_json(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node));
 			createServiceDetail(sd);
 		}
-//		transformServiceDetailsListToTree();
+		transformServiceDetailsListToTree();
 	}
 
 	public ServiceDetailReportResponse searchServiceDetailWithFilter(Map<String, String> obj) {
