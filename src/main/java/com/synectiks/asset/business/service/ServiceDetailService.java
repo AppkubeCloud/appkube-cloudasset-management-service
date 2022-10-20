@@ -282,10 +282,10 @@ public class ServiceDetailService {
 								com.synectiks.asset.response.Service service = environment.getServices();
 
 								if (service.getBusiness() != null) {
-									List<App> appList = new ArrayList<>();
-									List<Data> dataList = new ArrayList<>();
 									for (BusinessService bs : service.getBusiness()) {
-
+										List<App> appList = new ArrayList<>();
+										List<Data> dataList = new ArrayList<>();
+										
 										bs.setApp(appList);
 										bs.setData(dataList);
 
@@ -321,9 +321,10 @@ public class ServiceDetailService {
 								}
 								
 								if (service.getCommon() != null) {
-									List<App> appList = new ArrayList<>();
-									List<Data> dataList = new ArrayList<>();
 									for (CommonService cs : service.getCommon()) {
+											List<App> appList = new ArrayList<>();
+											List<Data> dataList = new ArrayList<>();
+										
 											cs.setApp(appList);
 											cs.setData(dataList);
 											
