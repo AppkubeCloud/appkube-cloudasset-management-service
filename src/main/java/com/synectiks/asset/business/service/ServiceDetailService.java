@@ -857,80 +857,83 @@ public class ServiceDetailService {
 						.getCloudDashBoards();
 
 				for (CloudDashboard cd : cloudElementSpeficCloudDashBoards) {
-					boolean isDashboardExists = false;
-					JsonNode dsInstanceJson = proxyGrafanaApiService
-							.getGrafanaDatasourceByAccountIdAndInputType(accountId, cd.getAssociatedDataSourceType());
-					if (dsInstanceJson.isArray() && dsInstanceJson.isEmpty()) {
-						logger.warn("Datasource not configured in grafana. Dashboard cannot be imported");
-						continue;
+					try {
+						boolean isDashboardExists = false;
+						JsonNode dsInstanceJson = proxyGrafanaApiService
+								.getGrafanaDatasourceByAccountIdAndInputType(accountId, cd.getAssociatedDataSourceType());
+						if (dsInstanceJson.isArray() && dsInstanceJson.isEmpty()) {
+							logger.warn("Datasource not configured in grafana. Dashboard cannot be imported");
+							continue;
+						}
+						// check if dashboard exists
+						String serviceName = null;
+						if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
+							serviceName = (String) sd.getMetadata_json().get("associatedCommonService");
+						}else {
+							serviceName = (String) sd.getMetadata_json().get("associatedBusinessService");
+						}
+						isDashboardExists = checkDashboardExists(sd, serviceName, accountId, cd.getAssociatedCloudElementType(), cd.getAssociatedSLAType(), mapper);
+						
+						if(isDashboardExists) {
+							logger.warn("Dashboard already exists. Skipping import");
+							continue;
+						}
+						cdCriteriaMap.clear();
+						cdCriteriaMap.put("dataSourceName", cd.getAssociatedDataSourceType());
+						cdCriteriaMap.put("associatedCloudElementType", cd.getAssociatedCloudElementType());
+						cdCriteriaMap.put("associatedSLAType", cd.getAssociatedSLAType());
+						cdCriteriaMap.put("jsonLocation", cd.getJsonLocation());
+						cdCriteriaMap.put("associatedCloud", cd.getAssociatedCloud());
+						cdCriteriaMap.put("accountId", accountId);
+						cdCriteriaMap.put("associatedCloudElementId",
+								(String) sd.getMetadata_json().get("associatedCloudElementId"));
+	
+						Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client, dsInstanceJson);
+						ObjectNode dashboardNode = (ObjectNode) mapper.readTree(dashboard.getData());
+						dashboardNode.put("id", 0);
+						dashboardNode.put("uid", "");
+						String slug = dashboard.getInputType() + "_" + dashboard.getElementType() + "_"
+								+ RandomUtil.randomAlphabeticString();
+						dashboardNode.put("slug", slug);
+						dashboardNode.put("title", slug);
+	
+						ObjectNode dataJs = mapper.createObjectNode();
+						dataJs.put("Dashboard", dashboardNode);
+						dataJs.put("UserId", 0);
+						dataJs.put("Overwrite", false);
+						dataJs.put("Message", "");
+						dataJs.put("OrgId", 1);
+						dataJs.put("PluginId", "");
+						dataJs.put("FolderId", 0);
+						dataJs.put("IsFolder", false);
+						dataJs.put("ServiceId", String.valueOf(sd.getId()));
+	
+						ObjectNode respNode = proxyGrafanaApiService.importDashboardInGrafana(dataJs);
+						
+	//					respNode.put("dashboardCatalogueId", cd.getId());
+						respNode.put("accountId", accountId);
+						respNode.put("cloudElement", cd.getAssociatedCloudElementType());
+						respNode.put("cloudElementId", (String) sd.getMetadata_json().get("associatedCloudElementId"));
+						respNode.put("url", respNode.get("url").asText());
+						
+						respNode.put("associatedOU", (String) sd.getMetadata_json().get("associatedOU"));
+						respNode.put("associatedDept", (String) sd.getMetadata_json().get("associatedDept"));
+						respNode.put("associatedProduct", (String) sd.getMetadata_json().get("associatedProduct"));
+						respNode.put("associatedEnv", (String) sd.getMetadata_json().get("associatedEnv"));
+						respNode.put("serviceType", (String) sd.getMetadata_json().get("serviceType"));
+						respNode.put("serviceNature", (String) sd.getMetadata_json().get("serviceNature"));
+						if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
+							respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedCommonService"));
+						}else {
+							respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedBusinessService"));
+						}
+						respNode.put("serviceInstance", (String) sd.getMetadata_json().get("name"));
+						
+						ArrayNode jnArray = (ArrayNode) viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
+						jnArray.add(respNode);
+					}catch(Exception e) {
+						logger.warn("Error : "+e.getMessage());
 					}
-					// check if dashboard exists
-					String serviceName = null;
-					if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
-						serviceName = (String) sd.getMetadata_json().get("associatedCommonService");
-					}else {
-						serviceName = (String) sd.getMetadata_json().get("associatedBusinessService");
-					}
-					isDashboardExists = checkDashboardExists(sd, serviceName, accountId, cd.getAssociatedCloudElementType(), cd.getAssociatedSLAType(), mapper);
-					
-					if(isDashboardExists) {
-						logger.warn("Dashboard already exists. Skipping import");
-						continue;
-					}
-					cdCriteriaMap.clear();
-					cdCriteriaMap.put("dataSourceName", cd.getAssociatedDataSourceType());
-					cdCriteriaMap.put("associatedCloudElementType", cd.getAssociatedCloudElementType());
-					cdCriteriaMap.put("associatedSLAType", cd.getAssociatedSLAType());
-					cdCriteriaMap.put("jsonLocation", cd.getJsonLocation());
-					cdCriteriaMap.put("associatedCloud", cd.getAssociatedCloud());
-					cdCriteriaMap.put("accountId", accountId);
-					cdCriteriaMap.put("associatedCloudElementId",
-							(String) sd.getMetadata_json().get("associatedCloudElementId"));
-
-					Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client, dsInstanceJson);
-					ObjectNode dashboardNode = (ObjectNode) mapper.readTree(dashboard.getData());
-					dashboardNode.put("id", 0);
-					dashboardNode.put("uid", "");
-					String slug = dashboard.getInputType() + "_" + dashboard.getElementType() + "_"
-							+ RandomUtil.randomAlphabeticString();
-					dashboardNode.put("slug", slug);
-					dashboardNode.put("title", slug);
-
-					ObjectNode dataJs = mapper.createObjectNode();
-					dataJs.put("Dashboard", dashboardNode);
-					dataJs.put("UserId", 0);
-					dataJs.put("Overwrite", false);
-					dataJs.put("Message", "");
-					dataJs.put("OrgId", 1);
-					dataJs.put("PluginId", "");
-					dataJs.put("FolderId", 0);
-					dataJs.put("IsFolder", false);
-					dataJs.put("ServiceId", String.valueOf(sd.getId()));
-
-					ObjectNode respNode = proxyGrafanaApiService.importDashboardInGrafana(dataJs);
-					
-//					respNode.put("dashboardCatalogueId", cd.getId());
-					respNode.put("accountId", accountId);
-					respNode.put("cloudElement", cd.getAssociatedCloudElementType());
-					respNode.put("cloudElementId", (String) sd.getMetadata_json().get("associatedCloudElementId"));
-					respNode.put("url", respNode.get("url").asText());
-					
-					respNode.put("associatedOU", (String) sd.getMetadata_json().get("associatedOU"));
-					respNode.put("associatedDept", (String) sd.getMetadata_json().get("associatedDept"));
-					respNode.put("associatedProduct", (String) sd.getMetadata_json().get("associatedProduct"));
-					respNode.put("associatedEnv", (String) sd.getMetadata_json().get("associatedEnv"));
-					respNode.put("serviceType", (String) sd.getMetadata_json().get("serviceType"));
-					respNode.put("serviceNature", (String) sd.getMetadata_json().get("serviceNature"));
-					if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
-						respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedCommonService"));
-					}else {
-						respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedBusinessService"));
-					}
-					respNode.put("serviceInstance", (String) sd.getMetadata_json().get("name"));
-					
-					ArrayNode jnArray = (ArrayNode) viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
-					jnArray.add(respNode);
-
 				}
 
 				// update array here
