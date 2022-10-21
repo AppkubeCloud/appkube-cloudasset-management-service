@@ -115,7 +115,7 @@ public class ServiceDetailService {
 			throw new BadRequestAlertException("Entity not found", "ServiceDetail", "idnotfound");
 		}
 		ServiceDetail sd = serviceDetailJsonRepository.save(obj);
-		transformServiceDetailsListToTree();
+//		transformServiceDetailsListToTree();
 		return sd;
 	}
 
