@@ -9,7 +9,6 @@ import java.util.HashMap;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
-import org.springframework.beans.factory.annotation.Autowired;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.core.type.TypeReference;
@@ -27,18 +26,13 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 	 */
 	private static final long serialVersionUID = 1L;
 	private Long id;
-    private String landingZone;
-    private String productEnclave;
-    private String clusterId;
-    private String clusterName;     
-    private String clusterNamespace;
-    private String serviceName;
-    private String managementUrl;
+    
     private String serviceType;
     private String serviceHostingType;
     private String serviceNature;
     private String associatedCommonService;
     private String associatedBusinessService;
+    private ClusterServiceLoaction clusterServiceLoaction ;
     
    	public Long getId() {
 		return id;
@@ -46,62 +40,6 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public String getLandingZone() {
-		return landingZone;
-	}
-
-	public void setLandingZone(String landingZone) {
-		this.landingZone = landingZone;
-	}
-
-	public String getProductEnclave() {
-		return productEnclave;
-	}
-
-	public void setProductEnclave(String productEnclave) {
-		this.productEnclave = productEnclave;
-	}
-
-	public String getClusterId() {
-		return clusterId;
-	}
-
-	public void setClusterId(String clusterId) {
-		this.clusterId = clusterId;
-	}
-
-	public String getClusterName() {
-		return clusterName;
-	}
-
-	public void setClusterName(String clusterName) {
-		this.clusterName = clusterName;
-	}
-
-	public String getClusterNamespace() {
-		return clusterNamespace;
-	}
-
-	public void setClusterNamespace(String clusterNamespace) {
-		this.clusterNamespace = clusterNamespace;
-	}
-
-	public String getServiceName() {
-		return serviceName;
-	}
-
-	public void setServiceName(String serviceName) {
-		this.serviceName = serviceName;
-	}
-
-	public String getManagementUrl() {
-		return managementUrl;
-	}
-
-	public void setManagementUrl(String managementUrl) {
-		this.managementUrl = managementUrl;
 	}
 
 	public String getServiceType() {
@@ -144,6 +82,73 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		this.associatedBusinessService = associatedBusinessService;
 	}
 	
+	public ClusterServiceLoaction getClusterServiceLoaction() {
+		return clusterServiceLoaction;
+	}
+
+	public void setClusterServiceLoaction(ClusterServiceLoaction clusterServiceLoaction) {
+		this.clusterServiceLoaction = clusterServiceLoaction;
+	}
+	
+	private class ClusterServiceLoaction{
+    	private String landingZone;
+        private String productEnclave;
+        private String clusterId;
+        private String clusterName;     
+        private String clusterNamespace;
+        private String serviceName;
+        private String description;
+        private String managementUrl;
+		public String getLandingZone() {
+			return landingZone;
+		}
+		public void setLandingZone(String landingZone) {
+			this.landingZone = landingZone;
+		}
+		public String getProductEnclave() {
+			return productEnclave;
+		}
+		public void setProductEnclave(String productEnclave) {
+			this.productEnclave = productEnclave;
+		}
+		public String getClusterId() {
+			return clusterId;
+		}
+		public void setClusterId(String clusterId) {
+			this.clusterId = clusterId;
+		}
+		public String getClusterName() {
+			return clusterName;
+		}
+		public void setClusterName(String clusterName) {
+			this.clusterName = clusterName;
+		}
+		public String getClusterNamespace() {
+			return clusterNamespace;
+		}
+		public void setClusterNamespace(String clusterNamespace) {
+			this.clusterNamespace = clusterNamespace;
+		}
+		public String getServiceName() {
+			return serviceName;
+		}
+		public void setServiceName(String serviceName) {
+			this.serviceName = serviceName;
+		}
+		public String getDescription() {
+			return description;
+		}
+		public void setDescription(String description) {
+			this.description = description;
+		}
+		public String getManagementUrl() {
+			return managementUrl;
+		}
+		public void setManagementUrl(String managementUrl) {
+			this.managementUrl = managementUrl;
+		}
+    }
+	
 	@Override
 	public ServiceDto readJson(String jsonFile) {
 		JSONParser parser = new JSONParser();
@@ -175,15 +180,17 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		}
 		
 		JSONObject clusterJson = (JSONObject)jsonObject.get("clusterServiceLoaction");
+		ClusterServiceLoaction csl = new ClusterServiceLoaction();
 		
-		this.setLandingZone((String)clusterJson.get("landingZone"));
-		this.setProductEnclave((String)clusterJson.get("productEnclave"));
-		this.setClusterId((String)clusterJson.get("clusterId"));
-		this.setClusterName((String)clusterJson.get("clusterName"));
-		this.setClusterNamespace((String)clusterJson.get("clusterNamespace"));
-		this.setServiceName((String)clusterJson.get("serviceName"));
-		this.setDescription((String)clusterJson.get("description"));
-		this.setManagementUrl((String)clusterJson.get("managementUrl"));
+		csl.setLandingZone((String)clusterJson.get("landingZone"));
+		csl.setProductEnclave((String)clusterJson.get("productEnclave"));
+		csl.setClusterId((String)clusterJson.get("clusterId"));
+		csl.setClusterName((String)clusterJson.get("clusterName"));
+		csl.setClusterNamespace((String)clusterJson.get("clusterNamespace"));
+		csl.setServiceName((String)clusterJson.get("serviceName"));
+		csl.setDescription((String)clusterJson.get("description"));
+		csl.setManagementUrl((String)clusterJson.get("managementUrl"));
+		this.setClusterServiceLoaction(csl);
 	    return this;
 	}
 
@@ -199,17 +206,20 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		sds.createServiceDetail(sd);
 		
 	}
-	
+
 	@Override
 	public String toString() {
-		return "ClusterServiceDto [id=" + id + ", landingZone=" + landingZone + ", productEnclave=" + productEnclave
-				+ ", clusterId=" + clusterId + ", clusterName=" + clusterName + ", clusterNamespace=" + clusterNamespace
-				+ ", serviceName=" + serviceName + ", managementUrl=" + managementUrl + ", serviceType=" + serviceType
-				+ ", serviceHostingType=" + serviceHostingType + ", serviceNature=" + serviceNature
-				+ ", associatedCommonService=" + associatedCommonService + ", associatedBusinessService="
-				+ associatedBusinessService + ", associatedOU=" + associatedOU + ", associatedDept=" + associatedDept
-				+ ", associatedProduct=" + associatedProduct + ", associatedEnv=" + associatedEnv + "]";
+		return "ClusterServiceDto [id=" + id + ", serviceType=" + serviceType + ", serviceHostingType="
+				+ serviceHostingType + ", serviceNature=" + serviceNature + ", associatedCommonService="
+				+ associatedCommonService + ", associatedBusinessService=" + associatedBusinessService
+				+ ", clusterServiceLoaction=" + clusterServiceLoaction + ", associatedOU=" + associatedOU
+				+ ", associatedDept=" + associatedDept + ", associatedProduct=" + associatedProduct + ", associatedEnv="
+				+ associatedEnv + "]";
 	}
+
+	
+	
+	
 	
 	
 }
