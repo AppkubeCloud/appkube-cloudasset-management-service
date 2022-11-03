@@ -25,63 +25,10 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = 1L;
-	private Long id;
-    
-    private String serviceType;
-    private String serviceHostingType;
-    private String serviceNature;
-    private String associatedCommonService;
-    private String associatedBusinessService;
+
     private ClusterServiceLoaction clusterServiceLoaction ;
     
-   	public Long getId() {
-		return id;
-	}
 
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getServiceType() {
-		return serviceType;
-	}
-
-	public void setServiceType(String serviceType) {
-		this.serviceType = serviceType;
-	}
-
-	public String getServiceHostingType() {
-		return serviceHostingType;
-	}
-
-	public void setServiceHostingType(String serviceHostingType) {
-		this.serviceHostingType = serviceHostingType;
-	}
-
-	public String getServiceNature() {
-		return serviceNature;
-	}
-
-	public void setServiceNature(String serviceNature) {
-		this.serviceNature = serviceNature;
-	}
-
-	public String getAssociatedCommonService() {
-		return associatedCommonService;
-	}
-
-	public void setAssociatedCommonService(String associatedCommonService) {
-		this.associatedCommonService = associatedCommonService;
-	}
-
-	public String getAssociatedBusinessService() {
-		return associatedBusinessService;
-	}
-
-	public void setAssociatedBusinessService(String associatedBusinessService) {
-		this.associatedBusinessService = associatedBusinessService;
-	}
-	
 	public ClusterServiceLoaction getClusterServiceLoaction() {
 		return clusterServiceLoaction;
 	}
@@ -96,8 +43,6 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
         private String clusterId;
         private String clusterName;     
         private String clusterNamespace;
-        private String serviceName;
-        private String description;
         private String managementUrl;
 		public String getLandingZone() {
 			return landingZone;
@@ -129,18 +74,7 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		public void setClusterNamespace(String clusterNamespace) {
 			this.clusterNamespace = clusterNamespace;
 		}
-		public String getServiceName() {
-			return serviceName;
-		}
-		public void setServiceName(String serviceName) {
-			this.serviceName = serviceName;
-		}
-		public String getDescription() {
-			return description;
-		}
-		public void setDescription(String description) {
-			this.description = description;
-		}
+	
 		public String getManagementUrl() {
 			return managementUrl;
 		}
@@ -170,14 +104,18 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		this.setAssociatedEnv((String)jsonObject.get("associatedEnv"));
 		this.setServiceType((String)jsonObject.get("serviceType"));
 		this.setServiceHostingType((String)jsonObject.get("serviceHostingType"));
-		
-		String serviceNature = (String)jsonObject.get("serviceNature");
-		this.setServiceNature(serviceNature);
-		if("Common".equalsIgnoreCase(serviceNature)) {
-			this.setAssociatedCommonService((String)jsonObject.get("associatedCommonService"));
-		}else if("Business".equalsIgnoreCase(serviceNature)) {
-			this.setAssociatedBusinessService((String)jsonObject.get("associatedBusinessService"));
-		}
+		this.setServiceNature((String)jsonObject.get("serviceNature"));
+		this.setServiceName((String)jsonObject.get("serviceName"));
+		this.setDescription((String)jsonObject.get("description"));
+		this.setAssociatedCommonService((String)jsonObject.get("associatedCommonService"));
+		this.setAssociatedBusinessService((String)jsonObject.get("associatedBusinessService"));
+		// String serviceNature = (String)jsonObject.get("serviceNature");
+		// this.setServiceNature(serviceNature);
+		// if("Common".equalsIgnoreCase(serviceNature)) {
+		// 	this.setAssociatedCommonService((String)jsonObject.get("associatedCommonService"));
+		// }else if("Business".equalsIgnoreCase(serviceNature)) {
+		// 	this.setAssociatedBusinessService((String)jsonObject.get("associatedBusinessService"));
+		// }
 		
 		JSONObject clusterJson = (JSONObject)jsonObject.get("clusterServiceLoaction");
 		ClusterServiceLoaction csl = new ClusterServiceLoaction();
@@ -187,8 +125,6 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		csl.setClusterId((String)clusterJson.get("clusterId"));
 		csl.setClusterName((String)clusterJson.get("clusterName"));
 		csl.setClusterNamespace((String)clusterJson.get("clusterNamespace"));
-		csl.setServiceName((String)clusterJson.get("serviceName"));
-		csl.setDescription((String)clusterJson.get("description"));
 		csl.setManagementUrl((String)clusterJson.get("managementUrl"));
 		this.setClusterServiceLoaction(csl);
 	    return this;
@@ -207,19 +143,16 @@ public class ClusterServiceDto extends ServiceDto implements Serializable{
 		
 	}
 
-	@Override
-	public String toString() {
-		return "ClusterServiceDto [id=" + id + ", serviceType=" + serviceType + ", serviceHostingType="
-				+ serviceHostingType + ", serviceNature=" + serviceNature + ", associatedCommonService="
-				+ associatedCommonService + ", associatedBusinessService=" + associatedBusinessService
-				+ ", clusterServiceLoaction=" + clusterServiceLoaction + ", associatedOU=" + associatedOU
-				+ ", associatedDept=" + associatedDept + ", associatedProduct=" + associatedProduct + ", associatedEnv="
-				+ associatedEnv + "]";
-	}
+	// @Override
+	// public String toString() {
+	// 	return "ClusterServiceDto [id=" + id + ", serviceType=" + serviceType + ", serviceHostingType="
+	// 			+ serviceHostingType + ", serviceNature=" + serviceNature + ", associatedCommonService="
+	// 			+ associatedCommonService + ", associatedBusinessService=" + associatedBusinessService
+	// 			+ ", clusterServiceLoaction=" + clusterServiceLoaction + ", associatedOU=" + associatedOU
+	// 			+ ", associatedDept=" + associatedDept + ", associatedProduct=" + associatedProduct + ", associatedEnv="
+	// 			+ associatedEnv + "]";
+	// }
 
-	
-	
-	
 	
 	
 }

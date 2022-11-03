@@ -4,11 +4,20 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.Paths;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.HashSet;
+import java.util.Set;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
+import com.amazonaws.services.codecommit.model.File;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -22,7 +31,59 @@ public class ServiceDto implements Serializable{
 	public String associatedDept;
 	public String associatedProduct;
 	public String associatedEnv;
+    private String serviceType;
+	private String serviceHostingType;
+	private String serviceNature;
+	private String associatedCommonService;
+	private String associatedBusinessService;
+	private String serviceName;
 	private String description;
+	public String getServiceName() {
+		return serviceName;
+	}
+
+	public void setServiceName(String serviceName) {
+		this.serviceName = serviceName;
+	}
+
+		public String getAssociatedBusinessService() {
+		return associatedBusinessService;
+	}
+
+	public void setAssociatedBusinessService(String associatedBusinessService) {
+		this.associatedBusinessService = associatedBusinessService;
+	}
+
+		public String getAssociatedCommonService() {
+		return associatedCommonService;
+	}
+
+	public void setAssociatedCommonService(String associatedCommonService) {
+		this.associatedCommonService = associatedCommonService;
+	}
+
+	public String getServiceNature() {
+		return serviceNature;
+	}
+
+	public void setServiceNature(String serviceNature) {
+		this.serviceNature = serviceNature;
+	}
+		public String getServiceHostingType() {
+		return serviceHostingType;
+	}
+
+	public void setServiceHostingType(String serviceHostingType) {
+		this.serviceHostingType = serviceHostingType;
+	}
+
+    public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
 	
 	
 
@@ -82,6 +143,19 @@ public class ServiceDto implements Serializable{
 		
 		return (String)jsonObject.get("serviceHostingType");
 	}
+
+	// public static String getHostingTypes(File jsonFile) {
+	// 	JSONParser parser = new JSONParser();
+	// 	JSONObject jsonObject = null;
+	// 	try {
+	// 		Object obj = parser.parse(jsonFile.toString());
+    //         jsonObject =  (JSONObject) obj;
+	// 	}catch (ParseException e) {
+	// 		e.printStackTrace();
+	// 	}
+		
+	// 	return (String)jsonObject.get("serviceHostingType");
+	// }
 	
 	protected ServiceDto readJson(String json) {	
 		return null;
@@ -89,6 +163,19 @@ public class ServiceDto implements Serializable{
 	
 	protected void save() throws JsonParseException, JsonMappingException, IOException {	
 		
+	}
+	static Set<String> listFilesUsingFileWalkAndVisitor(String dir) throws IOException {
+		Set<String> fileList = new HashSet<>();
+		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
+			@Override
+			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
+				if (!Files.isDirectory(file)) {
+					fileList.add(file.getFileName().toString());
+				}
+				return FileVisitResult.CONTINUE;
+			}
+		});
+		return fileList;
 	}
 	
 	public static ServiceDto instantiate(String hostingType) {
