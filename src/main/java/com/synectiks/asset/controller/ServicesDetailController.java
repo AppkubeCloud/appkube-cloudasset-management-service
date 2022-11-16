@@ -1,12 +1,19 @@
 package com.synectiks.asset.controller;
 
+import java.io.File;
 import java.io.IOException;
+import java.nio.charset.StandardCharsets;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
+import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,10 +32,13 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonProcessingException;
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.service.CfgCacheConfigService;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.config.Constants;
+import com.synectiks.asset.config.Converter;
 import com.synectiks.asset.domain.CfgCacheConfig;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.AvailabilityResponse;
@@ -199,4 +209,114 @@ public class ServicesDetailController {
 	}
 	
 
+	@PostMapping("/service-detail/add-new-field")
+	public void createNewFieldInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
+		logger.info("Request to create new filed in service-detail {}",obj);
+		String filePath = obj.get("filePath").asText();
+		String newKey = obj.get("newKey").asText();
+		File f = new File(filePath);
+		if(f.isDirectory()) {
+			for(File file: f.listFiles()) {
+				
+				System.out.println(file.getName());
+				
+				//read contents of a file into string
+				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+				
+				//convert that string into json
+				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
+				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
+				
+				//iterate each json and add new field
+				JsonNode objArray = objNode.get("services");
+				for (JsonNode node : objArray) {
+					ObjectNode objectNode = (ObjectNode)node;
+					if("data".equalsIgnoreCase(objectNode.get("serviceType").asText())) {
+						String description = objectNode.get("description").asText();
+						if(description.toLowerCase().contains("Postgresql".toLowerCase()) || description.toLowerCase().contains("Postgres".toLowerCase())) {
+							objectNode.put(newKey, "Postgresql");
+						}else if(description.toLowerCase().contains("Radis".toLowerCase()) || description.toLowerCase().contains("Redis".toLowerCase())) {
+							objectNode.put(newKey, "Redis");
+						}
+						else if(isContain(description, "ES") || isContain(description, "ElasticSearch")) {
+							objectNode.put(newKey, "ElasticSearch");
+						}
+//						else if(description.toLowerCase().contentEquals("ES".toLowerCase()) || description.toLowerCase().contentEquals("ElasticSearch".toLowerCase())) {
+//							objectNode.put(newKey, "ElasticSearch");
+//						}
+						else if(description.toLowerCase().contains("GIT".toLowerCase()) || description.toLowerCase().contains("Github".toLowerCase())) {
+							objectNode.put(newKey, "GIT");
+						}
+						else if(description.toLowerCase().contains("Mongodb".toLowerCase()) || description.toLowerCase().contains("Mongo".toLowerCase())) {
+							objectNode.put(newKey, "Mongodb");
+						}else if(description.toLowerCase().contains("DynamoDB".toLowerCase())) {
+							objectNode.put(newKey, "DynamoDB");
+						}else if(description.toLowerCase().contains("s3".toLowerCase())) {
+							objectNode.put(newKey, "S3 ObjectStore");
+						}else if(description.toLowerCase().contains("CDN".toLowerCase())) {
+							objectNode.put(newKey, "CDN data service");
+						}else if(description.toLowerCase().contains("Druid s3 database".toLowerCase())) {
+							objectNode.put(newKey, "Druid s3");
+						}else {
+							objectNode.put(newKey, "");
+						}
+						
+					}
+					arrayNode.add(objectNode);
+				}
+				objNode.put("services",arrayNode);
+				
+				//convert the json into string
+				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
+				
+				//write the string back to file
+				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
+				createBulkData(objNode);
+			}
+		}
+	}
+	
+	@PostMapping("/service-detail/update-field")
+	public void updateFieldInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
+		logger.info("Request to update a filed in service-detail {}",obj);
+		String filePath = obj.get("filePath").asText();
+		String key = obj.get("key").asText();
+		String value = obj.get("value").asText();
+		File f = new File(filePath);
+		if(f.isDirectory()) {
+			for(File file: f.listFiles()) {
+				
+				System.out.println(file.getName());
+				
+				//read contents of a file into string
+				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+				
+				//convert that string into json
+				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
+				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
+				
+				//iterate each json and add new field
+				JsonNode objArray = objNode.get("services");
+				for (JsonNode node : objArray) {
+					ObjectNode objectNode = (ObjectNode)node;
+					objectNode.put(key, value);
+					arrayNode.add(objectNode);
+				}
+				objNode.put("services",arrayNode);
+				
+				//convert the json into string
+				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
+				//write the string back to file
+				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
+				
+			}
+		}
+	}
+	
+	private static boolean isContain(String source, String subItem){
+        String pattern = "\\b"+subItem+"\\b";
+        Pattern p=Pattern.compile(pattern);
+        Matcher m=p.matcher(source);
+        return m.find();
+   }
 }
