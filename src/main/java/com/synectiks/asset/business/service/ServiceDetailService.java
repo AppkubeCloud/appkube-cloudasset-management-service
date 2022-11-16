@@ -150,6 +150,15 @@ public class ServiceDetailService {
 		transformServiceDetailsListToTree();
 	}
 
+	public void createBulkDataWithoutTransformation(ObjectNode objNode) throws IOException {
+		JsonNode objArray = objNode.get("services");
+		for (JsonNode node : objArray) {
+			ServiceDetail sd = ServiceDetail.builder()
+					.metadata_json(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node)).build();
+			createServiceDetail(sd);
+		}
+	}
+	
 	public ServiceDetailReportResponse searchServiceDetailWithFilter(Map<String, String> obj) {
 		logger.info("Search service detail with filter");
 		ServiceDetailReportResponse resp = ServiceDetailReportResponse.builder().build();

@@ -271,9 +271,10 @@ public class ServicesDetailController {
 				
 				//write the string back to file
 				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
-				createBulkData(objNode);
+				serviceDetailService.createBulkDataWithoutTransformation(objNode);
 			}
 		}
+		serviceDetailService.transformServiceDetailsListToTree();
 	}
 	
 	@PostMapping("/service-detail/update-field")
@@ -311,6 +312,25 @@ public class ServicesDetailController {
 				
 			}
 		}
+	}
+	
+	@PostMapping("/service-detail/upload-data-from-file")
+	public void uploadServiceDetailFromFile(@RequestBody ObjectNode obj) throws IOException{
+		logger.info("Request to create new filed in service-detail {}",obj);
+		String filePath = obj.get("filePath").asText();
+		File f = new File(filePath);
+		if(f.isDirectory()) {
+			for(File file: f.listFiles()) {
+				//read contents of a file into string
+				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+				
+				//convert that string into json
+				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
+				
+				serviceDetailService.createBulkDataWithoutTransformation(objNode);
+			}
+		}
+		serviceDetailService.transformServiceDetailsListToTree();
 	}
 	
 	private static boolean isContain(String source, String subItem){
