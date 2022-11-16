@@ -13,6 +13,7 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.synectiks.asset.config.Constants;
+import com.synectiks.asset.domain.CfgCacheConfig;
 import com.synectiks.asset.domain.Department;
 import com.synectiks.asset.domain.DeploymentEnvironment;
 import com.synectiks.asset.domain.Product;
@@ -81,7 +82,10 @@ public class DepartmentWiseAnalyticsService {
 	ServiceTagLinkService serviceTagLinkService;
 	
 	@Autowired
-	ServiceDetailService serviceDetailService;
+	private ServiceDetailService serviceDetailService;
+	
+	@Autowired
+	private CfgCacheConfigService cfgCacheConfigService;
 	
 	public Optional<Department> getDepartment(Long id) {
 		return departmentService.getDepartment(id);
@@ -325,6 +329,13 @@ public class DepartmentWiseAnalyticsService {
 	// department wise analytics by service.json
 	public DepartmentWiseAnaliticResponse getAnalyticalDataFromJson(Map<String, String> obj) {
 		
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		if(oCache.isPresent() && oCache.get().isDirtyFlag() == Boolean.FALSE) {
+			logger.info("Getting department wise analytics from cache");
+			DepartmentWiseAnaliticResponse dwa = (DepartmentWiseAnaliticResponse)Constants.cache.get(Constants.DEPARTMENT_WISE_ANALYTICS);
+			return dwa;
+		}
+		logger.info("Getting department wise analytics from database");
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		OrganizationResponse org = null;
 		
@@ -541,7 +552,12 @@ public class DepartmentWiseAnalyticsService {
 		}
 		org.setTotalDepartment(departmentResponseList.size());
 		org.setDepartmentList(departmentResponseList);
-		return DepartmentWiseAnaliticResponse.builder().organization(org).build();
+		DepartmentWiseAnaliticResponse dwa = DepartmentWiseAnaliticResponse.builder().organization(org).build();
+		Constants.cache.put(Constants.DEPARTMENT_WISE_ANALYTICS,dwa);
+		CfgCacheConfig ccf = oCache.get();
+		ccf.setDirtyFlag(Boolean.FALSE);
+		cfgCacheConfigService.updateCfgCacheConfig(ccf);
+		return dwa;
 	}
 
 //	private void populateServiceNameResponse(Map<String, String> serviceTagMap, ServiceCategoryResponse scResp,

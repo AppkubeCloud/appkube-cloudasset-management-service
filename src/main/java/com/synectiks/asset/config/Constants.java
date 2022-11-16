@@ -87,6 +87,8 @@ public final class Constants {
     public static String PROXY_GRAFANA_USER = "";
     public static String PROXY_GRAFANA_PASSWORD = ""; 
 //    public static String IMPORT_DASHBOARD_TO_GRAFANA_API = ""; 
+    public static String DEPARTMENT_WISE_ANALYTICS ="department-wise-analytics";
+    public static Map<String, Object> cache = new HashMap<>();
     
     private Constants() {
     }
