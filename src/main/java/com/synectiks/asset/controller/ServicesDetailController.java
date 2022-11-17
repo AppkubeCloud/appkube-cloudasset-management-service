@@ -83,7 +83,7 @@ public class ServicesDetailController {
 	public ResponseEntity<Optional<ServiceDetail>> deleteServiceDetail(@PathVariable Long id) {
 		logger.info("Request to delete service-detail by id: {}", id);
 		Optional<ServiceDetail> oSpa = serviceDetailService.deleteServiceDetail(id);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.TRUE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
@@ -94,7 +94,7 @@ public class ServicesDetailController {
 	public ResponseEntity<ServiceDetail> createServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to create new service-detail");
 		ServiceDetail spa = serviceDetailService.createServiceDetail(obj);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.TRUE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
@@ -105,7 +105,7 @@ public class ServicesDetailController {
 	public ResponseEntity<ServiceDetail> updateServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to update service-detail");
 		ServiceDetail spa = serviceDetailService.updateServiceDetail(obj);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.TRUE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
@@ -116,7 +116,7 @@ public class ServicesDetailController {
 	public ResponseEntity<Optional<ServiceDetail>> partialUpdateServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to partially update service-detail");
 		Optional<ServiceDetail> oSpa = serviceDetailService.partialUpdateServiceDetail(obj);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.TRUE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
@@ -148,7 +148,7 @@ public class ServicesDetailController {
 	public ResponseEntity<List<ServiceDetail>> createBulkData(@RequestBody ObjectNode objNode) throws IOException {
 		logger.info("Request to create bulk service-detail data");
 		serviceDetailService.createBulkData(objNode);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.TRUE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);

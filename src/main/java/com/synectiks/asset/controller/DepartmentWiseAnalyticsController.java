@@ -60,7 +60,7 @@ public class DepartmentWiseAnalyticsController {
 	@GetMapping("/department-wise-analytics/update-cache")
 	public ResponseEntity<CfgCacheConfig> updateCache(){
 		logger.info("Request to update department-wise-analytics cache");
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.TRUE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);

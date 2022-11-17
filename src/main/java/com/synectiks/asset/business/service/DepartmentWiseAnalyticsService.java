@@ -329,10 +329,10 @@ public class DepartmentWiseAnalyticsService {
 	// department wise analytics by service.json
 	public DepartmentWiseAnaliticResponse getAnalyticalDataFromJson(Map<String, String> obj) {
 		
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS);
+		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		if(oCache.isPresent() && oCache.get().isDirtyFlag() == Boolean.FALSE) {
 			logger.info("Getting department wise analytics from cache");
-			DepartmentWiseAnaliticResponse dwa = (DepartmentWiseAnaliticResponse)Constants.cache.get(Constants.DEPARTMENT_WISE_ANALYTICS);
+			DepartmentWiseAnaliticResponse dwa = (DepartmentWiseAnaliticResponse)Constants.cache.get(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 			return dwa;
 		}
 		logger.info("Getting department wise analytics from database");
@@ -553,7 +553,7 @@ public class DepartmentWiseAnalyticsService {
 		org.setTotalDepartment(departmentResponseList.size());
 		org.setDepartmentList(departmentResponseList);
 		DepartmentWiseAnaliticResponse dwa = DepartmentWiseAnaliticResponse.builder().organization(org).build();
-		Constants.cache.put(Constants.DEPARTMENT_WISE_ANALYTICS,dwa);
+		Constants.cache.put(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY,dwa);
 		CfgCacheConfig ccf = oCache.get();
 		ccf.setDirtyFlag(Boolean.FALSE);
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);

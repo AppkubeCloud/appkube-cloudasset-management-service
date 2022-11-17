@@ -4,6 +4,11 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.time.Duration;
+import java.time.OffsetDateTime;
+import java.time.temporal.Temporal;
+import java.time.temporal.TemporalField;
+import java.time.temporal.TemporalUnit;
 import java.util.Map;
 
 import org.apache.commons.lang3.RandomStringUtils;
@@ -190,5 +195,15 @@ public class Utils {
 	public static String getRandomStringUuid() {
 		return RandomStringUtils.randomAlphanumeric(9);
 	}
-	
+
+	public static void main(String a[]) {
+		OffsetDateTime now = OffsetDateTime.now();
+		System.out.println("current time : "+now);
+//		Long x = now.toOffsetTime(). + (6*60*1000);
+		OffsetDateTime ndt = now.plus(Duration.ofMillis(6*60*1000));
+		System.err.println("future time: "+ndt);
+		
+		boolean n = ndt.compareTo(now) > 0;
+		System.out.println(n);
+	}
 }
