@@ -1,9 +1,11 @@
 package com.synectiks.asset.business.service;
 
 import java.time.Instant;
+import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -15,6 +17,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.synectiks.asset.domain.Cloud;
+import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.CloudRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -93,31 +96,27 @@ public class CloudService {
 	
 	public List<Cloud> searchAllCloud(Map<String, String> obj) {
 		logger.info("Search cloud");
-		Cloud cld = new Cloud();
-		boolean isFilter = false;
 		
-		if(!StringUtils.isBlank(obj.get("id"))) {
-			cld.setId(Long.parseLong(obj.get("id")));
-			isFilter = true;
+		List<Cloud> list = cloudRepository.findAll();
+		if (obj.size() == 0) {
+			return list;
 		}
+		List<Cloud> list2 = list;
 		
-		if(!StringUtils.isBlank(obj.get("name"))) {
-			cld.setName(obj.get("name"));
-			isFilter = true;
+		if (obj.containsKey("id")) {
+			list2 = list2.stream().filter(sd -> sd.getId().longValue() == Long.parseLong(obj.get("id")))
+					.collect(Collectors.toList());
 		}
-		
-		if(!StringUtils.isBlank(obj.get("status"))) {
-			cld.setStatus(obj.get("status").toUpperCase());
-			isFilter = true;
+		if (obj.containsKey("name")) {
+			list2 = list2.stream().filter(sd -> sd.getName().equals(obj.get("name")))
+					.collect(Collectors.toList());
 		}
-		
-		List<Cloud> list = null;
-		if(isFilter) {
-			list = cloudRepository.findAll(Example.of(cld), Sort.by(Direction.DESC, "id"));
-		}else {
-			list = cloudRepository.findAll(Sort.by(Direction.DESC, "id"));
+		if (obj.containsKey("status")) {
+			list2 = list2.stream().filter(sd -> sd.getStatus().equalsIgnoreCase(obj.get("status")))
+					.collect(Collectors.toList());
 		}
-		return list;
+
+		return list2;
 	}
 	
 

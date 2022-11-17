@@ -209,9 +209,9 @@ public class ServicesDetailController {
 	}
 	
 
-	@PostMapping("/service-detail/add-new-field")
-	public void createNewFieldInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
-		logger.info("Request to create new filed in service-detail {}",obj);
+	@PostMapping("/service-detail/add-new-field-dbType")
+	public void createNewFieldDbTypeInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
+		logger.info("Request to create new field dbType in service-detail {}",obj);
 		String filePath = obj.get("filePath").asText();
 		String newKey = obj.get("newKey").asText();
 		File f = new File(filePath);
@@ -271,10 +271,53 @@ public class ServicesDetailController {
 				
 				//write the string back to file
 				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
-				serviceDetailService.createBulkDataWithoutTransformation(objNode);
+//				serviceDetailService.createBulkDataWithoutTransformation(objNode);
 			}
 		}
-		serviceDetailService.transformServiceDetailsListToTree();
+//		serviceDetailService.transformServiceDetailsListToTree();
+	}
+	
+	@PostMapping("/service-detail/add-new-field")
+	public void createNewFieldInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
+		logger.info("Request to create new field in service-detail {}",obj);
+		String filePath = obj.get("filePath").asText();
+		String newKey = obj.get("newKey").asText();
+		File f = new File(filePath);
+		if(f.isDirectory()) {
+			for(File file: f.listFiles()) {
+				
+				System.out.println(file.getName());
+				
+				//read contents of a file into string
+				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+				
+				//convert that string into json
+				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
+				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
+				
+				//iterate each json and add new field
+				JsonNode objArray = objNode.get("services");
+				for (JsonNode node : objArray) {
+					ObjectNode objectNode = (ObjectNode)node;
+					
+					if(obj.get("newValue") != null && !StringUtils.isBlank(obj.get("newValue").asText())) {
+						objectNode.put(newKey, obj.get("newValue").asText());
+					}else {
+						objectNode.put(newKey, "");
+					}
+					arrayNode.add(objectNode);
+				}
+				objNode.put("services",arrayNode);
+				
+				//convert the json into string
+				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
+				
+				//write the string back to file
+				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
+//				serviceDetailService.createBulkDataWithoutTransformation(objNode);
+			}
+		}
+//		serviceDetailService.transformServiceDetailsListToTree();
 	}
 	
 	@PostMapping("/service-detail/update-field")
@@ -330,7 +373,7 @@ public class ServicesDetailController {
 				serviceDetailService.createBulkDataWithoutTransformation(objNode);
 			}
 		}
-		serviceDetailService.transformServiceDetailsListToTree();
+//		serviceDetailService.transformServiceDetailsListToTree();
 	}
 	
 	private static boolean isContain(String source, String subItem){

@@ -5,6 +5,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -101,58 +102,73 @@ public class CloudEnvironmentController {
 	@GetMapping("/cloud-environment/search")
 	public ResponseEntity<List<CloudEnvironment>> searchAllCloudEnvironmentNew(@RequestParam Map<String, String> obj){
 		logger.info("Request to search cloud-environment");
-		if(obj.containsKey("status")) {
-			obj.remove("status");
-		}
-//		List<CloudEnvironment> list = cloudEnvironmentService.searchAllCloudEnvironment(obj);
-		CloudEnvironment ceObj = cloudEnvironmentService.searchAllCloudEnvironment(obj).get(0);
-		Cloud cloud = cloudService.searchAllCloud(new HashMap<>()).get(0);
+		List<CloudEnvironment> cloudEnvironmentList = new ArrayList<>();
 		
-		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
-		Map<String, String> landingZone = new HashMap<>();
+		Map<String, String> sdSearchMap = new HashMap<>();
+		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(sdSearchMap);
+		
+		Map<String, String> cloudMap = new HashMap<>();
 		for(ServiceDetail sd: sdr.getServices()) {
-			landingZone.put((String)sd.getMetadata_json().get("associatedLandingZone"), (String)sd.getMetadata_json().get("associatedLandingZone"));
+			cloudMap.put((String)sd.getMetadata_json().get("cloudType"), (String)sd.getMetadata_json().get("cloudType"));
 		}
-		List<CloudEnvironment> list = new ArrayList<>();
 		
-		Map<String, String> searchMap = new HashMap<>();
-		for (String key: landingZone.keySet()) {
-			searchMap.clear();
-			searchMap.put("associatedLandingZone", key);
-			ServiceDetailReportResponse lzone = serviceDetailService.searchServiceDetailWithFilter(searchMap);
-			int totalApp = 0 ;
-			int totalData = 0;
-			Map<String, String> productMap = new HashMap<String, String>();
-			Map<String, String> productEnclaveMap = new HashMap<String, String>();
-			for(ServiceDetail sdDetail: lzone.getServices()) {
-				if("APP".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) && !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
-					totalApp = totalApp + 1;
-				}else if("DATA".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) 
-						&& !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
-					totalData = totalData + 1;
-				}
-				productMap.put((String)sdDetail.getMetadata_json().get("associatedProduct"), (String)sdDetail.getMetadata_json().get("associatedProduct"));
-				productEnclaveMap.put((String)sdDetail.getMetadata_json().get("associatedProductEnclave"), (String)sdDetail.getMetadata_json().get("associatedProductEnclave"));
+		for(String cloud: cloudMap.keySet()) {
+			//filter service detail list for the given cloud
+			List<ServiceDetail>cloudList = sdr.getServices().stream().filter(sd -> ((String) sd.getMetadata_json().get("cloudType"))
+						.equalsIgnoreCase(cloud)).collect(Collectors.toList());
+			
+			//filter unique landing zone from cloudList
+			Map<String, String> landingZone = new HashMap<>();
+			for(ServiceDetail sd: cloudList) {
+				landingZone.put((String)sd.getMetadata_json().get("associatedLandingZone"), (String)sd.getMetadata_json().get("associatedLandingZone"));
 			}
 			
-			CloudEnvironment ce = new CloudEnvironment();
-			ce.setTotalAppServices(totalApp);
-			ce.setTotalDataServices(totalData);
-			ce.setTotalProducts(productMap.size());
-			ce.setTotalProductEnclave(productEnclaveMap.size());
-			ce.setName(key);
-			ce.setDescription(key);
-			ce.setAccountId(key);
-			ce.setAccessKey(ceObj.getAccessKey());
-			ce.setSecretKey(ceObj.getSecretKey());
-			ce.setRegion(ceObj.getRegion());
-			ce.setOrgId(ceObj.getOrgId());
-			ce.setStatus(ceObj.getStatus());
-			ce.setCloud(ceObj.getCloud());
-			list.add(ce);
+			Map<String, String> searchMap = new HashMap<>();
+			for (String key: landingZone.keySet()) {
+				searchMap.clear();
+				searchMap.put("associatedLandingZone", key);
+				
+				//filter service detail list for the given landing zone
+				List<ServiceDetail>landingZoneList = cloudList.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedLandingZone"))
+							.equalsIgnoreCase(key)).collect(Collectors.toList());
+				
+				int totalApp = 0 ;
+				int totalData = 0;
+				Map<String, String> productMap = new HashMap<String, String>();
+				Map<String, String> productEnclaveMap = new HashMap<String, String>();
+				
+				for(ServiceDetail sdDetail: landingZoneList) {
+					if("APP".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) && !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
+						totalApp = totalApp + 1;
+					}else if("DATA".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) 
+							&& !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
+						totalData = totalData + 1;
+					}
+					productMap.put((String)sdDetail.getMetadata_json().get("associatedProduct"), (String)sdDetail.getMetadata_json().get("associatedProduct"));
+					productEnclaveMap.put((String)sdDetail.getMetadata_json().get("associatedProductEnclave"), (String)sdDetail.getMetadata_json().get("associatedProductEnclave"));
+				}
+				
+				CloudEnvironment ce = new CloudEnvironment();
+				ce.setTotalAppServices(totalApp);
+				ce.setTotalDataServices(totalData);
+				ce.setTotalProducts(productMap.size());
+				ce.setTotalProductEnclave(productEnclaveMap.size());
+				ce.setName(key);
+				ce.setDescription(key);
+				ce.setAccountId(key);
+//				ce.setAccessKey(cloudEnvObjList.getAccessKey());
+//				ce.setSecretKey(cloudEnvObjList.getSecretKey());
+//				ce.setRegion(cloudEnvObjList.getRegion());
+//				ce.setOrgId(cloudEnvObjList.getOrgId());
+//				ce.setStatus(cloudEnvObjList.getStatus());
+				Cloud cl = new Cloud();
+				cl.setName(cloud);
+				ce.setCloud(cl);
+				cloudEnvironmentList.add(ce);
+			}
 		}
 		
-		return ResponseEntity.status(HttpStatus.OK).body(list);
+		return ResponseEntity.status(HttpStatus.OK).body(cloudEnvironmentList);
 	}
 	
 }
