@@ -237,17 +237,11 @@ public class ServicesDetailController {
 							objectNode.put(newKey, "Postgresql");
 						}else if(description.toLowerCase().contains("Radis".toLowerCase()) || description.toLowerCase().contains("Redis".toLowerCase())) {
 							objectNode.put(newKey, "Redis");
-						}
-						else if(isContain(description, "ES") || isContain(description, "ElasticSearch")) {
+						}else if(isContain(description.toLowerCase(), "ES".toLowerCase()) || isContain(description.toLowerCase(), "ElasticSearch".toLowerCase())) {
 							objectNode.put(newKey, "ElasticSearch");
-						}
-//						else if(description.toLowerCase().contentEquals("ES".toLowerCase()) || description.toLowerCase().contentEquals("ElasticSearch".toLowerCase())) {
-//							objectNode.put(newKey, "ElasticSearch");
-//						}
-						else if(description.toLowerCase().contains("GIT".toLowerCase()) || description.toLowerCase().contains("Github".toLowerCase())) {
+						}else if(description.toLowerCase().contains("GIT".toLowerCase()) || description.toLowerCase().contains("Github".toLowerCase())) {
 							objectNode.put(newKey, "GIT");
-						}
-						else if(description.toLowerCase().contains("Mongodb".toLowerCase()) || description.toLowerCase().contains("Mongo".toLowerCase())) {
+						}else if(description.toLowerCase().contains("Mongodb".toLowerCase()) || description.toLowerCase().contains("Mongo".toLowerCase())) {
 							objectNode.put(newKey, "Mongodb");
 						}else if(description.toLowerCase().contains("DynamoDB".toLowerCase())) {
 							objectNode.put(newKey, "DynamoDB");
@@ -255,8 +249,20 @@ public class ServicesDetailController {
 							objectNode.put(newKey, "S3 ObjectStore");
 						}else if(description.toLowerCase().contains("CDN".toLowerCase())) {
 							objectNode.put(newKey, "CDN data service");
-						}else if(description.toLowerCase().contains("Druid s3 database".toLowerCase())) {
-							objectNode.put(newKey, "Druid s3");
+						}else if(isContain(description.toLowerCase(), "Druid s3".toLowerCase()) || isContain(description.toLowerCase(), "Druid".toLowerCase())) {
+							objectNode.put(newKey, "Druid");
+						}else if(description.toLowerCase().contains("Kinesys".toLowerCase())) {
+							objectNode.put(newKey, "Kinesys");
+						}else if(isContain(description.toLowerCase(), "Golang Based Metric Manager".toLowerCase())) {
+							objectNode.put(newKey, "Golang Metric Manager");
+						}else if(isContain(description.toLowerCase(), "Mimir Metric Database".toLowerCase())) {
+							objectNode.put(newKey, "Mimir Metric Database");
+						}else if(isContain(description.toLowerCase(), "Jaeger".toLowerCase())) {
+							objectNode.put(newKey, "Jaeger");
+						}else if(isContain(description.toLowerCase(), "Zipkin".toLowerCase())) {
+							objectNode.put(newKey, "Zipkin");
+						}else if(isContain(description.toLowerCase(), "LOKI".toLowerCase())) {
+							objectNode.put(newKey, "LOKI");
 						}else {
 							objectNode.put(newKey, "");
 						}
