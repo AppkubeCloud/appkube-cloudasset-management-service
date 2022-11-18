@@ -10,6 +10,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
@@ -17,19 +19,20 @@ import org.springframework.web.bind.annotation.RestController;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.config.Constants;
+import com.synectiks.asset.domain.CfgCacheConfig;
 import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.util.UniqueProductUtil;
 
 @RestController
 @RequestMapping("/api")
 public class AnalyticController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(AnalyticController.class);
-	
+
 	@Autowired
 	private UniqueProductUtil uniqueProductUtil;
-	
-	@GetMapping("/anlytics/cloud-wise-spend")
+
+	@GetMapping("/analytics/cloud-wise-spend")
 	public ResponseEntity<Map<String, ObjectNode>> getCloudWiseSpend(@RequestParam Map<String, String> obj){
 		logger.info("Request to get cloud wise spend");
 		ObjectMapper mapper = Constants.instantiateMapper();
@@ -46,10 +49,10 @@ public class AnalyticController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(map);
 	}
-	
-	@GetMapping("/anlytics/sla-central")
+
+	@GetMapping("/analytics/sla-central")
 	public ResponseEntity<Map<String, ObjectNode>> getSlaCentralData(@RequestParam Map<String, String> obj){
-		logger.info("Request to get sla central anlytics");
+		logger.info("Request to get sla central analytics");
 		Map<String, ObjectNode> map = new HashMap<>();
 		ObjectMapper mapper = Constants.instantiateMapper();
 		List<String> productList = null;
@@ -61,7 +64,7 @@ public class AnalyticController {
 		for(String product: productList) {
 			ObjectNode node = mapper.createObjectNode();
 			node.put("Performance", RandomUtil.getRandom(90, 100));
-			node.put("Availibility", RandomUtil.getRandom(90, 100));
+			node.put("Availability", RandomUtil.getRandom(90, 100));
 			node.put("Reliability", RandomUtil.getRandom(90, 100));
 			node.put("Security", RandomUtil.getRandom(90, 100));
 			node.put("End Usage", RandomUtil.getRandom(90, 100));
@@ -69,4 +72,5 @@ public class AnalyticController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(map);
 	}
+
 }
