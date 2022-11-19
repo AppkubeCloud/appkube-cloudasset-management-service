@@ -1034,8 +1034,6 @@ public class ServiceDetailService {
 
     public void updateSlaJson() throws JsonParseException, JsonMappingException, IOException {
         // loop all the clouds
-
-        // for every service detail create sla json {"per":random value(95-100)}
         Map<String, String> obj = new HashMap<>();
         for(String cloud: Constants.AVAILABLE_CLOUDS) {
             List<String> producList = uniqueProductUtil.getProducts(cloud);
