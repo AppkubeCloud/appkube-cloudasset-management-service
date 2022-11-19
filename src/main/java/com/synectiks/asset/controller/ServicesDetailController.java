@@ -13,6 +13,7 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import com.synectiks.asset.util.UniqueProductUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -53,16 +54,19 @@ import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 @RestController
 @RequestMapping("/api")
 public class ServicesDetailController {
-	
+
 	private static final Logger logger = LoggerFactory.getLogger(ServicesDetailController.class);
-	
+
 	@Autowired
 	private ServiceDetailService serviceDetailService;
-	
+
 	@Autowired
 	private CfgCacheConfigService cfgCacheConfigService;
-	
-	@GetMapping("/service-detail/{id}")
+
+    @Autowired
+    private UniqueProductUtil uniqueProductUtil;
+
+    @GetMapping("/service-detail/{id}")
 	public ResponseEntity<ServiceDetail> getServiceDetail(@PathVariable Long id) {
 		logger.info("Request to get service-detail. Id: "+id);
 		Optional<ServiceDetail> odp = serviceDetailService.getServiceDetail(id);
@@ -71,14 +75,14 @@ public class ServicesDetailController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
-	
+
 	@GetMapping("/service-detail")
 	public ResponseEntity<List<ServiceDetail>> getAllServiceDetail() {
 		logger.info("Request to get service-detail");
 		List<ServiceDetail> list = serviceDetailService.getAllServiceDetail();
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
-	
+
 	@DeleteMapping("/service-detail/{id}")
 	public ResponseEntity<Optional<ServiceDetail>> deleteServiceDetail(@PathVariable Long id) {
 		logger.info("Request to delete service-detail by id: {}", id);
@@ -89,7 +93,7 @@ public class ServicesDetailController {
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
-	
+
 	@PostMapping("/service-detail")
 	public ResponseEntity<ServiceDetail> createServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to create new service-detail");
@@ -100,7 +104,7 @@ public class ServicesDetailController {
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(spa);
 	}
-	
+
 	@PutMapping("/service-detail")
 	public ResponseEntity<ServiceDetail> updateServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to update service-detail");
@@ -111,7 +115,7 @@ public class ServicesDetailController {
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(spa);
 	}
-	
+
 	@PatchMapping("/service-detail")
 	public ResponseEntity<Optional<ServiceDetail>> partialUpdateServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to partially update service-detail");
@@ -122,13 +126,13 @@ public class ServicesDetailController {
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
-	
+
 	@GetMapping("/service-detail/search")
 	public ResponseEntity<ServiceDetailReportResponse> search(@RequestParam Map<String, String> obj){
 		logger.info("Request to search service-detail");
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		List<ServiceDetail> list = new ArrayList<>();
-		
+
 		if(sdr.getServices() != null && sdr.getServices().size() > 0) {
 			for(ServiceDetail sdObj: sdr.getServices()) {
 				sdObj.getMetadata_json().put("performance", PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
@@ -140,10 +144,10 @@ public class ServicesDetailController {
 			}
 			sdr.setServices(list);
 		}
-		
+
 		return ResponseEntity.status(HttpStatus.OK).body(sdr);
 	}
-	
+
 	@PostMapping("/service-detail/create-bulk-data")
 	public ResponseEntity<List<ServiceDetail>> createBulkData(@RequestBody ObjectNode objNode) throws IOException {
 		logger.info("Request to create bulk service-detail data");
@@ -154,13 +158,13 @@ public class ServicesDetailController {
 		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return getAllServiceDetail();
 	}
-	
+
 	@GetMapping("/service-detail/search-with-filter")
 	public ResponseEntity<ServiceDetailReportResponse> searchServiceDetailWithFilter(@RequestParam Map<String, String> obj){
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(sdr);
 	}
-	
+
 	public Map<String, String> convertKeyValuePairToMap(String keyValuePairs) {
 		String dt[] = keyValuePairs.split("&");
 		Map<String, String> obj = new HashMap<>();
@@ -170,21 +174,21 @@ public class ServicesDetailController {
 		}
 		return obj;
 	}
-	
+
 	@GetMapping("/service-detail/transform")
 	public ResponseEntity<Object> change() throws IOException {
 		logger.info("Request to transform service-detail data");
 		Object m =serviceDetailService.transformServiceDetailsListToTree();
 		return ResponseEntity.status(HttpStatus.OK).body(m);
 	}
-	
+
 	@GetMapping("/service-detail/enable-monitoring")
 	public ResponseEntity<Object> enableMonitoring(@RequestParam Map<String, String> obj) throws Exception {
 		logger.info("Request to deploy all the dashboards for each service");
 		serviceDetailService.enableMonitoring(obj);
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
-	
+
 	@PostMapping("/service-detail/view-json")
 	public ResponseEntity<Map<String, Object>> viewJson(@RequestBody ObjectNode objectNode) throws IOException {
 		if(StringUtils.isBlank(objectNode.get("serviceId").asText())) {
@@ -193,7 +197,20 @@ public class ServicesDetailController {
 		serviceDetailService.updateViewJson(objectNode);
 		return getViewJson(objectNode.get("serviceId").asText());
 	}
-	
+
+    @PostMapping("/service-detail/sla-json")
+    public ResponseEntity<String> updateSlaJson() throws IOException {
+    	logger.info("Request to update sla json of all services");
+    	String msg = "SLA updated successfully";
+    	try {
+    		serviceDetailService.updateSlaJson();
+    		return ResponseEntity.status(HttpStatus.OK).body(msg);
+    	}catch(Exception e) {
+    		msg = "SLA update failed";
+    		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(msg);
+    	}
+    }
+
 	@GetMapping("/service-detail/view-json")
 	public ResponseEntity<Map<String, Object>> getViewJson(@RequestParam String serviceId) throws JsonProcessingException {
 		logger.info("Getting view json. Service id {}: ", serviceId);
@@ -207,7 +224,7 @@ public class ServicesDetailController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
-	
+
 
 	@PostMapping("/service-detail/add-new-field-dbType")
 	public void createNewFieldDbTypeInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
@@ -217,16 +234,16 @@ public class ServicesDetailController {
 		File f = new File(filePath);
 		if(f.isDirectory()) {
 			for(File file: f.listFiles()) {
-				
+
 				System.out.println(file.getName());
-				
+
 				//read contents of a file into string
 				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-				
+
 				//convert that string into json
 				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
 				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
-				
+
 				//iterate each json and add new field
 				JsonNode objArray = objNode.get("services");
 				for (JsonNode node : objArray) {
@@ -266,15 +283,15 @@ public class ServicesDetailController {
 						}else {
 							objectNode.put(newKey, "");
 						}
-						
+
 					}
 					arrayNode.add(objectNode);
 				}
 				objNode.put("services",arrayNode);
-				
+
 				//convert the json into string
 				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
-				
+
 				//write the string back to file
 				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
 //				serviceDetailService.createBulkDataWithoutTransformation(objNode);
@@ -282,7 +299,7 @@ public class ServicesDetailController {
 		}
 //		serviceDetailService.transformServiceDetailsListToTree();
 	}
-	
+
 	@PostMapping("/service-detail/add-new-field")
 	public void createNewFieldInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
 		logger.info("Request to create new field in service-detail {}",obj);
@@ -291,21 +308,21 @@ public class ServicesDetailController {
 		File f = new File(filePath);
 		if(f.isDirectory()) {
 			for(File file: f.listFiles()) {
-				
+
 				System.out.println(file.getName());
-				
+
 				//read contents of a file into string
 				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-				
+
 				//convert that string into json
 				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
 				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
-				
+
 				//iterate each json and add new field
 				JsonNode objArray = objNode.get("services");
 				for (JsonNode node : objArray) {
 					ObjectNode objectNode = (ObjectNode)node;
-					
+
 					if(obj.get("newValue") != null && !StringUtils.isBlank(obj.get("newValue").asText())) {
 						objectNode.put(newKey, obj.get("newValue").asText());
 					}else {
@@ -314,10 +331,10 @@ public class ServicesDetailController {
 					arrayNode.add(objectNode);
 				}
 				objNode.put("services",arrayNode);
-				
+
 				//convert the json into string
 				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
-				
+
 				//write the string back to file
 				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
 //				serviceDetailService.createBulkDataWithoutTransformation(objNode);
@@ -325,7 +342,7 @@ public class ServicesDetailController {
 		}
 //		serviceDetailService.transformServiceDetailsListToTree();
 	}
-	
+
 	@PostMapping("/service-detail/update-field")
 	public void updateFieldInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
 		logger.info("Request to update a filed in service-detail {}",obj);
@@ -335,16 +352,16 @@ public class ServicesDetailController {
 		File f = new File(filePath);
 		if(f.isDirectory()) {
 			for(File file: f.listFiles()) {
-				
+
 				System.out.println(file.getName());
-				
+
 				//read contents of a file into string
 				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-				
+
 				//convert that string into json
 				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
 				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
-				
+
 				//iterate each json and add new field
 				JsonNode objArray = objNode.get("services");
 				for (JsonNode node : objArray) {
@@ -353,16 +370,16 @@ public class ServicesDetailController {
 					arrayNode.add(objectNode);
 				}
 				objNode.put("services",arrayNode);
-				
+
 				//convert the json into string
 				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
 				//write the string back to file
 				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
-				
+
 			}
 		}
 	}
-	
+
 	@PostMapping("/service-detail/upload-data-from-file")
 	public void uploadServiceDetailFromFile(@RequestBody ObjectNode obj) throws IOException{
 		logger.info("Request to create new filed in service-detail {}",obj);
@@ -372,16 +389,16 @@ public class ServicesDetailController {
 			for(File file: f.listFiles()) {
 				//read contents of a file into string
 				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
-				
+
 				//convert that string into json
 				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
-				
+
 				serviceDetailService.createBulkDataWithoutTransformation(objNode);
 			}
 		}
 //		serviceDetailService.transformServiceDetailsListToTree();
 	}
-	
+
 	private static boolean isContain(String source, String subItem){
         String pattern = "\\b"+subItem+"\\b";
         Pattern p=Pattern.compile(pattern);

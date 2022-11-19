@@ -1,27 +1,23 @@
 package com.synectiks.asset.controller;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.synectiks.asset.config.Constants;
+import com.synectiks.asset.util.RandomUtil;
+import com.synectiks.asset.util.UniqueProductUtil;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.GetMapping;
-import org.springframework.web.bind.annotation.PostMapping;
-import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.CfgCacheConfig;
-import com.synectiks.asset.util.RandomUtil;
-import com.synectiks.asset.util.UniqueProductUtil;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 @RestController
 @RequestMapping("/api")
@@ -55,12 +51,7 @@ public class AnalyticController {
 		logger.info("Request to get sla central analytics");
 		Map<String, ObjectNode> map = new HashMap<>();
 		ObjectMapper mapper = Constants.instantiateMapper();
-		List<String> productList = null;
-		if(Constants.cache.containsKey(Constants.PRODUCT_CACHE_KEY)) {
-			productList = (List<String>)Constants.cache.get(Constants.PRODUCT_CACHE_KEY);
-		}else {
-			productList = uniqueProductUtil.getProducts();
-		}
+		List<String> productList = uniqueProductUtil.getProducts();
 		for(String product: productList) {
 			ObjectNode node = mapper.createObjectNode();
 			node.put("Performance", RandomUtil.getRandom(90, 100));
@@ -72,5 +63,6 @@ public class AnalyticController {
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(map);
 	}
+
 
 }

@@ -10,6 +10,7 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
+import com.synectiks.asset.util.UniqueProductUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -79,6 +80,9 @@ public class ServiceDetailService {
 
 	@Autowired
 	private JacsonNodeAndMapConvertUtil jacsonNodeAndMapConvertUtil;
+
+    @Autowired
+    private UniqueProductUtil uniqueProductUtil;
 
 	public Optional<ServiceDetail> getServiceDetail(Long id) {
 		logger.info("Get service detail by id: {}", id);
@@ -158,7 +162,7 @@ public class ServiceDetailService {
 			createServiceDetail(sd);
 		}
 	}
-	
+
 	public ServiceDetailReportResponse searchServiceDetailWithFilter(Map<String, String> obj) {
 		logger.info("Search service detail with filter");
 		ServiceDetailReportResponse resp = ServiceDetailReportResponse.builder().build();
@@ -172,6 +176,10 @@ public class ServiceDetailService {
 		}
 
 		List<ServiceDetail> list2 = list;
+        if (obj.containsKey("cloudType")) {
+            list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("cloudType")).equalsIgnoreCase(obj.get("cloudType")))
+                .collect(Collectors.toList());
+        }
 		if (obj.containsKey("name")) {
 			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("name")).equals(obj.get("name")))
 					.collect(Collectors.toList());
@@ -294,7 +302,7 @@ public class ServiceDetailService {
 									for (BusinessService bs : service.getBusiness()) {
 										List<App> appList = new ArrayList<>();
 										List<Data> dataList = new ArrayList<>();
-										
+
 										bs.setApp(appList);
 										bs.setData(dataList);
 
@@ -328,15 +336,15 @@ public class ServiceDetailService {
 										}
 									}
 								}
-								
+
 								if (service.getCommon() != null) {
 									for (CommonService cs : service.getCommon()) {
 											List<App> appList = new ArrayList<>();
 											List<Data> dataList = new ArrayList<>();
-										
+
 											cs.setApp(appList);
 											cs.setData(dataList);
-											
+
 											Map<String, String> obj = new HashMap<>();
 											obj.put("associatedLandingZone", account.getAccount());
 											obj.put("associatedProductEnclave", account.getAccount()+"-"+vpc.getName());
@@ -375,7 +383,7 @@ public class ServiceDetailService {
 				}
 			}
 		}
-	
+
 
 	private Data buildData(ServiceDetail sd, String envName) {
 		Data data = Data.builder().id(envName + "_" + (String) sd.getMetadata_json().get("name")).dbid(sd.getId())
@@ -494,7 +502,7 @@ public class ServiceDetailService {
 										String productName = (String) sd.getMetadata_json().get("associatedProduct");
 										String envName = (String) sd.getMetadata_json().get("associatedEnv");
 										if (!StringUtils.isBlank(vpcName)) {
-											
+
 											if("Cluster".equalsIgnoreCase((String) sd.getMetadata_json().get("serviceHostingType"))) {
 												if (vpcName.substring(vpcName.indexOf("-") + 1)
 														.equalsIgnoreCase(vpc.getName())
@@ -580,8 +588,8 @@ public class ServiceDetailService {
 													}
 												}
 											}
-											
-											
+
+
 //											if (vpcName.substring(vpcName.indexOf("-") + 1)
 //													.equalsIgnoreCase(vpc.getName())
 //													&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
@@ -677,9 +685,9 @@ public class ServiceDetailService {
 													environmentList.add(env);
 												}
 											}
-											
+
 										}
-										
+
 //										if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
 //												&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
 //														.equalsIgnoreCase(cluster.getName())
@@ -711,7 +719,7 @@ public class ServiceDetailService {
 							for (ServiceDetail sd : entry.getValue()) {
 								String vpcName = (String) sd.getMetadata_json().get("associatedProductEnclave");
 								String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
-								
+
 								if (!StringUtils.isBlank(vpcName)) {
 									if("Cluster".equalsIgnoreCase((String) sd.getMetadata_json().get("serviceHostingType"))) {
 										if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
@@ -731,11 +739,11 @@ public class ServiceDetailService {
 												productList.add(product);
 											}
 										}
-										
+
 									}
 								}
-								
-								
+
+
 //								if (!StringUtils.isBlank(vpcName)) {
 //									if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
 //											&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
@@ -780,7 +788,7 @@ public class ServiceDetailService {
 										clusterList.add(cl);
 									}
 								}
-								
+
 							}
 						}
 						vpc.setClusters(clusterList);
@@ -847,7 +855,7 @@ public class ServiceDetailService {
 		for (Map.Entry<String, List<ServiceDetail>> entry : acMap.entrySet()) {
 			String accountId = entry.getKey();
 			for (ServiceDetail sd : entry.getValue()) {
-				
+
 				ObjectNode viewJsonNode = mapper.createObjectNode();
 				viewJsonNode.put("serviceId", String.valueOf(sd.getId()));
 				viewJsonNode.put(Constants.PERFORMANCE, mapper.createArrayNode());
@@ -882,7 +890,7 @@ public class ServiceDetailService {
 							serviceName = (String) sd.getMetadata_json().get("associatedBusinessService");
 						}
 						isDashboardExists = checkDashboardExists(sd, serviceName, accountId, cd.getAssociatedCloudElementType(), cd.getAssociatedSLAType(), mapper);
-						
+
 						if(isDashboardExists) {
 							logger.warn("Dashboard already exists. Skipping import");
 							continue;
@@ -896,7 +904,7 @@ public class ServiceDetailService {
 						cdCriteriaMap.put("accountId", accountId);
 						cdCriteriaMap.put("associatedCloudElementId",
 								(String) sd.getMetadata_json().get("associatedCloudElementId"));
-	
+
 						Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client, dsInstanceJson);
 						ObjectNode dashboardNode = (ObjectNode) mapper.readTree(dashboard.getData());
 						dashboardNode.put("id", 0);
@@ -905,7 +913,7 @@ public class ServiceDetailService {
 								+ RandomUtil.randomAlphabeticString();
 						dashboardNode.put("slug", slug);
 						dashboardNode.put("title", slug);
-	
+
 						ObjectNode dataJs = mapper.createObjectNode();
 						dataJs.put("Dashboard", dashboardNode);
 						dataJs.put("UserId", 0);
@@ -916,15 +924,15 @@ public class ServiceDetailService {
 						dataJs.put("FolderId", 0);
 						dataJs.put("IsFolder", false);
 						dataJs.put("ServiceId", String.valueOf(sd.getId()));
-	
+
 						ObjectNode respNode = proxyGrafanaApiService.importDashboardInGrafana(dataJs);
-						
+
 	//					respNode.put("dashboardCatalogueId", cd.getId());
 						respNode.put("accountId", accountId);
 						respNode.put("cloudElement", cd.getAssociatedCloudElementType());
 						respNode.put("cloudElementId", (String) sd.getMetadata_json().get("associatedCloudElementId"));
 						respNode.put("url", respNode.get("url").asText());
-						
+
 						respNode.put("associatedOU", (String) sd.getMetadata_json().get("associatedOU"));
 						respNode.put("associatedDept", (String) sd.getMetadata_json().get("associatedDept"));
 						respNode.put("associatedProduct", (String) sd.getMetadata_json().get("associatedProduct"));
@@ -937,7 +945,7 @@ public class ServiceDetailService {
 							respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedBusinessService"));
 						}
 						respNode.put("serviceInstance", (String) sd.getMetadata_json().get("name"));
-						
+
 						ArrayNode jnArray = (ArrayNode) viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
 						jnArray.add(respNode);
 					}catch(Exception e) {
@@ -947,14 +955,14 @@ public class ServiceDetailService {
 
 				// update array here
 				updateViewJson(viewJsonNode);
-				
+
 			}
 		}
 	}
 
-	private boolean checkDashboardExists(ServiceDetail sd, String serviceName, String accountId, 
+	private boolean checkDashboardExists(ServiceDetail sd, String serviceName, String accountId,
 			String cloudElement, String associatedSLAType, ObjectMapper mapper) {
-		
+
 		String associatedOU =(String) sd.getMetadata_json().get("associatedOU");
 		String associatedDept =(String) sd.getMetadata_json().get("associatedDept");
 		String associatedProduct = (String) sd.getMetadata_json().get("associatedProduct");
@@ -963,12 +971,12 @@ public class ServiceDetailService {
 		String serviceNature = (String) sd.getMetadata_json().get("serviceNature");
 		String serviceInstance = (String) sd.getMetadata_json().get("name");
 		String cloudElementId = (String) sd.getMetadata_json().get("associatedCloudElementId");
-		
+
 		if(sd.getView_json() == null) {
 			return false;
 		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) == null) {
 			return false;
-		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) != null 
+		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) != null
 				&& ((List)sd.getView_json().get(associatedSLAType.toLowerCase())).isEmpty()) {
 			return false;
 		}
@@ -988,7 +996,7 @@ public class ServiceDetailService {
 					&& serviceInstance.equalsIgnoreCase((String)node.get("serviceInstance"))
 					&& accountId.equalsIgnoreCase((String)node.get("accountId"))
 					&& cloudElement.equalsIgnoreCase((String)node.get("cloudElement"))) {
-				if(("API-Gateway".equalsIgnoreCase((String)node.get("cloudElement")) || 
+				if(("API-Gateway".equalsIgnoreCase((String)node.get("cloudElement")) ||
 						"Dynamodb".equalsIgnoreCase((String)node.get("cloudElement")))
 						&& cloudElementId.equalsIgnoreCase((String)node.get("cloudElementId"))) {
 						return true;
@@ -997,7 +1005,7 @@ public class ServiceDetailService {
 		}
 		return false;
 	}
-	
+
 	public void updateViewJson(ObjectNode objectNode) throws JsonParseException, JsonMappingException, IOException {
 		Long serviceId = Long.parseLong(objectNode.get("serviceId").asText());
 		ObjectMapper mapper = Constants.instantiateMapper();
@@ -1024,7 +1032,51 @@ public class ServiceDetailService {
 		}
 	}
 
-	private ObjectNode createViewJson(String serviceId, JsonNode jsonNode, String key, ObjectMapper mapper) {
+    public void updateSlaJson() throws JsonParseException, JsonMappingException, IOException {
+        // loop all the clouds
+
+        // for every service detail create sla json {"per":random value(95-100)}
+        Map<String, String> obj = new HashMap<>();
+        for(String cloud: Constants.AVAILABLE_CLOUDS) {
+            List<String> producList = uniqueProductUtil.getProducts(cloud);
+            // cloud, product, environment: search service detail HRMS/PROD ---
+            for(String product: producList){
+                obj.clear();
+                obj.put("cloudType", cloud);
+                obj.put("associatedProduct", product);
+                obj.put("associatedEnv", "PROD");
+                ServiceDetailReportResponse sdr = searchServiceDetailWithFilter(obj);
+                for(ServiceDetail serviceDetail: sdr.getServices()){
+                	Map<String, Object> dsTypeMap = null;
+                	if(serviceDetail.getSla_json() == null){
+                        dsTypeMap = new HashMap<>();
+                    }else {
+                        dsTypeMap = serviceDetail.getSla_json();
+                    }
+                	dsTypeMap.put("cloudType", cloud);
+                	dsTypeMap.put("associatedProduct", product);
+                	dsTypeMap.put("associatedEnv", "PROD");
+                	dsTypeMap.put("serviceId", serviceDetail.getId());
+                    setSlaJson(serviceDetail, dsTypeMap);
+                    updateServiceDetail(serviceDetail);
+                }
+            }
+        }
+
+    }
+
+	private void setSlaJson(ServiceDetail serviceDetail, Map<String, Object> dsTypeMap) {
+		for (String dashBoardType : Constants.DASHBOARD_TYPE) {
+		    // created empty array in json
+		    Map<String, Integer> slaMap = new HashMap<>();
+		    slaMap.put("sla",RandomUtil.getRandom(95,100));
+		    dsTypeMap.put(dashBoardType,slaMap);
+		}
+		serviceDetail.setSla_json(dsTypeMap);
+	}
+
+
+    private ObjectNode createViewJson(String serviceId, JsonNode jsonNode, String key, ObjectMapper mapper) {
 		ObjectNode objectNode = mapper.createObjectNode();
 		objectNode.put(Constants.SERVICE_ID, serviceId);
 		for (String dashBoardTypeKey : Constants.DASHBOARD_TYPE_KEYS) {
