@@ -405,4 +405,66 @@ public class ServicesDetailController {
         Matcher m=p.matcher(source);
         return m.find();
    }
+	
+	@PostMapping("/service-detail/add-new-field-appType")
+	public void createNewFieldAppTypeInServiceDetail(@RequestBody ObjectNode obj) throws IOException{
+		logger.info("Request to create new field appType in service-detail {}",obj);
+		String filePath = obj.get("filePath").asText();
+		String newKey = obj.get("newKey").asText();
+		File f = new File(filePath);
+		if(f.isDirectory()) {
+			for(File file: f.listFiles()) {
+
+				System.out.println(file.getName());
+
+				//read contents of a file into string
+				String content = FileUtils.readFileToString(file, StandardCharsets.UTF_8);
+
+				//convert that string into json
+				ObjectNode objNode = Converter.fromJsonString(content, ObjectNode.class);
+				ArrayNode arrayNode = Constants.instantiateMapper().createArrayNode();
+
+				//iterate each json and add new field
+				JsonNode objArray = objNode.get("services");
+				for (JsonNode node : objArray) {
+					ObjectNode objectNode = (ObjectNode)node;
+					if("app".equalsIgnoreCase(objectNode.get("serviceType").asText())) {
+						String description = objectNode.get("description").asText();
+						if(isContain(description.toLowerCase(), "JAVA".toLowerCase())) {
+							objectNode.put(newKey, "Java API");
+						}else if(isContain(description.toLowerCase(), "lambda".toLowerCase())) {
+							objectNode.put(newKey, "Lambda-Functions");
+						}else if(isContain(description.toLowerCase(), "Node".toLowerCase()) || isContain(description.toLowerCase(), "NodeJs".toLowerCase())) {
+							objectNode.put(newKey, "Node API");
+						}else if(isContain(description.toLowerCase(), "GO".toLowerCase()) || isContain(description.toLowerCase(), "Golang".toLowerCase())) {
+							objectNode.put(newKey, "GO API");
+						}else if(isContain(description.toLowerCase(), "API-Gateway".toLowerCase()) || isContain(description.toLowerCase(), "API Gateway".toLowerCase())) {
+							objectNode.put(newKey, "API-Gateway");
+						}else if(isContain(description.toLowerCase(), "Prometheus".toLowerCase())) {
+							objectNode.put(newKey, "Prometheus Server");
+						}else if(isContain(description.toLowerCase(), "Jaeger".toLowerCase())) {
+							objectNode.put(newKey, "Jaeger Server");
+						}else if(isContain(description.toLowerCase(), "Zipkin".toLowerCase())) {
+							objectNode.put(newKey, "Zipkin Server");
+						}else if(isContain(description.toLowerCase(), "NIFI".toLowerCase())) {
+							objectNode.put(newKey, "NIFI");
+						}else {
+							objectNode.put(newKey, "");
+						}
+
+					}
+					arrayNode.add(objectNode);
+				}
+				objNode.put("services",arrayNode);
+
+				//convert the json into string
+				String updatedContents = Converter.toPrettyJsonString(objNode, String.class);
+
+				//write the string back to file
+				Files.write(Paths.get(file.getAbsolutePath()), updatedContents.getBytes());
+//				serviceDetailService.createBulkDataWithoutTransformation(objNode);
+			}
+		}
+//		serviceDetailService.transformServiceDetailsListToTree();
+	}
 }
