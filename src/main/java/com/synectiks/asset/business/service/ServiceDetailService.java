@@ -406,27 +406,27 @@ public class ServiceDetailService {
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.availability(AvailabilityResponse.builder()
 						.score(sd.getMetadata_json().get("availability") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("availability")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.security(SecurityResponse.builder()
 						.score(sd.getMetadata_json().get("security") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("security")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.dataProtection(DataProtectionResponse.builder()
 						.score(sd.getMetadata_json().get("dataProtection") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("dataProtection")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.userExperiance(UserExperianceResponse.builder()
 						.score(sd.getMetadata_json().get("userExperiance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("userExperiance")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 
 				.build();
@@ -455,27 +455,27 @@ public class ServiceDetailService {
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.availability(AvailabilityResponse.builder()
 						.score(sd.getMetadata_json().get("availability") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("availability")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.security(SecurityResponse.builder()
 						.score(sd.getMetadata_json().get("security") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("security")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.dataProtection(DataProtectionResponse.builder()
 						.score(sd.getMetadata_json().get("dataProtection") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("dataProtection")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 				.userExperiance(UserExperianceResponse.builder()
 						.score(sd.getMetadata_json().get("userExperiance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("userExperiance")).get("score")
-								: 0)
+								: RandomUtil.getRandom(95, 100))
 						.build())
 
 				.build();
