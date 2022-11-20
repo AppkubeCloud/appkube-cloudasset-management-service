@@ -90,6 +90,10 @@ public class CloudEnvironment implements Serializable {
   @JsonProperty
   private Integer totalDataServices;
   
+  @Transient
+  @JsonProperty
+  private Integer totalBilling;
+  
   public Long getId() {
     return this.id;
   }
@@ -364,5 +368,13 @@ public class CloudEnvironment implements Serializable {
 
 	public void setTotalDataServices(Integer totalDataServices) {
 		this.totalDataServices = totalDataServices;
+	}
+
+	public Integer getTotalBilling() {
+		return totalBilling;
+	}
+
+	public void setTotalBilling(Integer totalBilling) {
+		this.totalBilling = totalBilling;
 	}
 }

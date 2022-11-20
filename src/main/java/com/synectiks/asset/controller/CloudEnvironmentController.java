@@ -136,7 +136,7 @@ public class CloudEnvironmentController {
 				int totalData = 0;
 				Map<String, String> productMap = new HashMap<String, String>();
 				Map<String, String> productEnclaveMap = new HashMap<String, String>();
-				
+				Integer totalBilling = 0;
 				for(ServiceDetail sdDetail: landingZoneList) {
 					if("APP".equalsIgnoreCase((String)sdDetail.getMetadata_json().get("serviceType")) && !StringUtils.isBlank((String)sdDetail.getMetadata_json().get("associatedProductEnclave"))) {
 						totalApp = totalApp + 1;
@@ -146,6 +146,8 @@ public class CloudEnvironmentController {
 					}
 					productMap.put((String)sdDetail.getMetadata_json().get("associatedProduct"), (String)sdDetail.getMetadata_json().get("associatedProduct"));
 					productEnclaveMap.put((String)sdDetail.getMetadata_json().get("associatedProductEnclave"), (String)sdDetail.getMetadata_json().get("associatedProductEnclave"));
+					
+					totalBilling = totalBilling + Integer.parseInt((String)((Map)sdDetail.getMetadata_json().get("stats")).get("totalCostSoFar"));
 				}
 				
 				CloudEnvironment ce = new CloudEnvironment();
@@ -156,6 +158,7 @@ public class CloudEnvironmentController {
 				ce.setName(key);
 				ce.setDescription(key);
 				ce.setAccountId(key);
+				ce.setTotalBilling(totalBilling);
 //				ce.setAccessKey(cloudEnvObjList.getAccessKey());
 //				ce.setSecretKey(cloudEnvObjList.getSecretKey());
 //				ce.setRegion(cloudEnvObjList.getRegion());
