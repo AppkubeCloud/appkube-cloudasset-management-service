@@ -30,6 +30,7 @@ public class Data implements Serializable{
 	private String associatedGlobalServiceLocation;
 	private String serviceHostingType;
 	private String associatedCloudElementId;
+	private String dbType;
 	
 	private String associatedOU;
 	private String associatedDept;

@@ -401,6 +401,7 @@ public class ServiceDetailService {
 				.associatedProduct((String) sd.getMetadata_json().get("associatedProduct"))
 				.associatedEnv((String) sd.getMetadata_json().get("associatedEnv"))
 				.serviceType((String) sd.getMetadata_json().get("serviceType"))
+				.dbType((String) sd.getMetadata_json().get("dbType"))
 
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
@@ -449,6 +450,8 @@ public class ServiceDetailService {
 				.associatedProduct((String) sd.getMetadata_json().get("associatedProduct"))
 				.associatedEnv((String) sd.getMetadata_json().get("associatedEnv"))
 				.serviceType((String) sd.getMetadata_json().get("serviceType"))
+				.appType((String) sd.getMetadata_json().get("appType"))
+				
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")

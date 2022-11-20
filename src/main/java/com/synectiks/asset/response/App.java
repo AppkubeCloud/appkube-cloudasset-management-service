@@ -32,6 +32,7 @@ public class App implements Serializable{
 	private String associatedGlobalServiceLocation;
 	private String serviceHostingType;
 	private String associatedCloudElementId;
+	private String appType;
 	
 	private String associatedOU;
 	private String associatedDept;
