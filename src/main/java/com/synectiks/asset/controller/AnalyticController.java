@@ -79,11 +79,14 @@ public class AnalyticController {
                 Integer avgEndSla = 0;
                 for(ServiceDetail serviceDetail: sdr.getServices()){
                 	Map<String, Object> dsTypeMap = serviceDetail.getSla_json();
-                    perfSla = perfSla + (Integer)((Map)dsTypeMap.get(Constants.PERFORMANCE)).get("sla");
-                    avlSla = avlSla + (Integer)((Map)dsTypeMap.get(Constants.AVAILABILITY)).get("sla");
-                    relSla = relSla + (Integer)((Map)dsTypeMap.get(Constants.RELIABILITY)).get("sla");
-                    secSla = secSla + (Integer)((Map)dsTypeMap.get(Constants.SECURITY)).get("sla");
-                    endSla = endSla + (Integer)((Map)dsTypeMap.get(Constants.ENDUSAGE)).get("sla");
+                	if(dsTypeMap != null) {
+                		perfSla = perfSla + (Integer)((Map)dsTypeMap.get(Constants.PERFORMANCE)).get("sla");
+                        avlSla = avlSla + (Integer)((Map)dsTypeMap.get(Constants.AVAILABILITY)).get("sla");
+                        relSla = relSla + (Integer)((Map)dsTypeMap.get(Constants.RELIABILITY)).get("sla");
+                        secSla = secSla + (Integer)((Map)dsTypeMap.get(Constants.SECURITY)).get("sla");
+                        endSla = endSla + (Integer)((Map)dsTypeMap.get(Constants.ENDUSAGE)).get("sla");
+                	}
+                    
                 }
                 if(perfSla > 0) {
                 	avgPerfSla = perfSla/sdr.getServices().size();
