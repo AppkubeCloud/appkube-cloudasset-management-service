@@ -123,6 +123,10 @@ public class ServiceDetailService {
 		return sd;
 	}
 
+	public List<ServiceDetail> updateServiceDetailBatch(List<ServiceDetail> obj) {
+		return serviceDetailJsonRepository.saveAll(obj);
+	}
+	
 	public ServiceDetail updateServiceDetailSlaJson(ServiceDetail obj) {
 		logger.info("Update service detail sla_json. Id: {}", obj.getId());
 		if (!serviceDetailJsonRepository.existsById(obj.getId())) {
@@ -402,7 +406,7 @@ public class ServiceDetailService {
 				.associatedEnv((String) sd.getMetadata_json().get("associatedEnv"))
 				.serviceType((String) sd.getMetadata_json().get("serviceType"))
 				.dbType((String) sd.getMetadata_json().get("dbType"))
-
+				.slaJson(sd.getSla_json())
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")
@@ -451,7 +455,7 @@ public class ServiceDetailService {
 				.associatedEnv((String) sd.getMetadata_json().get("associatedEnv"))
 				.serviceType((String) sd.getMetadata_json().get("serviceType"))
 				.appType((String) sd.getMetadata_json().get("appType"))
-				
+				.slaJson(sd.getSla_json())
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
 								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")
@@ -969,42 +973,50 @@ public class ServiceDetailService {
 		}
 	}
 
-    public void updateSlaJson() throws JsonParseException, JsonMappingException, IOException {
-        // loop all the clouds
-        Map<String, String> obj = new HashMap<>();
-        for(String cloud: Constants.AVAILABLE_CLOUDS) {
-            List<String> producList = uniqueProductUtil.getProducts(cloud);
-            // cloud, product, environment: search service detail HRMS/PROD ---
-            for(String product: producList){
-                obj.clear();
-                obj.put("cloudType", cloud);
-                obj.put("associatedProduct", product);
-                obj.put("associatedEnv", "PROD");
-                ServiceDetailReportResponse sdr = searchServiceDetailWithFilter(obj);
-                for(ServiceDetail serviceDetail: sdr.getServices()){
-                	Map<String, Object> dsTypeMap = null;
-                	if(serviceDetail.getSla_json() == null){
-                        dsTypeMap = new HashMap<>();
-                    }else {
-                        dsTypeMap = serviceDetail.getSla_json();
-                    }
-                	dsTypeMap.put("cloudType", cloud);
-                	dsTypeMap.put("associatedProduct", product);
-                	dsTypeMap.put("associatedEnv", "PROD");
-                	dsTypeMap.put("serviceId", serviceDetail.getId());
-                    setSlaJson(serviceDetail, dsTypeMap);
-                    updateServiceDetail(serviceDetail);
+	@Transactional
+    public void updateSlaJson() throws Exception {
+    	Map<String, String> obj = new HashMap<>();
+    	ServiceDetailReportResponse sdr =searchServiceDetailWithFilter(obj);
+    	int totalRecords = sdr.getServices().size();
+    	int remRec = sdr.getServices().size();
+    	int batchSize = sdr.getServices().size() >= 1000 ? 1000 : sdr.getServices().size();
+    	List<ServiceDetail> objList = new ArrayList<>();
+    	try {
+    		for(ServiceDetail serviceDetail: sdr.getServices()){
+            	Map<String, Object> dsTypeMap = null;
+            	if(serviceDetail.getSla_json() == null){
+                    dsTypeMap = new HashMap<>();
+                }else {
+                    dsTypeMap = serviceDetail.getSla_json();
                 }
+            	dsTypeMap.put("cloudType", (String) serviceDetail.getMetadata_json().get("cloudType"));
+            	dsTypeMap.put("associatedProduct", (String) serviceDetail.getMetadata_json().get("associatedProduct"));
+            	dsTypeMap.put("associatedEnv", (String) serviceDetail.getMetadata_json().get("associatedEnv"));
+            	dsTypeMap.put("serviceId", serviceDetail.getId());
+            	setSlaJson(serviceDetail, dsTypeMap);
+            	objList.add(serviceDetail);
+            	if(objList.size() == batchSize) {
+            		logger.info("Updating service detail batch");
+            		updateServiceDetailBatch(objList);
+            		objList.clear();
+                }
+                logger.debug("Total Records to be updated {}, Remaining records {}",totalRecords, (--remRec));
             }
-        }
-
+    		if(objList.size() > 0) {
+    			updateServiceDetailBatch(objList);
+    		}
+    	}catch(Exception e) {
+    		logger.error("Exception in update sla: ",e);
+    		throw e;
+    	}
     }
-
+	
 	private void setSlaJson(ServiceDetail serviceDetail, Map<String, Object> dsTypeMap) {
 		for (String dashBoardType : Constants.DASHBOARD_TYPE) {
-		    // created empty array in json
 		    Map<String, Integer> slaMap = new HashMap<>();
-		    slaMap.put("sla",RandomUtil.getRandom(95,100));
+		    int low = RandomUtil.getRandom(93,97);
+		    int high= RandomUtil.getRandom(98,100);
+		    slaMap.put("sla",RandomUtil.getRandom(low,high));
 		    dsTypeMap.put(dashBoardType,slaMap);
 		}
 		serviceDetail.setSla_json(dsTypeMap);

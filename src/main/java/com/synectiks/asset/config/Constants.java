@@ -90,7 +90,7 @@ public final class Constants {
     public static String DEPARTMENT_WISE_ANALYTICS_CACHE_KEY ="department-wise-analytics";
     public static String PRODUCT_CACHE_KEY ="product";
     public static Map<String, Object> cache = new HashMap<>();
-    public static String AVAILABLE_CLOUDS [] = {"AWS","AZURE","GCP","KUBERNETES","OTHER"};
+    public static String AVAILABLE_CLOUDS [] = {"AWS","AZURE","GCP","OTHER"};
     private Constants() {
     }
 }

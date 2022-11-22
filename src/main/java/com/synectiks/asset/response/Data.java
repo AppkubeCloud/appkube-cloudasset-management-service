@@ -1,6 +1,7 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -43,5 +44,7 @@ public class Data implements Serializable{
 	private SecurityResponse security;
 	private DataProtectionResponse dataProtection;
 	private UserExperianceResponse userExperiance;
+	
+	private Map<String, Object> slaJson;
 	
 }

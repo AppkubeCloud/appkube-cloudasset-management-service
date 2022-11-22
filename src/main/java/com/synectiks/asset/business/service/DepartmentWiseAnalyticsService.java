@@ -331,9 +331,11 @@ public class DepartmentWiseAnalyticsService {
 		
 		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 		if(oCache.isPresent() && oCache.get().isDirtyFlag() == Boolean.FALSE) {
-			logger.info("Getting department wise analytics from cache");
 			DepartmentWiseAnaliticResponse dwa = (DepartmentWiseAnaliticResponse)Constants.cache.get(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-			return dwa;
+			if(dwa != null && dwa.getOrganization() != null) {
+				logger.info("Getting department wise analytics from cache");
+				return dwa;
+			}
 		}
 		logger.info("Getting department wise analytics from database");
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
@@ -527,26 +529,6 @@ public class DepartmentWiseAnalyticsService {
 				}
 			}
 		}
-		
-//		for(DepartmentResponse depResp: departmentResponseList) {
-//			for(ProductResponse prdResp: depResp.getProductList()) {
-//				for(DeploymentEnvironmentResponse deploymentEnvironmentResponse: prdResp.getDeploymentEnvironmentList()) {
-//					
-//					Map<String, String> leafQryMap = new HashMap<>();
-//					//run it for common
-//					for(ServiceCategoryResponse scResp: deploymentEnvironmentResponse.getServiceCategoryList()) {
-//						if("Common".equalsIgnoreCase(scResp.getName())) {
-//							filterServiceData(depResp, prdResp, deploymentEnvironmentResponse, leafQryMap, scResp);
-//						}
-//						if("Business".equalsIgnoreCase(scResp.getName())) {
-//							filterServiceData(depResp, prdResp, deploymentEnvironmentResponse, leafQryMap, scResp);
-//						}
-//						
-//					}
-//					
-//				}
-//			}
-//		}
 		if(org == null) {
 			org = OrganizationResponse.builder().build();
 		}

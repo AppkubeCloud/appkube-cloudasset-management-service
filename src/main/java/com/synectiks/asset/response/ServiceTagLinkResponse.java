@@ -1,6 +1,7 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -51,6 +52,7 @@ public class ServiceTagLinkResponse implements Serializable {
   private SecurityResponse security;
   private DataProtectionResponse dataProtection;
   private UserExperianceResponse userExperiance;
+  private Map<String, Object> slaJson;
   
   public static ServiceTagLinkResponse from (ServiceTagLink stl) {
 	  return ServiceTagLinkResponse.builder()
@@ -104,7 +106,7 @@ public class ServiceTagLinkResponse implements Serializable {
 	    stlr.setAssociatedManagedCloudServiceLocation((String)sd.getMetadata_json().get("associatedManagedCloudServiceLocation"));
 	    stlr.setAssociatedCloudElementId((String)sd.getMetadata_json().get("associatedCloudElementId"));
 	    stlr.setAssociatedGlobalServiceLocation((String)sd.getMetadata_json().get("associatedGlobalServiceLocation"));
-	    
+	    stlr.setSlaJson(sd.getSla_json());
 	  return stlr;
   }
   

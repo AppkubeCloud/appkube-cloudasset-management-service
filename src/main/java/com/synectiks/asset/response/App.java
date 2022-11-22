@@ -1,6 +1,7 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import com.synectiks.asset.util.RandomUtil;
 
@@ -46,5 +47,7 @@ public class App implements Serializable{
 	private SecurityResponse security;
 	private DataProtectionResponse dataProtection;
 	private UserExperianceResponse userExperiance;
+	
+	private Map<String, Object> slaJson;
 	
 }
