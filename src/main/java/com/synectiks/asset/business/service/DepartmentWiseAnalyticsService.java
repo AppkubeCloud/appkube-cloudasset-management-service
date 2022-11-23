@@ -1,5 +1,6 @@
 package com.synectiks.asset.business.service;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -513,7 +514,14 @@ public class DepartmentWiseAnalyticsService {
 										serviceTagLinkResponse.setSecurity(SecurityResponse.builder().score(RandomUtil.getRandom()).build());
 										serviceTagLinkResponse.setDataProtection(DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
 										serviceTagLinkResponse.setUserExperiance(UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
-										serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(sd.getId(), RandomUtil.getRandom().doubleValue(), null));
+										
+										if(sd.getSla_json() != null) {
+											String billingCost = Constants.decfor.format((Double)((Map)sd.getSla_json().get(Constants.PERFORMANCE)).get("sla"));
+											serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(sd.getId(), Double.parseDouble(billingCost), null));
+										}else {
+											serviceTagLinkResponse.setServiceBilling(ServiceBillingResponse.from(sd.getId(), Double.parseDouble(Constants.decfor.format(RandomUtil.getRandom().doubleValue())), null));
+										}
+										
 										if(tag.getServiceList() == null) {
 											List<ServiceTagLinkResponse> srvRespList = new ArrayList<>();
 											srvRespList.add(serviceTagLinkResponse);

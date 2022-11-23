@@ -4,18 +4,32 @@ import java.util.Random;
 
 public class RandomUtil {
 
-	public static Integer getRandom() {
+//	public static Integer getRandom() {
+//		Random r = new Random();
+//		int low = 0; // it is inclusive
+//		int high = 101; //it is exclusive
+//		Integer result = r.nextInt(high-low) + low;
+//		return result;
+//	}
+	
+	public static Float getRandom() {
 		Random r = new Random();
 		int low = 0; // it is inclusive
 		int high = 101; //it is exclusive
-		Integer result = r.nextInt(high-low) + low;
+		Float result = getRandom(low, high) ;
 		return result;
 	}
 	
-	public static Integer getRandom(int low, int high) {
+//	public static Integer getRandom(int low, int high) {
+//		Random r = new Random();
+//		high = high + 1; //it is exclusive
+//		Integer result = r.nextInt(high-low) + low;
+//		return result;
+//	}
+	
+	public static Float getRandom(int low, int high) {
 		Random r = new Random();
-		high = high + 1; //it is exclusive
-		Integer result = r.nextInt(high-low) + low;
+		float result = low + (high - low) * r.nextFloat();
 		return result;
 	}
 	
@@ -32,4 +46,12 @@ public class RandomUtil {
 
 	    return generatedString;
 	}
+	
+//	public static void main(String a[]) {
+//		Random rd = new Random(); // creating Random object
+//		int rangeMin = 98;
+//		int rangeMax = 100;
+//		Float randomValue = rangeMin + (rangeMax - rangeMin) * rd.nextFloat();
+//	    System.out.println(randomValue);
+//	}
 }

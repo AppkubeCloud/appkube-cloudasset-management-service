@@ -1,13 +1,10 @@
 package com.synectiks.asset.controller;
 
-import com.fasterxml.jackson.databind.ObjectMapper;
-import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.synectiks.asset.business.service.ServiceDetailService;
-import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.ServiceDetail;
-import com.synectiks.asset.response.ServiceDetailReportResponse;
-import com.synectiks.asset.util.RandomUtil;
-import com.synectiks.asset.util.UniqueProductUtil;
+import java.text.DecimalFormat;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,9 +15,14 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.synectiks.asset.business.service.ServiceDetailService;
+import com.synectiks.asset.config.Constants;
+import com.synectiks.asset.domain.ServiceDetail;
+import com.synectiks.asset.response.ServiceDetailReportResponse;
+import com.synectiks.asset.util.RandomUtil;
+import com.synectiks.asset.util.UniqueProductUtil;
 
 @RestController
 @RequestMapping("/api")
@@ -41,9 +43,9 @@ public class AnalyticController {
 		Map<String, ObjectNode> map = new HashMap<>();
 		for(String cloud: Constants.AVAILABLE_CLOUDS) {
 			ObjectNode node = mapper.createObjectNode();
-			Integer current = RandomUtil.getRandom(50000, 50500);
-			Integer prev = RandomUtil.getRandom(40000, 50000);
-			Integer variance = (current-prev)*100/current;
+			Float current = RandomUtil.getRandom(50000, 50500);
+			Float prev = RandomUtil.getRandom(40000, 50000);
+			Float variance = (current-prev)*100/current;
 			node.put("currentTotal", current);
 			node.put("previousTotal", prev);
 			node.put("variance", variance);
@@ -56,6 +58,7 @@ public class AnalyticController {
 	public ResponseEntity<Map<String, ObjectNode>> getAvgSlaCentralData(@RequestParam Map<String, String> paramObj){
 		logger.info("Request to get sla central analytics");
 		Map<String, ObjectNode> map = new HashMap<>();
+		 
 		ObjectMapper mapper = Constants.instantiateMapper();
 		Map<String, String> obj = new HashMap<>();
         for(String cloud: Constants.AVAILABLE_CLOUDS) {
@@ -67,24 +70,24 @@ public class AnalyticController {
                 obj.put("associatedProduct", product);
                 obj.put("associatedEnv", "PROD");
                 ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
-                Integer perfSla = 0;
-                Integer avlSla = 0;
-                Integer relSla = 0;
-                Integer secSla = 0;
-                Integer endSla = 0;
-                Integer avgPerfSla = 0;
-                Integer avgAvlSla = 0;
-                Integer avgRelSla = 0;
-                Integer avgSecSla = 0;
-                Integer avgEndSla = 0;
+                Double perfSla = 0.0D;
+                Double avlSla = 0.0D;
+                Double relSla = 0.0D;
+                Double secSla = 0.0D;
+                Double endSla = 0.0D;
+                Double avgPerfSla = 0.0D;
+                Double avgAvlSla = 0.0D;
+                Double avgRelSla = 0.0D;
+                Double avgSecSla = 0.0D;
+                Double avgEndSla = 0.0D;
                 for(ServiceDetail serviceDetail: sdr.getServices()){
                 	Map<String, Object> dsTypeMap = serviceDetail.getSla_json();
                 	if(dsTypeMap != null) {
-                		perfSla = perfSla + (Integer)((Map)dsTypeMap.get(Constants.PERFORMANCE)).get("sla");
-                        avlSla = avlSla + (Integer)((Map)dsTypeMap.get(Constants.AVAILABILITY)).get("sla");
-                        relSla = relSla + (Integer)((Map)dsTypeMap.get(Constants.RELIABILITY)).get("sla");
-                        secSla = secSla + (Integer)((Map)dsTypeMap.get(Constants.SECURITY)).get("sla");
-                        endSla = endSla + (Integer)((Map)dsTypeMap.get(Constants.ENDUSAGE)).get("sla");
+                		perfSla = perfSla + (Double)((Map)dsTypeMap.get(Constants.PERFORMANCE)).get("sla");
+                        avlSla = avlSla + (Double)((Map)dsTypeMap.get(Constants.AVAILABILITY)).get("sla");
+                        relSla = relSla + (Double)((Map)dsTypeMap.get(Constants.RELIABILITY)).get("sla");
+                        secSla = secSla + (Double)((Map)dsTypeMap.get(Constants.SECURITY)).get("sla");
+                        endSla = endSla + (Double)((Map)dsTypeMap.get(Constants.ENDUSAGE)).get("sla");
                 	}
                     
                 }
@@ -104,11 +107,11 @@ public class AnalyticController {
                 	avgEndSla = endSla/sdr.getServices().size();
                 }
                 ObjectNode node = mapper.createObjectNode();
-    			node.put("Performance", avgPerfSla);
-    			node.put("Availability", avgAvlSla);
-    			node.put("Reliability", avgRelSla);
-    			node.put("Security", avgSecSla);
-    			node.put("End Usage", avgEndSla);
+    			node.put("Performance", Constants.decfor.format(avgPerfSla));
+    			node.put("Availability", Constants.decfor.format(avgAvlSla));
+    			node.put("Reliability", Constants.decfor.format(avgRelSla));
+    			node.put("Security", Constants.decfor.format(avgSecSla));
+    			node.put("End Usage", Constants.decfor.format(avgEndSla));
     			map.put(product, node);
             }
         }

@@ -46,6 +46,7 @@ import com.synectiks.asset.response.AvailabilityResponse;
 import com.synectiks.asset.response.DataProtectionResponse;
 import com.synectiks.asset.response.PerformanceResponse;
 import com.synectiks.asset.response.SecurityResponse;
+import com.synectiks.asset.response.ServiceBillingResponse;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.response.UserExperianceResponse;
 import com.synectiks.asset.util.RandomUtil;
@@ -140,6 +141,12 @@ public class ServicesDetailController {
 				sdObj.getMetadata_json().put("security", SecurityResponse.builder().score(RandomUtil.getRandom()).build());
 				sdObj.getMetadata_json().put("dataProtection", DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
 				sdObj.getMetadata_json().put("userExperiance", UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
+				
+				if(sdObj.getSla_json() != null) {
+					String billingCost = Constants.decfor.format((Double)((Map)sdObj.getSla_json().get(Constants.PERFORMANCE)).get("sla"));
+					((Map)sdObj.getMetadata_json().get("stats")).put("totalCostSoFar", billingCost);
+				}
+				
 				list.add(sdObj);
 			}
 			sdr.setServices(list);

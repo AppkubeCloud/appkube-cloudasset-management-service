@@ -1,6 +1,7 @@
 package com.synectiks.asset.config;
 
 import java.io.IOException;
+import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -91,6 +92,7 @@ public final class Constants {
     public static String PRODUCT_CACHE_KEY ="product";
     public static Map<String, Object> cache = new HashMap<>();
     public static String AVAILABLE_CLOUDS [] = {"AWS","AZURE","GCP","OTHER"};
+    public static final DecimalFormat decfor = new DecimalFormat("0.00");
     private Constants() {
     }
 }

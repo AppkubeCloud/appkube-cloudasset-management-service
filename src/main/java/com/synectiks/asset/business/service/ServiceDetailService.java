@@ -409,27 +409,27 @@ public class ServiceDetailService {
 				.slaJson(sd.getSla_json())
 				.performance(PerformanceResponse.builder()
 						.score(sd.getMetadata_json().get("performance") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")
+								? (Float) ((Map) sd.getMetadata_json().get("performance")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.availability(AvailabilityResponse.builder()
 						.score(sd.getMetadata_json().get("availability") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("availability")).get("score")
+								? (Float) ((Map) sd.getMetadata_json().get("availability")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.security(SecurityResponse.builder()
 						.score(sd.getMetadata_json().get("security") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("security")).get("score")
+								? (Float) ((Map) sd.getMetadata_json().get("security")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.dataProtection(DataProtectionResponse.builder()
 						.score(sd.getMetadata_json().get("dataProtection") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("dataProtection")).get("score")
+								? (Float) ((Map) sd.getMetadata_json().get("dataProtection")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.userExperiance(UserExperianceResponse.builder()
 						.score(sd.getMetadata_json().get("userExperiance") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("userExperiance")).get("score")
+								? (Float) ((Map) sd.getMetadata_json().get("userExperiance")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 
@@ -1013,10 +1013,10 @@ public class ServiceDetailService {
 	
 	private void setSlaJson(ServiceDetail serviceDetail, Map<String, Object> dsTypeMap) {
 		for (String dashBoardType : Constants.DASHBOARD_TYPE) {
-		    Map<String, Integer> slaMap = new HashMap<>();
-		    int low = RandomUtil.getRandom(93,97);
-		    int high= RandomUtil.getRandom(98,100);
-		    slaMap.put("sla",RandomUtil.getRandom(low,high));
+		    Map<String, Float> slaMap = new HashMap<>();
+//		    int low = RandomUtil.getRandom(93,97);
+//		    int high= RandomUtil.getRandom(98,100);
+		    slaMap.put("sla",RandomUtil.getRandom(98,100));
 		    dsTypeMap.put(dashBoardType,slaMap);
 		}
 		serviceDetail.setSla_json(dsTypeMap);
