@@ -1,5 +1,6 @@
 package com.synectiks.asset.controller.testservicedata;
 
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
@@ -10,14 +11,16 @@ import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.nio.file.SimpleFileVisitor;
 import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
+
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;
 
-import com.amazonaws.services.codecommit.model.File;
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
 
@@ -144,6 +147,22 @@ public class ServiceDto implements Serializable{
 		return (String)jsonObject.get("serviceHostingType");
 	}
 
+	public static String getEnv(String jsonFile) {
+		JSONParser parser = new JSONParser();
+		JSONObject jsonObject = null;
+		try {
+			Object obj = parser.parse(new FileReader(jsonFile));
+            jsonObject =  (JSONObject) obj;
+		}catch (FileNotFoundException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        } catch (ParseException e) {
+			e.printStackTrace();
+		}
+		return (String)jsonObject.get("associatedEnv");
+	}
+
 	// public static String getHostingTypes(File jsonFile) {
 	// 	JSONParser parser = new JSONParser();
 	// 	JSONObject jsonObject = null;
@@ -164,18 +183,21 @@ public class ServiceDto implements Serializable{
 	protected void save() throws JsonParseException, JsonMappingException, IOException {	
 		
 	}
-	static Set<String> listFilesUsingFileWalkAndVisitor(String dir) throws IOException {
+	public static List<File> listFilesUsingFileWalkAndVisitor(String dir) throws IOException {
 		Set<String> fileList = new HashSet<>();
+		List<File> fl = new ArrayList<>();
 		Files.walkFileTree(Paths.get(dir), new SimpleFileVisitor<Path>() {
 			@Override
 			public FileVisitResult visitFile(Path file, BasicFileAttributes attrs) {
 				if (!Files.isDirectory(file)) {
 					fileList.add(file.getFileName().toString());
+					fl.add(file.toFile());
 				}
 				return FileVisitResult.CONTINUE;
 			}
 		});
-		return fileList;
+		
+		return fl;
 	}
 	
 	public static ServiceDto instantiate(String hostingType) {

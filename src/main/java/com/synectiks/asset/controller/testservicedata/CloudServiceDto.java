@@ -44,8 +44,16 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 		private String landingZone;
 		private String productEnclave;
 		private String cloudElementType;
-		private Map<String, String> cloudElementId;
+		// private Map<String, String> cloudElementId;
+		private String cloudElementId;
+
 		
+		public String getCloudElementId() {
+			return cloudElementId;
+		}
+		public void setCloudElementId(String cloudElementId) {
+			this.cloudElementId = cloudElementId;
+		}
 		public String getLandingZone() {
 			return landingZone;
 		}
@@ -64,12 +72,12 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 		public void setCloudElementType(String cloudElementType) {
 			this.cloudElementType = cloudElementType;
 		}
-		public Map<String, String> getCloudElementId() {
-			return cloudElementId;
-		}
-		public void setCloudElementId(Map<String, String> cloudElementId) {
-			this.cloudElementId = cloudElementId;
-		}
+		// public Map<String, String> getCloudElementId() {
+		// 	return cloudElementId;
+		// }
+		// public void setCloudElementId(Map<String, String> cloudElementId) {
+		// 	this.cloudElementId = cloudElementId;
+		// }
 		private String managementUrl;
 		public String getManagementUrl() {
 			return managementUrl;
@@ -114,7 +122,7 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 	
 		csl.setLandingZone((String)cloudJson.get("landingZone"));
 		csl.setProductEnclave((String)cloudJson.get("productEnclave"));
-		csl.setCloudElementId((Map)cloudJson.get("cloudElementId"));
+		csl.setCloudElementId((String)cloudJson.get("cloudElementId"));
 		csl.setCloudElementType((String)cloudJson.get("cloudElementType"));
 		csl.setManagementUrl((String)cloudJson.get("managementUrl"));
 		this.setCloudManagedServiceLoaction(csl);

@@ -42,15 +42,22 @@ public class GlobalServiceDto extends ServiceDto implements Serializable{
 
 		private String cloudElementType;
 		private String productEnclave;
-		private Map<String, String> cloudElementId;  
-		private String managementUrl;
-
-		public Map<String, String> getCloudElementId() {
+		private String cloudElementId;
+		public String getCloudElementId() {
 			return cloudElementId;
 		}
-		public void setCloudElementId(Map<String, String> cloudElementId) {
+		public void setCloudElementId(String cloudElementId) {
 			this.cloudElementId = cloudElementId;
 		}
+		// private Map<String, String> cloudElementId;  
+		private String managementUrl;
+
+		// public Map<String, String> getCloudElementId() {
+		// 	return cloudElementId;
+		// }
+		// public void setCloudElementId(Map<String, String> cloudElementId) {
+		// 	this.cloudElementId = cloudElementId;
+		// }
 		
 		public String getManagementUrl() {
 			return managementUrl;
@@ -105,10 +112,10 @@ public class GlobalServiceDto extends ServiceDto implements Serializable{
 		GlobalServiceLoaction csl = new GlobalServiceLoaction();
 		
 		csl.setProductEnclave((String)globalJson.get("productEnclave"));
-		csl.setCloudElementId((Map)globalJson.get("cloudElementId"));
+		csl.setCloudElementId((String)globalJson.get("cloudElementId"));
 		csl.setCloudElementType((String)globalJson.get("cloudElementType"));
 		csl.setManagementUrl((String)globalJson.get("managementUrl"));
-		
+		this.setGlobalServiceLoaction(csl);
 	    return this;
 
 	
