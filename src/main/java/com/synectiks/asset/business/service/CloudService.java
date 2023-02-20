@@ -1,7 +1,6 @@
 package com.synectiks.asset.business.service;
 
 import java.time.Instant;
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -11,13 +10,11 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.synectiks.asset.domain.Cloud;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.CloudRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -55,6 +52,9 @@ public class CloudService {
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
 		}
+		if(!StringUtils.isBlank(obj.getName())) {
+			obj.setName(obj.getName().toUpperCase());
+		}
 		Instant instant = Instant.now();
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
@@ -69,6 +69,9 @@ public class CloudService {
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
 		}
+		if(!StringUtils.isBlank(obj.getName())) {
+			obj.setName(obj.getName().toUpperCase());
+		}
 		obj.setUpdatedOn(Instant.now());
 		return cloudRepository.save(obj);
 	}
@@ -82,7 +85,7 @@ public class CloudService {
 		Optional<Cloud> result = cloudRepository.findById(obj.getId())
 			.map(existingObj ->{
 				if(!StringUtils.isBlank(obj.getName())) {
-					existingObj.setName(obj.getName());
+					existingObj.setName(obj.getName().toUpperCase());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
 					existingObj.setStatus(obj.getStatus().toUpperCase());
@@ -108,11 +111,11 @@ public class CloudService {
 					.collect(Collectors.toList());
 		}
 		if (obj.containsKey("name")) {
-			list2 = list2.stream().filter(sd -> sd.getName().equals(obj.get("name")))
+			list2 = list2.stream().filter(sd -> sd.getName().equals(obj.get("name").toUpperCase()))
 					.collect(Collectors.toList());
 		}
 		if (obj.containsKey("status")) {
-			list2 = list2.stream().filter(sd -> sd.getStatus().equalsIgnoreCase(obj.get("status")))
+			list2 = list2.stream().filter(sd -> sd.getStatus().equalsIgnoreCase(obj.get("status").toUpperCase()))
 					.collect(Collectors.toList());
 		}
 

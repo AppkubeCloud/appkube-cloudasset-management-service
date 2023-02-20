@@ -14,6 +14,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.domain.ServiceProviderCloudAccount;
 import com.synectiks.asset.repository.ServiceProviderCloudAccountRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -24,7 +25,7 @@ public class ServiceProviderCloudAccountService {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceProviderCloudAccountService.class);
 		
 	@Autowired
-	ServiceProviderCloudAccountRepository serviceProviderCloudAccountRepository;
+	private ServiceProviderCloudAccountRepository serviceProviderCloudAccountRepository;
 	
 	public Optional<ServiceProviderCloudAccount> getServiceProviderCloudAccount(Long id) {
 		logger.info("Get service provider's cloud account by id: {}", id);
@@ -50,6 +51,7 @@ public class ServiceProviderCloudAccountService {
 	public ServiceProviderCloudAccount createServiceProviderCloudAccount(ServiceProviderCloudAccount obj){
 		logger.info("Create new service provider's cloud account");
 		Instant instant = Instant.now();
+		obj.setStatus(Constants.ACTIVE);
 		obj.setCreatedOn(instant);
 		obj.setUpdatedOn(instant);
 		return serviceProviderCloudAccountRepository.save(obj);
@@ -88,7 +90,7 @@ public class ServiceProviderCloudAccountService {
 					existingObj.setRegion(obj.getRegion());
 				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
-					existingObj.setStatus(obj.getStatus());
+					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
 				existingObj.updatedOn(Instant.now());
 				return existingObj;

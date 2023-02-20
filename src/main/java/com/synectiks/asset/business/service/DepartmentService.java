@@ -3,7 +3,6 @@ package com.synectiks.asset.business.service;
 import java.time.Instant;
 import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -33,22 +32,23 @@ public class DepartmentService {
 	public Optional<Department> getDepartment(Long id) {
 		logger.info("Get department by id: {}", id);
 		Optional<Department> oObj = departmentRepository.findById(id);
-		Department dp = null;
-		if(oObj.isPresent()) {
-			dp = oObj.get();
-			dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
-			return Optional.of(dp);
-		}else {
-			return Optional.empty();
-		}
+//		Department dp = null;
+//		if(oObj.isPresent()) {
+//			dp = oObj.get();
+//			dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+//			return Optional.of(dp);
+//		}else {
+//			return Optional.empty();
+//		}
+		return oObj;
 	}
 	
 	public List<Department> getAllDepartment() {
 		logger.info("Get all departments");
 		List<Department> listDp = departmentRepository.findAll(Sort.by(Direction.DESC, "id"));
-		for(Department dp : listDp) {
-			dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
-		}
+//		for(Department dp : listDp) {
+//			dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+//		}
 		return listDp;
 	}
 	
@@ -80,15 +80,15 @@ public class DepartmentService {
 		if(!departmentRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Department", "idnotfound");
 		}
-		if(Objects.isNull(obj.getOrgId()) || (!Objects.isNull(obj.getOrgId()) && obj.getOrgId() < 0)) {
-			throw new BadRequestAlertException("Invalid organization id", "Department", "idnotfound");
-		}
+//		if(Objects.isNull(obj.getOrgId()) || (!Objects.isNull(obj.getOrgId()) && obj.getOrgId() < 0)) {
+//			throw new BadRequestAlertException("Invalid organization id", "Department", "idnotfound");
+//		}
 		if(!StringUtils.isBlank(obj.getStatus())) {
 			obj.setStatus(obj.getStatus().toUpperCase());
 		}
 		obj.setUpdatedOn(Instant.now());
 		Department dp = departmentRepository.save(obj);
-		dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+//		dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
 		return dp;
 	}
 	
@@ -98,9 +98,9 @@ public class DepartmentService {
 			throw new BadRequestAlertException("Entity not found", "Department", "idnotfound");
 		}
 		
-		if(Objects.isNull(obj.getOrgId()) || (!Objects.isNull(obj.getOrgId()) && obj.getOrgId() < 0)) {
-			throw new BadRequestAlertException("Invalid organization id", "Department", "idnotfound");
-		}
+//		if(Objects.isNull(obj.getOrgId()) || (!Objects.isNull(obj.getOrgId()) && obj.getOrgId() < 0)) {
+//			throw new BadRequestAlertException("Invalid organization id", "Department", "idnotfound");
+//		}
 		
 		Optional<Department> result = departmentRepository.findById(obj.getId())
 			.map(existingObj ->{
@@ -110,9 +110,9 @@ public class DepartmentService {
 				if(!StringUtils.isBlank(obj.getDescription())) {
 					existingObj.setDescription(obj.getDescription());
 				}
-				if(!Objects.isNull(obj.getOrgId()) && obj.getOrgId() >= 0) {
-					existingObj.setOrgId(obj.getOrgId());
-				}
+//				if(!Objects.isNull(obj.getOrgId()) && obj.getOrgId() >= 0) {
+//					existingObj.setOrgId(obj.getOrgId());
+//				}
 				if(!StringUtils.isBlank(obj.getStatus())) {
 					existingObj.setStatus(obj.getStatus().toUpperCase());
 				}
@@ -121,7 +121,7 @@ public class DepartmentService {
 			})
 			.map(departmentRepository::save);
 		Department dp = result.get();
-		dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
+//		dp.setOrganization(organizationService.getOrgById(dp.getOrgId()));
 		return Optional.of(dp);
 	}
 	
@@ -145,10 +145,10 @@ public class DepartmentService {
 			isFilter = true;
 		}
 		
-		if(!StringUtils.isBlank(obj.get("orgId"))) {
-			dp.setOrgId(Long.parseLong(obj.get("orgId")));
-			isFilter = true;
-		}
+//		if(!StringUtils.isBlank(obj.get("orgId"))) {
+//			dp.setOrgId(Long.parseLong(obj.get("orgId")));
+//			isFilter = true;
+//		}
 		
 		if(!StringUtils.isBlank(obj.get("status"))) {
 			dp.setStatus(obj.get("status").toUpperCase());
@@ -161,9 +161,9 @@ public class DepartmentService {
 		}else {
 			list = departmentRepository.findAll(Sort.by(Direction.DESC, "id"));
 		}
-		for(Department dpt : list) {
-			dpt.setOrganization(organizationService.getOrgById(dpt.getOrgId()));
-		}
+//		for(Department dpt : list) {
+//			dpt.setOrganization(organizationService.getOrgById(dpt.getOrgId()));
+//		}
 		return list;
 	}
 	

@@ -42,8 +42,8 @@ public class Department implements Serializable {
   @Column(name = "description", length = 500)
   private String description;
 
-  @Column(name = "org_id")
-  private Long orgId;
+//  @Column(name = "org_id")
+//  private Long orgId;
 
   @Column(name = "status")
   private String status;
@@ -59,12 +59,16 @@ public class Department implements Serializable {
 
   @Column(name = "created_by")
   private String createdBy;
-
+//
+//  @ManyToOne
+//  @JsonIgnoreProperties(value = {"departments"}, allowSetters = true)
+//  private Organization og;
+  
   // jhipster-needle-entity-add-field - JHipster will add fields here
 
-  @Transient
-  @JsonProperty
-  private Organization organization;
+//  @Transient
+//  @JsonProperty
+//  private Organization organization;
   
   @Transient
   @JsonProperty
@@ -109,18 +113,18 @@ public class Department implements Serializable {
     this.description = description;
   }
 
-  public Long getOrgId() {
-    return this.orgId;
-  }
-
-  public Department orgId(Long orgId) {
-    this.setOrgId(orgId);
-    return this;
-  }
-
-  public void setOrgId(Long orgId) {
-    this.orgId = orgId;
-  }
+//  public Long getOrgId() {
+//    return this.orgId;
+//  }
+//
+//  public Department orgId(Long orgId) {
+//    this.setOrgId(orgId);
+//    return this;
+//  }
+//
+//  public void setOrgId(Long orgId) {
+//    this.orgId = orgId;
+//  }
 
   public String getStatus() {
     return this.status;
@@ -187,48 +191,17 @@ public class Department implements Serializable {
     this.createdBy = createdBy;
   }
 
-  public Organization getOrganization() {
-	return organization;
-  }
-
-  public void setOrganization(Organization organization) {
-	this.organization = organization;
-  }
-	  
+//  public Organization getOrganization() {
+//	return organization;
+//  }
+//
+//  public void setOrganization(Organization organization) {
+//	this.organization = organization;
+//  }
+//	  
   // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof Department)) {
-      return false;
-    }
-    return id != null && id.equals(((Department) o).id);
-  }
-
-  @Override
-  public int hashCode() {
-    // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-    return getClass().hashCode();
-  }
-
-  // prettier-ignore
-    @Override
-    public String toString() {
-        return "Department{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", orgId=" + getOrgId() +
-            ", status='" + getStatus() + "'" +
-            ", createdOn='" + getCreatedOn() + "'" +
-            ", updatedOn='" + getUpdatedOn() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            "}";
-    }
+  
 
 	public List<Product> getProductList() {
 		return productList;
@@ -236,5 +209,51 @@ public class Department implements Serializable {
 
 	public void setProductList(List<Product> productList) {
 		this.productList = productList;
+	}
+
+//	public Organization getOg() {
+//		return og;
+//	}
+
+//	public void setOg(Organization og) {
+//		this.og = og;
+//	}
+	
+//	public Department og(Organization og) {
+//		this.setOg(og);
+//		return this;
+//	}
+	
+	@Override
+	public boolean equals(Object o) {
+	    if (this == o) {
+	      return true;
+	    }
+	    if (!(o instanceof Department)) {
+	      return false;
+	    }
+	    return id != null && id.equals(((Department) o).id);
+	}
+	
+	@Override
+	public int hashCode() {
+	    // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+	    return getClass().hashCode();
+	}
+	
+	  // prettier-ignore
+	@Override
+	public String toString() {
+        return "Department{" +
+            "id=" + getId() +
+            ", name='" + getName() + "'" +
+            ", description='" + getDescription() + "'" +
+//            ", orgId=" + getOrgId() +
+            ", status='" + getStatus() + "'" +
+            ", createdOn='" + getCreatedOn() + "'" +
+            ", updatedOn='" + getUpdatedOn() + "'" +
+            ", updatedBy='" + getUpdatedBy() + "'" +
+            ", createdBy='" + getCreatedBy() + "'" +
+            "}";
 	}
 }

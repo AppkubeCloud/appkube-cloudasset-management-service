@@ -7,10 +7,12 @@ import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.time.Period;
 import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.GregorianCalendar;
+import java.util.Locale;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -143,6 +145,20 @@ public final class DateFormatUtil {
 	  return diff.getYears();
 	}
 	
+	/**
+	 * 
+	 * @param stringDate e.g 20-02-2023 14:50:40
+	 * @param pattern e.g dd-MM-yyyy H:mm:ss
+	 * @return
+	 */
+	public static final Instant convertStringToInstant(String stringDate, String pattern) {
+		DateTimeFormatter dateTimeFormatter = DateTimeFormatter.ofPattern(pattern, Locale.US); 
+		LocalDateTime localDateTime = LocalDateTime.parse(stringDate, dateTimeFormatter); 
+		ZoneId zoneId = ZoneId.of("Asia/Kolkata"); 
+		ZonedDateTime zonedDateTime = localDateTime.atZone(zoneId); 
+		return zonedDateTime.toInstant();
+	}
+	
 	public static void main(String a[]) throws Exception {
 //		String dt = changeDateFormat(CmsConstants.DATE_FORMAT_dd_MM_yyyy, "dd/MM/yyyy", "29/04/2019");
 //		Date d = getUtilDate(CmsConstants.DATE_FORMAT_dd_MM_yyyy,dt);
@@ -152,5 +168,9 @@ public final class DateFormatUtil {
 //		String dt = changeLocalDateFormat(date, CmsConstants.DATE_FORMAT_MM_dd_yyyy);
 //		DateTimeFormatter formatters = DateTimeFormatter.ofPattern(CmsConstants.DATE_FORMAT_MM_dd_yyyy);
 //		System.out.println("local date after format change : "+formatters.format(date));
+		
+//		convertStringToInstant();
 	}
+	
+	
 }

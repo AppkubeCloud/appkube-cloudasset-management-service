@@ -1,17 +1,19 @@
 package com.synectiks.asset.domain;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import java.io.Serializable;
+import java.time.Instant;
+
+import javax.persistence.Column;
+import javax.persistence.EntityListeners;
+import javax.persistence.MappedSuperclass;
+
 import org.springframework.data.annotation.CreatedBy;
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.annotation.LastModifiedBy;
 import org.springframework.data.annotation.LastModifiedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.io.Serializable;
-import java.time.Instant;
-import javax.persistence.Column;
-import javax.persistence.EntityListeners;
-import javax.persistence.MappedSuperclass;
+import com.fasterxml.jackson.annotation.JsonIgnore;
 
 /**
  * Base abstract class for entities which will hold definitions for created, last modified, created by,
@@ -29,49 +31,51 @@ public abstract class AbstractAuditingEntity implements Serializable {
     private String createdBy;
 
     @CreatedDate
-    @Column(name = "created_date", updatable = false)
+    @Column(name = "created_on", updatable = false)
     @JsonIgnore
-    private Instant createdDate = Instant.now();
+    private Instant createdOn = Instant.now();
 
     @LastModifiedBy
-    @Column(name = "last_modified_by", length = 50)
+    @Column(name = "updated_by", length = 50)
     @JsonIgnore
-    private String lastModifiedBy;
+    private String updatedBy;
 
     @LastModifiedDate
-    @Column(name = "last_modified_date")
+    @Column(name = "updated_on")
     @JsonIgnore
-    private Instant lastModifiedDate = Instant.now();
+    private Instant updatedOn = Instant.now();
 
-    public String getCreatedBy() {
-        return createdBy;
-    }
+	public String getCreatedBy() {
+		return createdBy;
+	}
 
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
 
-    public Instant getCreatedDate() {
-        return createdDate;
-    }
+	public Instant getCreatedOn() {
+		return createdOn;
+	}
 
-    public void setCreatedDate(Instant createdDate) {
-        this.createdDate = createdDate;
-    }
+	public void setCreatedOn(Instant createdOn) {
+		this.createdOn = createdOn;
+	}
 
-    public String getLastModifiedBy() {
-        return lastModifiedBy;
-    }
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
 
-    public void setLastModifiedBy(String lastModifiedBy) {
-        this.lastModifiedBy = lastModifiedBy;
-    }
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
 
-    public Instant getLastModifiedDate() {
-        return lastModifiedDate;
-    }
+	public Instant getUpdatedOn() {
+		return updatedOn;
+	}
 
-    public void setLastModifiedDate(Instant lastModifiedDate) {
-        this.lastModifiedDate = lastModifiedDate;
-    }
+	public void setUpdatedOn(Instant updatedOn) {
+		this.updatedOn = updatedOn;
+	}
+
+    
 }

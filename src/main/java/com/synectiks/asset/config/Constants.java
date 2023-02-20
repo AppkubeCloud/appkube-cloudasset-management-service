@@ -52,6 +52,9 @@ public final class Constants {
     public static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String DATE_FORMAT_MM_DD_YYYY = "MM-dd-yyyy";
     public static final String DATE_FORMAT_DD_MM_YYYY = "dd-MM-yyyy";
+    public static final String DATE_FORMAT_DD_MM_YYYY_HH_MM_SS = "dd-MM-yyyy H:mm:s";
+    
+    
     public static final String DEFAULT_DATE_FORMAT =  DATE_FORMAT_MM_DD_YYYY;
 
     public static final String PERFORMANCE  = "performance";
@@ -92,6 +95,10 @@ public final class Constants {
     public static String PRODUCT_CACHE_KEY ="product";
     public static Map<String, Object> cache = new HashMap<>();
     public static String AVAILABLE_CLOUDS [] = {"AWS","AZURE","GCP","OTHER"};
+    public static final String AWS = "AWS";
+    public static final String AZURE = "AZURE";
+    public static final String GCP = "GCP";
+    public static String VAULT_URL = "";
     public static final DecimalFormat decfor = new DecimalFormat("0.00");
     private Constants() {
     }
