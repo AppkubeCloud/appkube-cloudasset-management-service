@@ -4,6 +4,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.math.BigDecimal;
+import java.math.RoundingMode;
+import java.text.DecimalFormat;
 import java.time.Duration;
 import java.time.OffsetDateTime;
 import java.time.temporal.Temporal;
@@ -196,7 +199,7 @@ public class Utils {
 		return RandomStringUtils.randomAlphanumeric(9);
 	}
 
-	public static void main(String a[]) {
+	public static void offsetDateComparison() {
 		OffsetDateTime now = OffsetDateTime.now();
 		System.out.println("current time : "+now);
 //		Long x = now.toOffsetTime(). + (6*60*1000);
@@ -205,5 +208,53 @@ public class Utils {
 		
 		boolean n = ndt.compareTo(now) > 0;
 		System.out.println(n);
+	}
+	
+	public static void decimalFormat() {
+		DecimalFormat df = new DecimalFormat("0.00");
+		String p = "78.987";
+		String d = "9";
+		double dn = Double.parseDouble(p);
+		System.out.println(p + ", dn: "+ dn+", formated: "+ df.format(dn));
+	}
+	
+	public static void sringFormat() {
+		String p = "78.987";
+		String d = "9";
+		double dp = Double.parseDouble(p);
+		double dc = Double.parseDouble(d);
+		double x = (dc/100*dp);
+		System.out.println(x);
+		System.out.println(p + ", dp: "+ dp+", formated: "+ String.format("%.2f", x));
+	}
+	
+	public static void bigDecimalWithoutRounding() {
+		String p = "78.987";
+		String d = "9";
+		BigDecimal dp = new BigDecimal(p);
+		BigDecimal dc = new BigDecimal(d);
+		System.out.println("price: "+dp+", % discount: "+dc);
+		double x = (dc.doubleValue()/100*dp.doubleValue());
+		BigDecimal bd=new BigDecimal(x);
+		System.out.println("Actual double: "+x);
+		System.out.println("Actual bigdecimal: "+bd);
+		BigDecimal nbd = new BigDecimal(bd.toPlainString()).setScale(2, RoundingMode.FLOOR);
+		System.out.println("Bigdecimal after format: "+nbd);
+
+	}
+	
+	public static void calculateFinalPrice(String price, String discountPercent, int roundScale, RoundingMode rm) {
+		BigDecimal dp = new BigDecimal(price);
+		BigDecimal dc = new BigDecimal(discountPercent);
+		BigDecimal discount = new BigDecimal(new BigDecimal((dc.doubleValue()/100*dp.doubleValue())).toPlainString()).setScale(roundScale, rm);
+		System.out.println("Bigdecimal after format: "+discount);
+	}
+	
+	public static void main(String a[]) {
+//		bigDecimalWithoutRounding();
+//		calculateFinalPrice("78.987","9",2,RoundingMode.FLOOR);
+		String roleArn = "arn:aws:iam::657907747545:role/CrossAccount";
+		String arn[] = roleArn.split(":");
+		System.out.println(arn[4]);
 	}
 }

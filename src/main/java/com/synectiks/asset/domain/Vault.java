@@ -1,14 +1,18 @@
 package com.synectiks.asset.domain;
 
 import java.io.Serializable;
+import java.util.Map;
 
 import javax.persistence.Column;
+import javax.persistence.Convert;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
+
+import com.synectiks.asset.business.service.CustomeHashMapConverter;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -42,14 +46,8 @@ public class Vault implements Serializable {
   @Column(name = "account_id")
   private String accountId;
 
-  @Column(name = "access_key")
-  private String accessKey;
-
-  @Column(name = "secret_key")
-  private String secretKey;
-
-  @Column(name = "region")
-  private String region;
-
+  @Convert(converter = CustomeHashMapConverter.class)
+  @Column(name = "access_details", columnDefinition = "jsonb")
+  private Map<String, Object> accessDetails;
   
 }

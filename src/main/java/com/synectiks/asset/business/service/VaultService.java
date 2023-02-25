@@ -15,7 +15,6 @@ import org.springframework.stereotype.Service;
 
 import com.synectiks.asset.domain.Vault;
 import com.synectiks.asset.repository.VaultRepository;
-import com.synectiks.asset.util.CryptoUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
@@ -28,22 +27,12 @@ public class VaultService {
 	
 	public Optional<Vault> getVault(Long id) {
 		logger.info("Get vault by id: {}", id);
-		Optional<Vault> ov= valultRepository.findById(id);
-		if(ov.isPresent()) {
-			Vault v = ov.get();
-			decryptAccessSecretKeys(v);
-			return Optional.of(v);
-		}
-		return Optional.empty();
+		return valultRepository.findById(id);
 	}
 	
 	public List<Vault> getAllVault() {
 		logger.info("Get all vaults");
-		List<Vault> vaultList = valultRepository.findAll(Sort.by(Direction.DESC, "id"));
-		for(Vault v: vaultList) {
-			decryptAccessSecretKeys(v);
-		}
-		return vaultList;
+		return valultRepository.findAll(Sort.by(Direction.DESC, "id"));
 	}
 	
 	public Optional<Vault> deleteVault(Long id) {
@@ -58,11 +47,8 @@ public class VaultService {
 	}
 	
 	public Vault createVault(Vault obj){
-		encryptAccessSecretKeys(obj);
 		logger.info("Create new vault");
-		Vault v = valultRepository.save(obj);
-		decryptAccessSecretKeys(v);
-		return v;
+		return valultRepository.save(obj);
 	}
 	
 	public Vault updateVault(Vault obj){
@@ -70,10 +56,7 @@ public class VaultService {
 		if(!valultRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "Vault", "idnotfound");
 		}
-		encryptAccessSecretKeys(obj);
-		Vault v = valultRepository.save(obj);
-		decryptAccessSecretKeys(v);
-		return v;
+		return valultRepository.save(obj);
 	}
 	
 	public Optional<Vault> partialUpdateVault(Vault obj){
@@ -90,22 +73,14 @@ public class VaultService {
 				if(!StringUtils.isBlank(obj.getAccountId())) {
 					existingObj.setAccountId(obj.getAccountId());
 				}
-				if(!StringUtils.isBlank(obj.getAccessKey())) {
-					existingObj.setAccessKey(CryptoUtil.encodeBase64(obj.getAccessKey()));
-				}
-				if(!StringUtils.isBlank(obj.getSecretKey())) {
-					existingObj.setSecretKey(CryptoUtil.encodeBase64(obj.getSecretKey()));
-				}
-				if(!StringUtils.isBlank(obj.getRegion())) {
-					existingObj.setRegion(obj.getRegion());
+				if(obj.getAccessDetails() != null) {
+					existingObj.setAccessDetails(obj.getAccessDetails());
 				}
 				return existingObj;
 			})
 			.map(valultRepository::save);
 		if(result.isPresent()) {
-			Vault v = result.get();
-			decryptAccessSecretKeys(v);
-			return Optional.of(v);
+			return Optional.of(result.get());
 		}
 		return Optional.empty();
 	}
@@ -130,45 +105,15 @@ public class VaultService {
 			isFilter = true;
 		}
 		
-		if(!StringUtils.isBlank(obj.get("accessKey"))) {
-			cld.setAccessKey(CryptoUtil.encodeBase64(obj.get("accessKey")));
-			isFilter = true;
-		}
-		if(!StringUtils.isBlank(obj.get("secretKey"))) {
-			cld.setSecretKey(CryptoUtil.encodeBase64(obj.get("secretKey")));
-			isFilter = true;
-		}
-		if(!StringUtils.isBlank(obj.get("region"))) {
-			cld.setRegion(obj.get("region"));
-			isFilter = true;
-		}
 		List<Vault> list = null;
 		if(isFilter) {
 			list = valultRepository.findAll(Example.of(cld), Sort.by(Direction.DESC, "id"));
 		}else {
 			list = valultRepository.findAll(Sort.by(Direction.DESC, "id"));
 		}
-		for(Vault v: list) {
-			decryptAccessSecretKeys(v);
-		}
+		
 		return list;
 	}
 	
-	private void encryptAccessSecretKeys(Vault obj) {
-		if(!StringUtils.isBlank(obj.getAccessKey())) {
-			obj.setAccessKey(CryptoUtil.encodeBase64(obj.getAccessKey()));
-		}
-		if(!StringUtils.isBlank(obj.getSecretKey())) {
-			obj.setSecretKey(CryptoUtil.encodeBase64(obj.getSecretKey()));	
-		}
-	}
 	
-	private void decryptAccessSecretKeys(Vault obj) {
-		if(!StringUtils.isBlank(obj.getAccessKey())) {
-			obj.setAccessKey(CryptoUtil.decodeBase64(obj.getAccessKey()));
-		}
-		if(!StringUtils.isBlank(obj.getSecretKey())) {
-			obj.setSecretKey(CryptoUtil.decodeBase64(obj.getSecretKey()));	
-		}
-	}
 }

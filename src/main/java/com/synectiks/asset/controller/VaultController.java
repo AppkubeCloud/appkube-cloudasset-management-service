@@ -1,6 +1,5 @@
 package com.synectiks.asset.controller;
 
-import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -24,8 +23,6 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.service.VaultService;
 import com.synectiks.asset.domain.Vault;
-import com.synectiks.asset.response.Credential;
-import com.synectiks.asset.response.VaultResponse;
 
 @RestController
 @RequestMapping("/api")
@@ -88,33 +85,18 @@ public class VaultController {
 		return ResponseEntity.status(HttpStatus.OK).body(list);
 	}
 
-	@GetMapping("/credential/account-id/{accountId}")
-	public ResponseEntity<VaultResponse> getCredential(@PathVariable String accountId) {
-		logger.info("Request to get credential. AccountId: "+accountId);
+	@GetMapping("/credential/account-id")
+	public ResponseEntity<Vault> getCredential(@RequestParam String accountNo) {
+		logger.info("Request to get credential. AccountId: "+accountNo);
 		Map<String, String> obj = new HashMap<>();
-		obj.put("accountId", accountId);
+		obj.put("accountId", accountNo);
 		List<Vault> list = vaultService.searchAllVault(obj);
-		VaultResponse vr = null;
-		
-		if(list.size() > 0) {
-			vr = VaultResponse.builder().accountId(accountId).build();
-		}else {
-			vr = VaultResponse.builder().build();
+		if(list != null && list.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(list.get(0));
+		}else if(list != null && list.size() == 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(null);
 		}
-		
-		List<Credential> crList = new ArrayList<>();
-		vr.setCredentials(crList);
-		for(Vault v: list) {
-			Credential cr = Credential.builder()
-					.vaultId(v.getId())
-					.cloudType(v.getCloudType())
-					.accessKey(v.getAccessKey())
-					.secretKey(v.getSecretKey())
-					.region(v.getRegion())
-					.build();
-			vr.getCredentials().add(cr);
-		}
-		return ResponseEntity.status(HttpStatus.OK).body(vr);
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
 	}
 	
 }
