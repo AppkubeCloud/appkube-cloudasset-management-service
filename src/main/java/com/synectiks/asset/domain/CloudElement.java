@@ -48,6 +48,9 @@ public class CloudElement extends AbstractAuditingEntity implements Serializable
 
   @Column(name = "name")
   private String name;
+  
+  @Column(name = "account_id")
+  private String accountId;
 
   @Convert(converter = CustomeHashMapConverter.class)
   @Column(name = "view_json", columnDefinition = "jsonb")

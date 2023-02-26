@@ -56,9 +56,9 @@ public class CloudElementService {
 	
 	public CloudElement createCloudElement(CloudElement obj){
 		logger.info("Create new cloud element");
-		if(Objects.isNull(obj.getCloudEnvironment()) || (!Objects.isNull(obj.getCloudEnvironment()) && obj.getCloudEnvironment().getId() < 0)) {
-			throw new BadRequestAlertException("Cloud environment id not provided", "CloudElement", "idnotfound");
-		}
+//		if(Objects.isNull(obj.getCloudEnvironment()) || (!Objects.isNull(obj.getCloudEnvironment()) && obj.getCloudEnvironment().getId() < 0)) {
+//			throw new BadRequestAlertException("Cloud environment id not provided", "CloudElement", "idnotfound");
+//		}
 		return cloudElementRepository.save(obj);
 	}
 		
@@ -76,7 +76,9 @@ public class CloudElementService {
 				if(obj.getViewJson() != null) {
 					existingObj.setViewJson(obj.getViewJson());
 				}
-								
+				if(obj.getAccountId() != null) {
+					existingObj.setAccountId(obj.getAccountId());
+				}				
 				if(obj.getCloudEnvironment() != null && obj.getCloudEnvironment().getId() != null) {
 					Optional<CloudEnvironment> od = cloudEnvironmentService.getCloudEnvironment(obj.getCloudEnvironment().getId());
 					if(od.isPresent()) {
@@ -119,7 +121,10 @@ public class CloudElementService {
 			cld.setName(obj.get("name"));
 			isFilter = true;
 		}
-		
+		if(!StringUtils.isBlank(obj.get("accountId"))) {
+			cld.setAccountId(obj.get("accountId"));
+			isFilter = true;
+		}
 		if(!StringUtils.isBlank(obj.get("cloudEnvironmentId"))) {
 			Optional<CloudEnvironment> opd = cloudEnvironmentService.getCloudEnvironment(Long.parseLong(obj.get("cloudEnvironmentId")));
 			if(opd.isPresent()) {
