@@ -246,15 +246,24 @@ public class Utils {
 	public static void calculateFinalPrice(String price, String discountPercent, int roundScale, RoundingMode rm) {
 		BigDecimal dp = new BigDecimal(price);
 		BigDecimal dc = new BigDecimal(discountPercent);
-		BigDecimal discount = new BigDecimal(new BigDecimal((dc.doubleValue()/100*dp.doubleValue())).toPlainString()).setScale(roundScale, rm);
-		System.out.println("Bigdecimal after format: "+discount);
+//		System.out.println("base price : "+dp.toPlainString());
+//		System.out.println("Percetage : "+dc.toPlainString());
+		BigDecimal pc = dc.divide(new BigDecimal(100), roundScale, rm);
+		System.out.println("percentage after divide: "+pc.toPlainString());
+		BigDecimal pcPrice = pc.multiply(dp);
+		System.out.println("percent amount : "+pcPrice.toPlainString());
+//		BigDecimal fPrice = dp.add(pcPrice);
+//		System.out.println("Bigdecimal after format: "+fPrice);
+		
+//		BigDecimal discount = new BigDecimal(new BigDecimal((dc.doubleValue()/100*dp.doubleValue())).toPlainString()).setScale(roundScale, rm);
+//		System.out.println("With double : "+discount);
 	}
 	
 	public static void main(String a[]) {
 //		bigDecimalWithoutRounding();
-//		calculateFinalPrice("78.987","9",2,RoundingMode.FLOOR);
-		String roleArn = "arn:aws:iam::657907747545:role/CrossAccount";
-		String arn[] = roleArn.split(":");
-		System.out.println(arn[4]);
+		calculateFinalPrice("20","18",2,RoundingMode.FLOOR);
+//		String roleArn = "arn:aws:iam::657907747545:role/CrossAccount";
+//		String arn[] = roleArn.split(":");
+//		System.out.println(arn[4]);
 	}
 }

@@ -21,7 +21,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.service.VaultService;
+import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.domain.Vault;
 
 @RestController
@@ -99,4 +102,17 @@ public class VaultController {
 		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
 	}
 	
+	@GetMapping("/vault/accountId/{accountId}")
+	public ResponseEntity<Map<String, Object>> getSecret(@PathVariable String accountId) {
+		logger.info("Request to get secret. key: "+accountId);
+		Map<String, String> obj = new HashMap<>();
+		obj.put("accountId", accountId);
+		List<Vault> list = vaultService.searchAllVault(obj);
+		if(list != null && list.size() > 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(list.get(0).getAccessDetails());
+		}else if(list != null && list.size() == 0) {
+			return ResponseEntity.status(HttpStatus.OK).body(null);
+		}
+		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+	}
 }
