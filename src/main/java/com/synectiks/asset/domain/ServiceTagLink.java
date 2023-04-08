@@ -16,6 +16,8 @@ import javax.validation.constraints.Size;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.synectiks.asset.business.domain.Services;
+
 /**
  * A ServiceTag.
  */

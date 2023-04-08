@@ -1,6 +1,8 @@
 package com.synectiks.asset.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.synectiks.asset.business.domain.CloudEnvironment;
+
 import java.io.Serializable;
 import java.time.Instant;
 import javax.persistence.*;

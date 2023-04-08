@@ -7,6 +7,10 @@ import javax.validation.constraints.*;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
+
 /**
  * A ProductService.
  */

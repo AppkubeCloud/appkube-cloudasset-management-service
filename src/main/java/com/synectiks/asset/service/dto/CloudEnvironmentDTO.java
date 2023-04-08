@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.validation.constraints.Size;
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.CloudEnvironment} entity.
+ * A DTO for the {@link com.synectiks.asset.business.domain.CloudEnvironment} entity.
  */
 public class CloudEnvironmentDTO implements Serializable {
 

@@ -72,8 +72,8 @@ public class ServiceDetailService {
 	@Autowired
 	private AwsService awsService;
 
-	@Autowired
-	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
+//	@Autowired
+//	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
 
 	@Autowired
 	private ProxyGrafanaApiService proxyGrafanaApiService;
@@ -785,9 +785,8 @@ public class ServiceDetailService {
 		ObjectMapper mapper = Constants.instantiateMapper();
 
 		Map<String, String> searchMap = new HashMap<>();
-		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService
-				.searchAllServiceProviderCloudAccount(searchMap).get(0);
-		AmazonS3 s3Client = Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
+//		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
+		AmazonS3 s3Client = null; //Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
 		if (s3Client == null) {
 			throw new BadRequestAlertException("AWS S3 client connection failed", "Dashboard",
 					"aws.s3.connection.failed");

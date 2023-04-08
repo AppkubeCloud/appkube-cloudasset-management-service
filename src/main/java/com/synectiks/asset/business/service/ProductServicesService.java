@@ -16,11 +16,11 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.DeploymentEnvironment;
-import com.synectiks.asset.domain.Product;
 import com.synectiks.asset.domain.ServiceBilling;
-import com.synectiks.asset.domain.Services;
 import com.synectiks.asset.repository.ProductServiceRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -51,9 +51,9 @@ public class ProductServicesService {
 	
 	public Product atachService(Long productId, Long serviceId, Long depEnvId){
 		logger.info("Ataching service {} to the product {}", serviceId, productId);
-		Optional<Product> op = productService.getProduct(productId);
-		Optional<Services> ose = servicesService.getServices(serviceId);
-		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.getDeploymentEnvironment(depEnvId);
+		Optional<Product> op = productService.findOne(productId);
+		Optional<Services> ose = servicesService.findOne(serviceId);
+		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.findOne(depEnvId);
 		
 		if(!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
@@ -74,15 +74,15 @@ public class ProductServicesService {
 		ps.setUpdatedOn(instant);
 		ps = productServiceRepository.save(ps);
 		Product product = ps.getProduct();
-		product.setServiceList(getAllServicesOfProduct(product));
+//		product.setServiceList(getAllServicesOfProduct(product));
 		return product;
 	}
 	
 	public boolean detachService(Long productId, Long serviceId, Long depEnvId){
 		logger.info("Detaching service {} to the product {}", serviceId, productId);
-		Optional<Product> op = productService.getProduct(productId);
-		Optional<Services> ose = servicesService.getServices(serviceId);
-		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.getDeploymentEnvironment(depEnvId);
+		Optional<Product> op = productService.findOne(productId);
+		Optional<Services> ose = servicesService.findOne(serviceId);
+		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.findOne(depEnvId);
 		if(!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
 		}
@@ -122,8 +122,8 @@ public class ProductServicesService {
 			for(ServiceBilling sb: srvBillList) {
 				total  = total + sb.getAmount();
 			}
-			services.setServiceBillingList(serviceBillingService.searchAllServiceBilling(searchMap));
-			services.setTotalBillingAmount(total);
+//			services.setServiceBillingList(serviceBillingService.searchAllServiceBilling(searchMap));
+//			services.setTotalBillingAmount(total);
 			servicesList.add(services);
 		}
 		return servicesList;
@@ -146,11 +146,11 @@ public class ProductServicesService {
 	}
 	
 	public List<Services> getAllServices(Long productId, Long depEnvId) {
-		Optional<Product> opd = productService.getProduct(productId);
+		Optional<Product> opd = productService.findOne(productId);
 		if(!opd.isPresent()) {
 			return Collections.emptyList();
 		}
-		Optional<DeploymentEnvironment> ode = deploymentEnvironmentService.getDeploymentEnvironment(depEnvId);
+		Optional<DeploymentEnvironment> ode = deploymentEnvironmentService.findOne(depEnvId);
 		if(!ode.isPresent()) {
 			return Collections.emptyList();
 		}

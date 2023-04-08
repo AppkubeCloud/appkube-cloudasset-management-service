@@ -10,10 +10,10 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.Department;
-import com.synectiks.asset.domain.DeploymentEnvironment;
-import com.synectiks.asset.domain.Product;
 import com.synectiks.asset.domain.ProductDeployment;
 import com.synectiks.asset.repository.ProductDeploymentRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -33,16 +33,16 @@ public class ProductDeploymentService {
 	DeploymentEnvironmentService deploymentEnvironmentService;
 	
 	@Autowired
-	DepartmentProductService departmentProductService;
+	DepartmentProductEnvService departmentProductService;
 	
 	@Autowired
 	ProductDeploymentRepository productDeploymentRepository;
 	
 	public ProductDeployment deploy(Long departmentid, Long productId, Long deploymentEnvironmentId){
 		logger.info("Deploying a product");
-		Optional<Department> oDp = departmentService.getDepartment(departmentid);
-		Optional<Product> op = productService.getProduct(productId);
-		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.getDeploymentEnvironment(deploymentEnvironmentId);
+		Optional<Department> oDp = departmentService.findOne(departmentid);
+		Optional<Product> op = productService.findOne(productId);
+		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.findOne(deploymentEnvironmentId);
 		if(!oDp.isPresent()) {
 			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
 		}		
@@ -64,16 +64,16 @@ public class ProductDeploymentService {
 		dp.setUpdatedOn(instant);
 		dp = productDeploymentRepository.save(dp);
 		Department department =  dp.getDepartment();
-		department.setProductList(departmentProductService.getAllProductsOfDepartment(department));
+//		department.setProductList(departmentProductService.getAllProductsOfDepartment(department));
 		dp.setDepartment(department);
 		return dp;
 	}
 	
 	public boolean unDeploy(Long departmentid, Long productId, Long deploymentEnvironmentId){
 		logger.info("Undeploying a product");
-		Optional<Department> oDp = departmentService.getDepartment(departmentid);
-		Optional<Product> op = productService.getProduct(productId);
-		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.getDeploymentEnvironment(deploymentEnvironmentId);
+		Optional<Department> oDp = departmentService.findOne(departmentid);
+		Optional<Product> op = productService.findOne(productId);
+		Optional<DeploymentEnvironment> oDe = deploymentEnvironmentService.findOne(deploymentEnvironmentId);
 		if(!oDp.isPresent()) {
 			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
 		}		

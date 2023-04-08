@@ -176,10 +176,10 @@ jhipster:
     license-url:
 proxy-grafana:
   protocol: http
-  address: 34.199.12.114
+  address: localhost
   port: 3000
   grafana-user: admin
-  grafana-password: password
+  grafana-password: admin
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

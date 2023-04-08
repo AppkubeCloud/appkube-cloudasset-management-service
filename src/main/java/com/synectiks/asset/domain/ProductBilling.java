@@ -1,6 +1,10 @@
 package com.synectiks.asset.domain;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.Product;
+
 import java.io.Serializable;
 import java.time.Instant;
 import java.time.LocalDate;

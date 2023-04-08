@@ -16,9 +16,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.synectiks.asset.domain.Department;
-import com.synectiks.asset.domain.DeploymentEnvironment;
-import com.synectiks.asset.domain.Product;
+import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.domain.ProductBilling;
 import com.synectiks.asset.repository.ProductBillingRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -162,7 +162,7 @@ public class ProductBillingService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("productId"))) {
-			Optional<Product> opd = productService.getProduct(Long.parseLong(obj.get("productId")));
+			Optional<Product> opd = productService.findOne(Long.parseLong(obj.get("productId")));
 			if(opd.isPresent()) {
 				cld.setProduct(opd.get());
 				isFilter = true;
@@ -172,7 +172,7 @@ public class ProductBillingService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("deploymentEnvironmentId"))) {
-			Optional<DeploymentEnvironment> ode = deploymentEnvironmentService.getDeploymentEnvironment(Long.parseLong(obj.get("deploymentEnvironmentId")));
+			Optional<DeploymentEnvironment> ode = deploymentEnvironmentService.findOne(Long.parseLong(obj.get("deploymentEnvironmentId")));
 			if(ode.isPresent()) {
 				cld.setDeploymentEnvironment(ode.get());
 				isFilter = true;
@@ -181,7 +181,7 @@ public class ProductBillingService {
 			}
 		}
 		if(!StringUtils.isBlank(obj.get("departmentId"))) {
-			Optional<Department> opd = departmentService.getDepartment(Long.parseLong(obj.get("departmentId")));
+			Optional<Department> opd = departmentService.findOne(Long.parseLong(obj.get("departmentId")));
 			if(opd.isPresent()) {
 				cld.setDepartment(opd.get());
 				isFilter = true;

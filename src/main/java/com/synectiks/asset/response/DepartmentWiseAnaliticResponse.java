@@ -3,7 +3,7 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
-import com.synectiks.asset.domain.Department;
+import com.synectiks.asset.business.domain.Department;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

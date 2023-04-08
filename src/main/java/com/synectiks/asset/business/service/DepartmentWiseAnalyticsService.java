@@ -1,6 +1,6 @@
 package com.synectiks.asset.business.service;
 
-import java.text.DecimalFormat;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -13,11 +13,12 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.Organization;
+import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.domain.CfgCacheConfig;
-import com.synectiks.asset.domain.Department;
-import com.synectiks.asset.domain.DeploymentEnvironment;
-import com.synectiks.asset.domain.Product;
 import com.synectiks.asset.domain.ProductBilling;
 import com.synectiks.asset.domain.ProductDeployment;
 import com.synectiks.asset.domain.ServiceBilling;
@@ -25,7 +26,6 @@ import com.synectiks.asset.domain.ServiceCategory;
 import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.domain.ServiceTag;
 import com.synectiks.asset.domain.ServiceTagLink;
-import com.synectiks.asset.domain.Services;
 import com.synectiks.asset.response.AvailabilityResponse;
 import com.synectiks.asset.response.DataProtectionResponse;
 import com.synectiks.asset.response.DepartmentResponse;
@@ -59,7 +59,7 @@ public class DepartmentWiseAnalyticsService {
 	DepartmentService departmentService;
 	
 	@Autowired
-	DepartmentProductService departmentProductService;
+	DepartmentProductEnvService departmentProductService;
 	
 	@Autowired
 	ProductDeploymentService productDeploymentService;
@@ -89,52 +89,54 @@ public class DepartmentWiseAnalyticsService {
 	private CfgCacheConfigService cfgCacheConfigService;
 	
 	public Optional<Department> getDepartment(Long id) {
-		return departmentService.getDepartment(id);
+		return departmentService.findOne(id);
 	}
 	
-	public List<Department> searchDepartmentWiseStats(Map<String, String> obj) {
+	public List<Department> searchDepartmentWiseStats(Map<String, String> obj) throws IOException {
 		//search all department
-		List<Department> departmentList = departmentService.searchAllDepartment(obj);
+		List<Department> departmentList = departmentService.search(obj);
 		for(Department dp: departmentList) {
 			//search all product of each department
-			dp.setProductList(departmentProductService.getAllProductsOfDepartment(dp));
-			for(Product prd: dp.getProductList()) {
-				//search deployment environment of each product
-				List<ProductDeployment> pdEnvList = productDeploymentService.getDeploymentEnvironmentOfProduct(dp, prd);
-				//search services belongs to each product
-				List<Services> serviceList = productServicesService.getAllServicesOfProduct(prd);
-				//set deployment environment of each product
-				List<DeploymentEnvironment> depEnvList = new ArrayList<>();
-				for(ProductDeployment pde: pdEnvList) {
-					DeploymentEnvironment depEnv = pde.getDeploymentEnvironment();
-					//set service list of a product in the deployment environment
-					depEnv.setServiceList(serviceList);
-					depEnvList.add(depEnv);
-				}
-				prd.setDeploymentEnvironmentList(depEnvList);
-				
-			}
+//			dp.setProductList(departmentProductService.getAllProductsOfDepartment(dp));
+//			for(Product prd: dp.getProductList()) {
+//				//search deployment environment of each product
+//				List<ProductDeployment> pdEnvList = productDeploymentService.getDeploymentEnvironmentOfProduct(dp, prd);
+//				//search services belongs to each product
+//				List<Services> serviceList = productServicesService.getAllServicesOfProduct(prd);
+//				//set deployment environment of each product
+//				List<DeploymentEnvironment> depEnvList = new ArrayList<>();
+//				for(ProductDeployment pde: pdEnvList) {
+//					DeploymentEnvironment depEnv = pde.getDeploymentEnvironment();
+//					//set service list of a product in the deployment environment
+//					depEnv.setServiceList(serviceList);
+//					depEnvList.add(depEnv);
+//				}
+//				prd.setDeploymentEnvironmentList(depEnvList);
+//				
+//			}
 		}
 		
 		return departmentList;
 	}
 	
 
-	public DepartmentWiseAnaliticResponse getDepartmentWiseStats(Map<String, String> obj) {
+	public DepartmentWiseAnaliticResponse getDepartmentWiseStats(Map<String, String> obj) throws IOException {
 		
 		if(StringUtils.isBlank(obj.get("orgId"))) {
 			throw new BadRequestAlertException("Entity not found", "Organization", "idnotfound");
 		}
-		OrganizationResponse org = OrganizationResponse.from(organizationService.getOrgById(Long.parseLong(obj.get("orgId"))));
+		Optional<Organization> orgn = organizationService.findOne(Long.parseLong(obj.get("orgId")));
+		OrganizationResponse org = OrganizationResponse.from(orgn.isPresent() ? orgn.get() : new Organization());
 		
-		List<Department> departmentList = departmentService.searchAllDepartment(obj);
+		List<Department> departmentList = departmentService.search(obj);
 		
 		List<DepartmentResponse> departmentResponseList = new ArrayList<>();
 		for(Department department: departmentList) {
 			DepartmentResponse deptResp = DepartmentResponse.from(department);
 			departmentResponseList.add(deptResp);
 			
-			List<Product> productList = departmentProductService.getAllProductsOfDepartment(department);
+			//TODO
+			List<Product> productList =  new ArrayList<>(); //departmentProductService.getAllProductsOfDepartment(department);
 			List<ProductResponse> productResponseList = new ArrayList<>();
 			for(Product product: productList) {
 				ProductResponse productResponse = ProductResponse.from(product);

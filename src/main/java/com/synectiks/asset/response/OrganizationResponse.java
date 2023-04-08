@@ -4,7 +4,7 @@ package com.synectiks.asset.response;
 import java.io.Serializable;
 import java.util.List;
 
-import com.synectiks.asset.domain.Organization;
+import com.synectiks.asset.business.domain.Organization;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

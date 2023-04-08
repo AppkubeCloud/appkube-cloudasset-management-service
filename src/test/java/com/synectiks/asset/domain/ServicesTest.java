@@ -2,6 +2,7 @@ package com.synectiks.asset.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.web.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 

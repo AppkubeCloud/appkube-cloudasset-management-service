@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synectiks.asset.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

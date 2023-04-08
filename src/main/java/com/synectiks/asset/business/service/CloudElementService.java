@@ -15,9 +15,9 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.domain.CloudElement;
-import com.synectiks.asset.domain.CloudEnvironment;
 import com.synectiks.asset.repository.CloudElementRepository;
 import com.synectiks.asset.util.DateFormatUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -80,7 +80,7 @@ public class CloudElementService {
 					existingObj.setAccountId(obj.getAccountId());
 				}				
 				if(obj.getCloudEnvironment() != null && obj.getCloudEnvironment().getId() != null) {
-					Optional<CloudEnvironment> od = cloudEnvironmentService.getCloudEnvironment(obj.getCloudEnvironment().getId());
+					Optional<CloudEnvironment> od = cloudEnvironmentService.findOne(obj.getCloudEnvironment().getId());
 					if(od.isPresent()) {
 						existingObj.setCloudEnvironment(od.get());
 					}else {
@@ -99,18 +99,18 @@ public class CloudElementService {
 		CloudElement cld = new CloudElement();
 		boolean isFilter = false;
 		
-		if(!StringUtils.isBlank(obj.get("createdOn"))) {
-			cld.setCreatedOn(DateFormatUtil.convertStringToInstant(obj.get("createdOn"), Constants.DATE_FORMAT_DD_MM_YYYY_HH_MM_SS)  );
-			isFilter = true;
-		}else {
-			cld.setCreatedOn(null);
-		}
-		if(!StringUtils.isBlank(obj.get("updatedOn"))) {
-			cld.setUpdatedOn(DateFormatUtil.convertStringToInstant(obj.get("updatedOn"), Constants.DATE_FORMAT_DD_MM_YYYY_HH_MM_SS));
-			isFilter = true;
-		}else {
-			cld.setUpdatedOn(null);
-		}
+//		if(!StringUtils.isBlank(obj.get("createdOn"))) {
+//			cld.setCreatedOn(DateFormatUtil.convertStringToInstant(obj.get("createdOn"), Constants.DATE_FORMAT_DD_MM_YYYY_HH_MM_SS)  );
+//			isFilter = true;
+//		}else {
+//			cld.setCreatedOn(null);
+//		}
+//		if(!StringUtils.isBlank(obj.get("updatedOn"))) {
+//			cld.setUpdatedOn(DateFormatUtil.convertStringToInstant(obj.get("updatedOn"), Constants.DATE_FORMAT_DD_MM_YYYY_HH_MM_SS));
+//			isFilter = true;
+//		}else {
+//			cld.setUpdatedOn(null);
+//		}
 		
 		if(!StringUtils.isBlank(obj.get("id"))) {
 			cld.setId(Long.parseLong(obj.get("id")));
@@ -126,7 +126,7 @@ public class CloudElementService {
 			isFilter = true;
 		}
 		if(!StringUtils.isBlank(obj.get("cloudEnvironmentId"))) {
-			Optional<CloudEnvironment> opd = cloudEnvironmentService.getCloudEnvironment(Long.parseLong(obj.get("cloudEnvironmentId")));
+			Optional<CloudEnvironment> opd = cloudEnvironmentService.findOne(Long.parseLong(obj.get("cloudEnvironmentId")));
 			if(opd.isPresent()) {
 				cld.setCloudEnvironment(opd.get());
 				isFilter = true;

@@ -7,7 +7,7 @@ import java.util.Objects;
 import javax.validation.constraints.Size;
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.Services} entity.
+ * A DTO for the {@link com.synectiks.asset.business.domain.Services} entity.
  */
 public class ServiceCategoryDTO implements Serializable {
 

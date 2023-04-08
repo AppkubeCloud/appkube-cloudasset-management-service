@@ -13,9 +13,9 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.business.service.ProductServicesService;
-import com.synectiks.asset.domain.Product;
-import com.synectiks.asset.domain.Services;
 
 @RestController
 @RequestMapping("/api")

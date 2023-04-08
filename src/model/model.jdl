@@ -1,27 +1,38 @@
+entity Organization {
+	name String required
+    status String
+    createdOn ZonedDateTime
+    createdBy String
+    updatedOn ZonedDateTime
+    updatedBy String
+}
 
-/**Synectiks Cloud account details */
-entity ServiceProviderCloudAccount{
-	cloudType String
-	accountId String
-	accessKey String
-   	secretKey String
-   	region String
-   	status String
-	createdOn Instant
+entity Department {
+	name String required
+    status String
+    createdOn ZonedDateTime
+    createdBy String
+    updatedOn ZonedDateTime
+    updatedBy String
+}
+
+entity Product {
+	name String
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
    	updatedOn Instant
    	updatedBy String
    	createdBy String	
 }
 
-entity Department {
-   name String
-   description String maxlength(500)
-   orgId Long
-   status String
-   createdOn Instant
-   updatedOn Instant
-   updatedBy String
-   createdBy String
+entity DepartmentProduct{
+	description String maxlength(5000)
+	status String
+   	createdOn Instant
+   	updatedOn Instant
+   	updatedBy String
+   	createdBy String	
 }
 
 entity Cloud{
@@ -99,15 +110,7 @@ entity DataSource{
    	createdBy String
 }
 
-entity Product {
-	name String
-	description String maxlength(5000)
-	status String
-   	createdOn Instant
-   	updatedOn Instant
-   	updatedBy String
-   	createdBy String	
-}
+
 
 entity ServiceCategory {
 	name String
@@ -122,7 +125,6 @@ entity ServiceCategory {
 entity Services {
 	name String
 	description String maxlength(5000)
-	type String
 	status String
    	createdOn Instant
    	updatedOn Instant
@@ -140,14 +142,7 @@ entity ProductService{
    	createdBy String	
 }
 
-entity DepartmentProduct{
-	description String maxlength(5000)
-	status String
-   	createdOn Instant
-   	updatedOn Instant
-   	updatedBy String
-   	createdBy String	
-}
+
 
 entity DeploymentEnvironment{
 	name String
@@ -195,6 +190,12 @@ entity ServiceBilling{
    	createdBy String
 }
 
+relationship OneToMany {
+	Organization to Department{organization},
+	Department to DepartmentProduct{department},
+	Product to DepartmentProduct{product}
+}
+
 relationship ManyToOne {
 	CloudEnvironment{cloud} to Cloud,
 	CloudEnvironment{department} to Department,
@@ -207,8 +208,8 @@ relationship ManyToOne {
 	ProductService{services} to Services, 
 	ProductService{deploymentEnvironment} to DeploymentEnvironment,
 	
-	DepartmentProduct{product} to Product,
-	DepartmentProduct{department} to Department,
+
+	
 	DepartmentProduct{cloudEnvironment} to CloudEnvironment,
 	
 	ProductDeployment{department} to Department,
@@ -226,4 +227,5 @@ relationship ManyToOne {
 	Services{serviceCategory} to ServiceCategory
 }
 
-dto * with mapstruct service all with serviceImpl
+//dto * with mapstruct 
+//service all with serviceImpl

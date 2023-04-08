@@ -1,7 +1,8 @@
 package com.synectiks.asset.repository;
 
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.domain.ServiceTag;
-import com.synectiks.asset.domain.Services;
+
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
 

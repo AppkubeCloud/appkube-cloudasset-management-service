@@ -15,7 +15,6 @@
 
     <include file="config/liquibase/changelog/00000000000000_initial_schema.xml" relativeToChangelogFile="false"/>
     	
-	<include file="config/liquibase/changelog/20220401055847_added_entity_ServiceProviderCloudAccount.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220401055848_added_entity_Department.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220401055849_added_entity_Cloud.xml" relativeToChangelogFile="false"/>
 	<include file="config/liquibase/changelog/20220401055850_added_entity_CloudEnvironment.xml" relativeToChangelogFile="false"/>

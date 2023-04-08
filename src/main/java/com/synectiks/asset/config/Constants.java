@@ -3,6 +3,10 @@ package com.synectiks.asset.config;
 import java.io.IOException;
 import java.text.DecimalFormat;
 import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
+import java.time.ZonedDateTime;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeFormatterBuilder;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.HashMap;
@@ -70,6 +74,17 @@ public final class Constants {
 			, "associatedOU","associatedDept","associatedProduct","associatedEnv","serviceType","serviceNature","serviceName","serviceInstance");
 	public static final List<String> DASHBOARD_TYPE_KEYS = Arrays.asList(DASHBOARD_TYPE);
 
+	private static final DateTimeFormatter DATE_TIME_FORMATTER = new DateTimeFormatterBuilder()
+			.appendOptional(DateTimeFormatter.ISO_DATE_TIME).appendOptional(DateTimeFormatter.ISO_OFFSET_DATE_TIME)
+			.appendOptional(DateTimeFormatter.ISO_INSTANT)
+			.appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss.SX"))
+			.appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ssX"))
+			.appendOptional(DateTimeFormatter.ofPattern("yyyy-MM-dd HH:mm:ss")).toFormatter().withZone(ZoneOffset.UTC);
+
+	public static OffsetDateTime parseDateTimeString(String str) {
+		return ZonedDateTime.from(DATE_TIME_FORMATTER.parse(str)).toOffsetDateTime();
+	}
+
 	public static ObjectMapper instantiateMapper() {
 		ObjectMapper mapper = new ObjectMapper();
 		mapper.findAndRegisterModules();
@@ -80,7 +95,7 @@ public final class Constants {
 			public OffsetDateTime deserialize(JsonParser jsonParser, DeserializationContext deserializationContext)
 					throws IOException, JsonProcessingException {
 				String value = jsonParser.getText();
-				return Converter.parseDateTimeString(value);
+				return parseDateTimeString(value);
 			}
 		});
 		mapper.registerModule(module);
@@ -100,6 +115,16 @@ public final class Constants {
     public static final String GCP = "GCP";
     public static String VAULT_URL = "";
     public static final DecimalFormat decfor = new DecimalFormat("0.00");
+    public static final String DEFAULT_TIMEZONE = "Asia/Kolkata";
+    public static final String ORGANIZATION_ID = "organizationId";
+    public static final String ORGANIZATION_NAME = "organizationName";
+    public static final String DEPARTMENT_ID = "departmentId";
+    public static final String DEPARTMENT_NAME = "departmentName";
+    public static final String PRODUCT_ID = "productId";
+    public static final String PRODUCT_NAME = "productName";
+    public static final String ACCOUNT_ID = "accountId";
+    public static final String CREATED_ON = "createdOn";
+    public static final String UPDATED_ON = "updatedOn";
     private Constants() {
     }
 }

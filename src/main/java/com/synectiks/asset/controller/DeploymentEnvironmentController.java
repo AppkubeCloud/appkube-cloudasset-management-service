@@ -1,13 +1,20 @@
 package com.synectiks.asset.controller;
 
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
+
+import javax.validation.Valid;
+import javax.validation.constraints.NotNull;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.http.HttpStatus;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
 import org.springframework.web.bind.annotation.GetMapping;
@@ -20,68 +27,231 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.service.DeploymentEnvironmentService;
-import com.synectiks.asset.domain.DeploymentEnvironment;
+import com.synectiks.asset.repository.DeploymentEnvironmentRepository;
+import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
+
+import io.github.jhipster.web.util.HeaderUtil;
+import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
 public class DeploymentEnvironmentController {
 	
-	private static final Logger logger = LoggerFactory.getLogger(DeploymentEnvironmentController.class);
-	
-	@Autowired
-	DeploymentEnvironmentService deploymentEnvironmentService;
-	
-	@GetMapping("/deployment-environment/{id}")
-	public ResponseEntity<DeploymentEnvironment> getDeploymentEnvironment(@PathVariable Long id) {
-		logger.info("Request to get deployment-environment. Id: "+id);
-		Optional<DeploymentEnvironment> odp = deploymentEnvironmentService.getDeploymentEnvironment(id);
-		if(odp.isPresent()) {
-			return ResponseEntity.status(HttpStatus.OK).body(odp.get());
-		}
-		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+    private final Logger log = LoggerFactory.getLogger(DeploymentEnvironmentController.class);
+
+    private static final String ENTITY_NAME = "DeploymentEnvironment";
+
+    @Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+    @Autowired
+    private DeploymentEnvironmentService deploymentEnvironmentService;
+
+    @Autowired
+    private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
+
+
+    /**
+     * {@code POST  /deployment-environments} : Create a new deploymentEnvironment.
+     *
+     * @param deploymentEnvironment the deploymentEnvironment to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new deploymentEnvironment, or with status {@code 400 (Bad Request)} if the deploymentEnvironment has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PostMapping("/deployment-environments")
+    public ResponseEntity<DeploymentEnvironment> createDeploymentEnvironment(
+        @Valid @RequestBody DeploymentEnvironment deploymentEnvironment
+    ) throws URISyntaxException {
+        log.debug("REST request to save DeploymentEnvironment : {}", deploymentEnvironment);
+        if (deploymentEnvironment.getId() != null) {
+            throw new BadRequestAlertException("A new deploymentEnvironment cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+        DeploymentEnvironment result = deploymentEnvironmentService.save(deploymentEnvironment);
+        return ResponseEntity
+            .created(new URI("/api/deployment-environments/" + result.getId()))
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * {@code PUT  /deployment-environments/:id} : Updates an existing deploymentEnvironment.
+     *
+     * @param id the id of the deploymentEnvironment to save.
+     * @param deploymentEnvironment the deploymentEnvironment to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated deploymentEnvironment,
+     * or with status {@code 400 (Bad Request)} if the deploymentEnvironment is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the deploymentEnvironment couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PutMapping("/deployment-environments/{id}")
+    public ResponseEntity<DeploymentEnvironment> updateDeploymentEnvironment(
+        @PathVariable(value = "id", required = false) final Long id,
+        @Valid @RequestBody DeploymentEnvironment deploymentEnvironment
+    ) throws URISyntaxException {
+        log.debug("REST request to update DeploymentEnvironment : {}, {}", id, deploymentEnvironment);
+        if (deploymentEnvironment.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, deploymentEnvironment.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!deploymentEnvironmentRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        DeploymentEnvironment result = deploymentEnvironmentService.save(deploymentEnvironment);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, deploymentEnvironment.getId().toString()))
+            .body(result);
+    }
+
+    /**
+     * {@code PATCH  /deployment-environments/:id} : Partial updates given fields of an existing deploymentEnvironment, field will ignore if it is null
+     *
+     * @param id the id of the deploymentEnvironment to save.
+     * @param deploymentEnvironment the deploymentEnvironment to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated deploymentEnvironment,
+     * or with status {@code 400 (Bad Request)} if the deploymentEnvironment is not valid,
+     * or with status {@code 404 (Not Found)} if the deploymentEnvironment is not found,
+     * or with status {@code 500 (Internal Server Error)} if the deploymentEnvironment couldn't be updated.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+    @PatchMapping(value = "/deployment-environments/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    public ResponseEntity<DeploymentEnvironment> partialUpdateDeploymentEnvironment(
+        @PathVariable(value = "id", required = false) final Long id,
+        @NotNull @RequestBody DeploymentEnvironment deploymentEnvironment
+    ) throws URISyntaxException {
+        log.debug("REST request to partial update DeploymentEnvironment partially : {}, {}", id, deploymentEnvironment);
+        if (deploymentEnvironment.getId() == null) {
+            throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
+        }
+        if (!Objects.equals(id, deploymentEnvironment.getId())) {
+            throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
+        }
+
+        if (!deploymentEnvironmentRepository.existsById(id)) {
+            throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
+        }
+
+        Optional<DeploymentEnvironment> result = deploymentEnvironmentService.partialUpdate(deploymentEnvironment);
+
+        return ResponseUtil.wrapOrNotFound(
+            result,
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, deploymentEnvironment.getId().toString())
+        );
+    }
+
+    /**
+     * {@code GET  /deployment-environments} : get all the deploymentEnvironments.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of deploymentEnvironments in body.
+     */
+    @GetMapping("/deployment-environments")
+    public List<DeploymentEnvironment> getAllDeploymentEnvironments() {
+        log.debug("REST request to get all DeploymentEnvironments");
+        return deploymentEnvironmentService.findAll();
+    }
+
+    /**
+     * {@code GET  /deployment-environments/:id} : get the "id" deploymentEnvironment.
+     *
+     * @param id the id of the deploymentEnvironment to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the deploymentEnvironment, or with status {@code 404 (Not Found)}.
+     */
+    @GetMapping("/deployment-environments/{id}")
+    public ResponseEntity<DeploymentEnvironment> getDeploymentEnvironment(@PathVariable Long id) {
+        log.debug("REST request to get DeploymentEnvironment : {}", id);
+        Optional<DeploymentEnvironment> deploymentEnvironment = deploymentEnvironmentService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(deploymentEnvironment);
+    }
+
+    /**
+     * {@code DELETE  /deployment-environments/:id} : delete the "id" deploymentEnvironment.
+     *
+     * @param id the id of the deploymentEnvironment to delete.
+     * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
+     */
+    @DeleteMapping("/deployment-environments/{id}")
+    public ResponseEntity<Void> deleteDeploymentEnvironment(@PathVariable Long id) {
+        log.debug("REST request to delete DeploymentEnvironment : {}", id);
+        deploymentEnvironmentService.delete(id);
+        return ResponseEntity
+            .noContent()
+            .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
+            .build();
+    }
+
+    /**
+	 * {@code GET  /deployment-environments/search} : get all the deployment-environments on given filters.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
+	 *         of deployment-environments in body.
+	 */
+	@GetMapping("/deployment-environments/search")
+	public List<DeploymentEnvironment> search(@RequestParam Map<String, String> filter) throws IOException {
+		log.debug("REST request to get all deployment-environments on given filters");
+		return deploymentEnvironmentService.search(filter);
 	}
-	
-	@GetMapping("/deployment-environment")
-	public ResponseEntity<List<DeploymentEnvironment>> getAllDeploymentEnvironment() {
-		logger.info("Request to get deployment-environment");
-		List<DeploymentEnvironment> list = deploymentEnvironmentService.getAllDeploymentEnvironment();
-		return ResponseEntity.status(HttpStatus.OK).body(list);
-	}
-	
-	@DeleteMapping("/deployment-environment/{id}")
-	public ResponseEntity<Optional<DeploymentEnvironment>> deleteDeploymentEnvironment(@PathVariable Long id) {
-		logger.info("Request to delete deployment-environment by id: {}", id);
-		Optional<DeploymentEnvironment> oSpa = deploymentEnvironmentService.deleteDeploymentEnvironment(id);
-		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
-	}
-	
-	@PostMapping("/deployment-environment")
-	public ResponseEntity<DeploymentEnvironment> createDeploymentEnvironment(@RequestBody DeploymentEnvironment obj){
-		logger.info("Request to create new deployment-environment");
-		DeploymentEnvironment spa = deploymentEnvironmentService.createDeploymentEnvironment(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(spa);
-	}
-	
-	@PutMapping("/deployment-environment")
-	public ResponseEntity<DeploymentEnvironment> updateDeploymentEnvironment(@RequestBody DeploymentEnvironment obj){
-		logger.info("Request to update deployment-environment");
-		DeploymentEnvironment spa = deploymentEnvironmentService.updateDeploymentEnvironment(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(spa);
-	}
-	
-	@PatchMapping("/deployment-environment")
-	public ResponseEntity<Optional<DeploymentEnvironment>> partialUpdateDeploymentEnvironment(@RequestBody DeploymentEnvironment obj){
-		logger.info("Request to partially update deployment-environment");
-		Optional<DeploymentEnvironment> oSpa = deploymentEnvironmentService.partialUpdateDeploymentEnvironment(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
-	}
-	
-	@GetMapping("/deployment-environment/search")
-	public ResponseEntity<List<DeploymentEnvironment>> searchAllDeploymentEnvironment(@RequestParam Map<String, String> obj){
-		logger.info("Request to search deployment-environment");
-		List<DeploymentEnvironment> list = deploymentEnvironmentService.searchAllDeploymentEnvironment(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(list);
-	}
+    
+//	private static final Logger logger = LoggerFactory.getLogger(DeploymentEnvironmentController.class);
+//	
+//	@Autowired
+//	DeploymentEnvironmentService deploymentEnvironmentService;
+//	
+//	@GetMapping("/deployment-environment/{id}")
+//	public ResponseEntity<DeploymentEnvironment> getDeploymentEnvironment(@PathVariable Long id) {
+//		logger.info("Request to get deployment-environment. Id: "+id);
+//		Optional<DeploymentEnvironment> odp = deploymentEnvironmentService.getDeploymentEnvironment(id);
+//		if(odp.isPresent()) {
+//			return ResponseEntity.status(HttpStatus.OK).body(odp.get());
+//		}
+//		return ResponseEntity.status(HttpStatus.EXPECTATION_FAILED).body(null);
+//	}
+//	
+//	@GetMapping("/deployment-environment")
+//	public ResponseEntity<List<DeploymentEnvironment>> getAllDeploymentEnvironment() {
+//		logger.info("Request to get deployment-environment");
+//		List<DeploymentEnvironment> list = deploymentEnvironmentService.getAllDeploymentEnvironment();
+//		return ResponseEntity.status(HttpStatus.OK).body(list);
+//	}
+//	
+//	@DeleteMapping("/deployment-environment/{id}")
+//	public ResponseEntity<Optional<DeploymentEnvironment>> deleteDeploymentEnvironment(@PathVariable Long id) {
+//		logger.info("Request to delete deployment-environment by id: {}", id);
+//		Optional<DeploymentEnvironment> oSpa = deploymentEnvironmentService.deleteDeploymentEnvironment(id);
+//		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
+//	}
+//	
+//	@PostMapping("/deployment-environment")
+//	public ResponseEntity<DeploymentEnvironment> createDeploymentEnvironment(@RequestBody DeploymentEnvironment obj){
+//		logger.info("Request to create new deployment-environment");
+//		DeploymentEnvironment spa = deploymentEnvironmentService.createDeploymentEnvironment(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(spa);
+//	}
+//	
+//	@PutMapping("/deployment-environment")
+//	public ResponseEntity<DeploymentEnvironment> updateDeploymentEnvironment(@RequestBody DeploymentEnvironment obj){
+//		logger.info("Request to update deployment-environment");
+//		DeploymentEnvironment spa = deploymentEnvironmentService.updateDeploymentEnvironment(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(spa);
+//	}
+//	
+//	@PatchMapping("/deployment-environment")
+//	public ResponseEntity<Optional<DeploymentEnvironment>> partialUpdateDeploymentEnvironment(@RequestBody DeploymentEnvironment obj){
+//		logger.info("Request to partially update deployment-environment");
+//		Optional<DeploymentEnvironment> oSpa = deploymentEnvironmentService.partialUpdateDeploymentEnvironment(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
+//	}
+//	
+//	@GetMapping("/deployment-environment/search")
+//	public ResponseEntity<List<DeploymentEnvironment>> searchAllDeploymentEnvironment(@RequestParam Map<String, String> obj){
+//		logger.info("Request to search deployment-environment");
+//		List<DeploymentEnvironment> list = deploymentEnvironmentService.searchAllDeploymentEnvironment(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(list);
+//	}
 
 }

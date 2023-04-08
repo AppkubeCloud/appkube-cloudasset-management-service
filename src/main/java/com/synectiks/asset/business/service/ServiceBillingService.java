@@ -16,10 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.synectiks.asset.domain.Department;
-import com.synectiks.asset.domain.Product;
+import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.domain.ServiceBilling;
-import com.synectiks.asset.domain.Services;
 import com.synectiks.asset.repository.ServiceBillingRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -162,7 +162,7 @@ public class ServiceBillingService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("productId"))) {
-			Optional<Product> opd = productService.getProduct(Long.parseLong(obj.get("productId")));
+			Optional<Product> opd = productService.findOne(Long.parseLong(obj.get("productId")));
 			if(opd.isPresent()) {
 				cld.setProduct(opd.get());
 				isFilter = true;
@@ -172,7 +172,7 @@ public class ServiceBillingService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("servicesId"))) {
-			Optional<Services> opd = servicesService.getServices(Long.parseLong(obj.get("servicesId")));
+			Optional<Services> opd = servicesService.findOne(Long.parseLong(obj.get("servicesId")));
 			if(opd.isPresent()) {
 				cld.setServices(opd.get());
 				isFilter = true;
@@ -181,7 +181,7 @@ public class ServiceBillingService {
 			}
 		}
 		if(!StringUtils.isBlank(obj.get("departmentId"))) {
-			Optional<Department> opd = departmentService.getDepartment(Long.parseLong(obj.get("departmentId")));
+			Optional<Department> opd = departmentService.findOne(Long.parseLong(obj.get("departmentId")));
 			if(opd.isPresent()) {
 				cld.setDepartment(opd.get());
 				isFilter = true;

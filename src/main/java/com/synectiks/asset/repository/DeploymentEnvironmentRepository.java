@@ -1,8 +1,9 @@
 package com.synectiks.asset.repository;
 
-import com.synectiks.asset.domain.DeploymentEnvironment;
 import org.springframework.data.jpa.repository.*;
 import org.springframework.stereotype.Repository;
+
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
 
 /**
  * Spring Data SQL repository for the DeploymentEnvironment entity.

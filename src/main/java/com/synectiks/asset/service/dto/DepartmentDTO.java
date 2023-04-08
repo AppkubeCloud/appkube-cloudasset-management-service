@@ -6,7 +6,7 @@ import java.util.Objects;
 import javax.validation.constraints.*;
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.Department} entity.
+ * A DTO for the {@link com.synectiks.asset.business.domain.Department} entity.
  */
 public class DepartmentDTO implements Serializable {
 

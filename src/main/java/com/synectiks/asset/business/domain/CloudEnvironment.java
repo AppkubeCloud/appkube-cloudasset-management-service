@@ -1,4 +1,4 @@
-package com.synectiks.asset.domain;
+package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
 
@@ -8,15 +8,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
-import javax.persistence.Transient;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
-
-import com.fasterxml.jackson.annotation.JsonProperty;
 
 /**
  * Client's cloud accounts
@@ -29,8 +25,7 @@ public class CloudEnvironment extends AbstractAuditingEntity implements Serializ
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-  @SequenceGenerator(name = "sequenceGenerator")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
@@ -65,25 +60,25 @@ public class CloudEnvironment extends AbstractAuditingEntity implements Serializ
   @ManyToOne
   private Department department;
   
-  @Transient
-  @JsonProperty
-  private Integer totalProductEnclave;
-  
-  @Transient
-  @JsonProperty
-  private Integer totalProducts;
-  
-  @Transient
-  @JsonProperty
-  private Integer totalAppServices;
-  
-  @Transient
-  @JsonProperty
-  private Integer totalDataServices;
-  
-  @Transient
-  @JsonProperty
-  private Integer totalBilling;
+//  @Transient
+//  @JsonProperty
+//  private Integer totalProductEnclave;
+//  
+//  @Transient
+//  @JsonProperty
+//  private Integer totalProducts;
+//  
+//  @Transient
+//  @JsonProperty
+//  private Integer totalAppServices;
+//  
+//  @Transient
+//  @JsonProperty
+//  private Integer totalDataServices;
+//  
+//  @Transient
+//  @JsonProperty
+//  private Integer totalBilling;
   
   public Long getId() {
     return this.id;
@@ -226,45 +221,45 @@ public class CloudEnvironment extends AbstractAuditingEntity implements Serializ
 
   
 
-	public Integer getTotalProductEnclave() {
-		return totalProductEnclave;
-	}
-
-	public void setTotalProductEnclave(Integer totalProductEnclave) {
-		this.totalProductEnclave = totalProductEnclave;
-	}
-
-	public Integer getTotalProducts() {
-		return totalProducts;
-	}
-
-	public void setTotalProducts(Integer totalProducts) {
-		this.totalProducts = totalProducts;
-	}
-
-	public Integer getTotalAppServices() {
-		return totalAppServices;
-	}
-
-	public void setTotalAppServices(Integer totalAppServices) {
-		this.totalAppServices = totalAppServices;
-	}
-
-	public Integer getTotalDataServices() {
-		return totalDataServices;
-	}
-
-	public void setTotalDataServices(Integer totalDataServices) {
-		this.totalDataServices = totalDataServices;
-	}
-
-	public Integer getTotalBilling() {
-		return totalBilling;
-	}
-
-	public void setTotalBilling(Integer totalBilling) {
-		this.totalBilling = totalBilling;
-	}
+//	public Integer getTotalProductEnclave() {
+//		return totalProductEnclave;
+//	}
+//
+//	public void setTotalProductEnclave(Integer totalProductEnclave) {
+//		this.totalProductEnclave = totalProductEnclave;
+//	}
+//
+//	public Integer getTotalProducts() {
+//		return totalProducts;
+//	}
+//
+//	public void setTotalProducts(Integer totalProducts) {
+//		this.totalProducts = totalProducts;
+//	}
+//
+//	public Integer getTotalAppServices() {
+//		return totalAppServices;
+//	}
+//
+//	public void setTotalAppServices(Integer totalAppServices) {
+//		this.totalAppServices = totalAppServices;
+//	}
+//
+//	public Integer getTotalDataServices() {
+//		return totalDataServices;
+//	}
+//
+//	public void setTotalDataServices(Integer totalDataServices) {
+//		this.totalDataServices = totalDataServices;
+//	}
+//
+//	public Integer getTotalBilling() {
+//		return totalBilling;
+//	}
+//
+//	public void setTotalBilling(Integer totalBilling) {
+//		this.totalBilling = totalBilling;
+//	}
 
 	public String getCloud() {
 		return cloud;

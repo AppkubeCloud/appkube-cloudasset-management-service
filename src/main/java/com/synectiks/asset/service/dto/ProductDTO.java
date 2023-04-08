@@ -6,7 +6,7 @@ import java.util.Objects;
 import javax.validation.constraints.*;
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.Product} entity.
+ * A DTO for the {@link com.synectiks.asset.business.domain.Product} entity.
  */
 public class ProductDTO implements Serializable {
 

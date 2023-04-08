@@ -1,7 +1,6 @@
 package com.synectiks.asset.controller;
 
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
@@ -19,7 +18,6 @@ import com.synectiks.asset.business.service.CfgCacheConfigService;
 import com.synectiks.asset.business.service.DepartmentWiseAnalyticsService;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.domain.CfgCacheConfig;
-import com.synectiks.asset.domain.Department;
 import com.synectiks.asset.response.DepartmentWiseAnaliticResponse;
 
 @RestController
@@ -34,21 +32,21 @@ public class DepartmentWiseAnalyticsController {
 	@Autowired
 	private CfgCacheConfigService cfgCacheConfigService;
 	
-	@Deprecated
-	@GetMapping("/department-wise-analytics/search")
-	public ResponseEntity<List<Department>> searchAllDepartment(@RequestParam Map<String, String> obj){
-		logger.info("Request to search department-wise-analytics");
-		List<Department> list = departmentWiseAnalyticsService.searchDepartmentWiseStats(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(list);
-	}
-	
-	@Deprecated
-	@GetMapping("/department-wise-analytics/get")
-	public ResponseEntity<DepartmentWiseAnaliticResponse> getAllDepartment(@RequestParam Map<String, String> obj){
-		logger.info("Request to get department-wise-analytics");
-		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getDepartmentWiseStats(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(resp);
-	}
+//	@Deprecated
+//	@GetMapping("/department-wise-analytics/search")
+//	public ResponseEntity<List<Department>> searchAllDepartment(@RequestParam Map<String, String> obj){
+//		logger.info("Request to search department-wise-analytics");
+//		List<Department> list = departmentWiseAnalyticsService.searchDepartmentWiseStats(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(list);
+//	}
+//	
+//	@Deprecated
+//	@GetMapping("/department-wise-analytics/get")
+//	public ResponseEntity<DepartmentWiseAnaliticResponse> getAllDepartment(@RequestParam Map<String, String> obj){
+//		logger.info("Request to get department-wise-analytics");
+//		DepartmentWiseAnaliticResponse resp = departmentWiseAnalyticsService.getDepartmentWiseStats(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(resp);
+//	}
 	
 	@GetMapping("/department-wise-analytics/get-data")
 	public ResponseEntity<DepartmentWiseAnaliticResponse> getAnalyticalData(@RequestParam Map<String, String> obj){

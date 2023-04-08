@@ -33,11 +33,11 @@ spring:
       enabled: false
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://postgresql.ch8wfucynpvq.us-east-1.rds.amazonaws.com:5431/cloudassetdb
-#    url: jdbc:postgresql://localhost:5432/cloudassetdb
+#    url: jdbc:postgresql://postgresql.ch8wfucynpvq.us-east-1.rds.amazonaws.com:5431/cloudassetdb
+    url: jdbc:postgresql://localhost:5432/cloudassetdb
     username: postgres
-    password: P0$tGr3$&s3qua1$n3t!k5
-#    password: postgres
+#    password: P0$tGr3$&s3qua1$n3t!k5
+    password: postgres
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -133,10 +133,10 @@ jhipster:
     retention-period: 30 # Number of days before audit events are deleted.
 proxy-grafana:
   protocol: http
-  address: 34.199.12.114
+  address: localhost
   port: 3000
   grafana-user: admin
-  grafana-password: password
+  grafana-password: admin
 # ===================================================================
 # Application specific properties
 # Add your own application properties here, see the ApplicationProperties class

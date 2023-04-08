@@ -4,7 +4,7 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synectiks.asset.domain.Services;
+import com.synectiks.asset.business.domain.Services;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

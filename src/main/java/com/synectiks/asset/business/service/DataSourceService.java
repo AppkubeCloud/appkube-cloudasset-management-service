@@ -16,7 +16,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
-import com.synectiks.asset.domain.CloudEnvironment;
+import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.domain.DataSource;
 import com.synectiks.asset.repository.DataSourceRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -69,7 +69,7 @@ public class DataSourceService {
 		if(Objects.isNull(obj.getCloudEnvironment()) || (!Objects.isNull(obj.getCloudEnvironment()) && obj.getCloudEnvironment().getId() < 0)) {
 			throw new BadRequestAlertException("Invalid cloud environment (account) id", "DataSource", "idnotfound");
 		}
-		Optional<CloudEnvironment> oce = cloudEnvironmentService.getCloudEnvironment(obj.getCloudEnvironment().getId());
+		Optional<CloudEnvironment> oce = cloudEnvironmentService.findOne(obj.getCloudEnvironment().getId());
 		if(!oce.isPresent()) {
 			throw new BadRequestAlertException("Parent cloud environment not found", "DataSource", "parentidnotfound");
 		}
@@ -102,7 +102,7 @@ public class DataSourceService {
 					existingObj.setStatus(obj.getStatus());
 				}
 				if(!Objects.isNull(obj.getCloudEnvironment())) {
-					Optional<CloudEnvironment> oce = cloudEnvironmentService.getCloudEnvironment(obj.getCloudEnvironment().getId());
+					Optional<CloudEnvironment> oce = cloudEnvironmentService.findOne(obj.getCloudEnvironment().getId());
 					if(oce.isPresent()) {
 						existingObj.setCloudEnvironment(oce.get());
 					}else {
@@ -146,7 +146,7 @@ public class DataSourceService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("cloudEnvironmentId"))) {
-			Optional<CloudEnvironment> oce = cloudEnvironmentService.getCloudEnvironment(Long.parseLong(obj.get("cloudEnvironmentId")));
+			Optional<CloudEnvironment> oce = cloudEnvironmentService.findOne(Long.parseLong(obj.get("cloudEnvironmentId")));
 			if(oce.isPresent()) {
 				dp.setCloudEnvironment(oce.get());
 				isFilter = true;

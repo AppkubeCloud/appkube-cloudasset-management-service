@@ -31,8 +31,8 @@ public class AwsService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(AwsService.class);
 	
-	@Autowired
-	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
+//	@Autowired
+//	private ServiceProviderCloudAccountService serviceProviderCloudAccountService;
 	
 	public Dashboard getDashboardFromAwsS3(Map<String, String> object) throws IOException {
 		logger.info("Downloading dashboard json from AWS");
@@ -57,10 +57,10 @@ public class AwsService {
 		String fileName = getFileName(jsonLocation);
 		
 		Map<String, String> searchMap = new HashMap<>();
-		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
+//		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
 		
 		Dashboard dashboard = new Dashboard();
-		AmazonS3 s3Client = Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
+		AmazonS3 s3Client = null; //Utils.getAmazonS3Client(spca.getAccessKey(), spca.getSecretKey(), spca.getRegion());
 		if(s3Client == null) {
 			throw new BadRequestAlertException("AWS S3 client connection could not be establised", "Dashboard", "aws.s3.connection.failed");
 		}
@@ -173,7 +173,7 @@ public class AwsService {
 		String fileName = getFileName(jsonLocation);
 		
 		Map<String, String> searchMap = new HashMap<>();
-		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
+//		ServiceProviderCloudAccount spca = serviceProviderCloudAccountService.searchAllServiceProviderCloudAccount(searchMap).get(0);
 		
 		Dashboard dashboard = new Dashboard();
 		try {

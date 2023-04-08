@@ -1,4 +1,4 @@
-package com.synectiks.asset.domain;
+package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
 import java.time.Instant;
@@ -17,13 +17,12 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Entity
 @Table(name = "deployment_environment")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
-public class DeploymentEnvironment implements Serializable {
+public class DeploymentEnvironment extends AbstractAuditingEntity implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-  @SequenceGenerator(name = "sequenceGenerator")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
@@ -37,23 +36,9 @@ public class DeploymentEnvironment implements Serializable {
   @Column(name = "status")
   private String status;
 
-  @Column(name = "created_on")
-  private Instant createdOn;
-
-  @Column(name = "updated_on")
-  private Instant updatedOn;
-
-  @Column(name = "updated_by")
-  private String updatedBy;
-
-  @Column(name = "created_by")
-  private String createdBy;
-
-  // jhipster-needle-entity-add-field - JHipster will add fields here
-
-  @Transient
-  @JsonProperty
-  private List<Services> serviceList;
+//  @Transient
+//  @JsonProperty
+//  private List<Services> serviceList;
   
   public Long getId() {
     return this.id;
@@ -107,60 +92,6 @@ public class DeploymentEnvironment implements Serializable {
     this.status = status;
   }
 
-  public Instant getCreatedOn() {
-    return this.createdOn;
-  }
-
-  public DeploymentEnvironment createdOn(Instant createdOn) {
-    this.setCreatedOn(createdOn);
-    return this;
-  }
-
-  public void setCreatedOn(Instant createdOn) {
-    this.createdOn = createdOn;
-  }
-
-  public Instant getUpdatedOn() {
-    return this.updatedOn;
-  }
-
-  public DeploymentEnvironment updatedOn(Instant updatedOn) {
-    this.setUpdatedOn(updatedOn);
-    return this;
-  }
-
-  public void setUpdatedOn(Instant updatedOn) {
-    this.updatedOn = updatedOn;
-  }
-
-  public String getUpdatedBy() {
-    return this.updatedBy;
-  }
-
-  public DeploymentEnvironment updatedBy(String updatedBy) {
-    this.setUpdatedBy(updatedBy);
-    return this;
-  }
-
-  public void setUpdatedBy(String updatedBy) {
-    this.updatedBy = updatedBy;
-  }
-
-  public String getCreatedBy() {
-    return this.createdBy;
-  }
-
-  public DeploymentEnvironment createdBy(String createdBy) {
-    this.setCreatedBy(createdBy);
-    return this;
-  }
-
-  public void setCreatedBy(String createdBy) {
-    this.createdBy = createdBy;
-  }
-
-  // jhipster-needle-entity-add-getters-setters - JHipster will add getters and setters here
-
   @Override
   public boolean equals(Object o) {
     if (this == o) {
@@ -193,11 +124,11 @@ public class DeploymentEnvironment implements Serializable {
             "}";
     }
 
-	public List<Services> getServiceList() {
-		return serviceList;
-	}
-
-	public void setServiceList(List<Services> serviceList) {
-		this.serviceList = serviceList;
-	}
+//	public List<Services> getServiceList() {
+//		return serviceList;
+//	}
+//
+//	public void setServiceList(List<Services> serviceList) {
+//		this.serviceList = serviceList;
+//	}
 }

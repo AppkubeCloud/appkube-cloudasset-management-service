@@ -16,10 +16,10 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.domain.ServiceCategory;
 import com.synectiks.asset.domain.ServiceTag;
 import com.synectiks.asset.domain.ServiceTagLink;
-import com.synectiks.asset.domain.Services;
 import com.synectiks.asset.repository.ServiceTagLinkRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -65,7 +65,7 @@ public class ServiceTagLinkService {
 		if(Objects.isNull(obj.getServices()) || (!Objects.isNull(obj.getServices()) && obj.getServices().getId() < 0)) {
 			throw new BadRequestAlertException("Service id not found", "ServiceTagLink", "idnotfound");
 		}
-		Optional<Services> osc = servicesService.getServices(obj.getServices().getId());
+		Optional<Services> osc = servicesService.findOne(obj.getServices().getId());
 		if(!osc.isPresent()) {
 			throw new BadRequestAlertException("Invalid service id", "ServiceTagLink", "idnotfound");
 		}
@@ -98,7 +98,7 @@ public class ServiceTagLinkService {
 		if(Objects.isNull(obj.getServices()) || (!Objects.isNull(obj.getServices()) && obj.getServices().getId() < 0)) {
 			throw new BadRequestAlertException("Service id not found", "ServiceTagLink", "idnotfound");
 		}
-		Optional<Services> osc = servicesService.getServices(obj.getServices().getId());
+		Optional<Services> osc = servicesService.findOne(obj.getServices().getId());
 		if(!osc.isPresent()) {
 			throw new BadRequestAlertException("Invalid service id", "ServiceTagLink", "idnotfound");
 		}
@@ -130,7 +130,7 @@ public class ServiceTagLinkService {
 				if(Objects.isNull(obj.getServices()) || (!Objects.isNull(obj.getServices()) && obj.getServices().getId() < 0)) {
 					throw new BadRequestAlertException("Service id not found", "ServiceTagLink", "idnotfound");
 				}
-				Optional<Services> osc = servicesService.getServices(obj.getServices().getId());
+				Optional<Services> osc = servicesService.findOne(obj.getServices().getId());
 				if(!osc.isPresent()) {
 					throw new BadRequestAlertException("Invalid service id", "ServiceTagLink", "idnotfound");
 				}
@@ -199,7 +199,7 @@ public class ServiceTagLinkService {
 		}
 		
 		if(!StringUtils.isBlank(obj.get("servicesId"))) {
-			Optional<Services> osc = servicesService.getServices(Long.parseLong(obj.get("servicesId")));
+			Optional<Services> osc = servicesService.findOne(Long.parseLong(obj.get("servicesId")));
 			if(osc.isPresent()) {
 				cld.setServices(osc.get());
 				isFilter = true;
