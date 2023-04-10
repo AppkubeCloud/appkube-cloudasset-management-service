@@ -1,6 +1,7 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.synectiks.asset.business.domain.Department;
 import com.synectiks.asset.business.domain.Organization;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.OrganizationRepository;
@@ -23,6 +25,9 @@ import com.synectiks.asset.util.JsonAndObjectConverterUtil;
 public class OrganizationService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrganizationService.class);
+	
+	@Autowired
+	private DepartmentProductEnvService departmentProductEnvService;
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;
@@ -66,15 +71,34 @@ public class OrganizationService {
     }
 
     @Transactional(readOnly = true)
-    public List<Organization> findAll() {
+    public List<Organization> findAll() throws IOException {
     	logger.debug("Request to get all Organizations");
-        return organizationRepository.findAll();
+    	List<Organization> list = organizationRepository.findAll();
+    	Map<String, String> filter = new HashMap<>();
+    	for(Organization o: list) {
+    		filter.clear();
+    		for(Department d: o.getDepartments()) {
+    			filter.clear();
+    			filter.put("departmentId", String.valueOf(d.getId()));
+    			d.setProducts(departmentProductEnvService.getProducts(filter));
+    		}
+    	}
+    	return list;
     }
 
     @Transactional(readOnly = true)
-    public Optional<Organization> findOne(Long id) {
+    public Optional<Organization> findOne(Long id) throws IOException {
     	logger.debug("Request to get Organization : {}", id);
-        return organizationRepository.findById(id);
+    	Optional<Organization> o = organizationRepository.findById(id);
+    	if(o.isPresent()) {
+    		Map<String, String> filter = new HashMap<>();
+    		for(Department d: o.get().getDepartments()) {
+    			filter.clear();
+    			filter.put("departmentId", String.valueOf(d.getId()));
+    			d.setProducts(departmentProductEnvService.getProducts(filter));
+    		}
+    	}
+    	return o;
     }
 
     public void delete(Long id) {
@@ -85,7 +109,12 @@ public class OrganizationService {
     @Transactional(readOnly = true)
     public List<Organization> search(Map<String, String> filter) throws IOException {
     	logger.debug("Request to get all organizations on given filters");
-
+    	String landingZone = null;
+    	if (!StringUtils.isBlank(filter.get(Constants.LANDING_ZONE))) {
+    		landingZone = filter.get(Constants.LANDING_ZONE);
+			filter.remove(Constants.LANDING_ZONE);
+		}
+    	
         Organization organization = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, Organization.class);
 
         //unset default value if createdOn is not coming in filter
@@ -96,6 +125,19 @@ public class OrganizationService {
         if(StringUtils.isBlank(filter.get(Constants.UPDATED_ON))){
             organization.setUpdatedOn(null);
         }
-        return organizationRepository.findAll(Example.of(organization), Sort.by(Sort.Direction.DESC, "name"));
+        List<Organization> list = organizationRepository.findAll(Example.of(organization), Sort.by(Sort.Direction.DESC, "name"));
+        Map<String, String> prdfilter = new HashMap<>();
+    	for(Organization o: list) {
+    		filter.clear();
+    		for(Department d: o.getDepartments()) {
+    			prdfilter.clear();
+    			prdfilter.put("departmentId", String.valueOf(d.getId()));
+    			if(!StringUtils.isBlank(landingZone)) {
+    				prdfilter.put("landingZone", landingZone);
+    			}
+    			d.setProducts(departmentProductEnvService.getProducts(prdfilter));
+    		}
+    	}
+    	return list;
     }
 }

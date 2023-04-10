@@ -1,6 +1,7 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -14,6 +15,7 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.ProductRepository;
@@ -28,11 +30,25 @@ public class ProductService {
 	private ProductRepository productRepository;
 	
 	@Autowired
+	private DepartmentProductEnvService departmentProductEnvService;
+	
+	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 	
     public Product save(Product product) {
         logger.debug("Request to save Product : {}", product);
-        return productRepository.save(product);
+        Product p = productRepository.save(product);
+        if(p != null) {
+			Map<String, String> filter = new HashMap<>();
+			filter.put("productId", String.valueOf(p.getId()));
+			try {
+				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(filter);
+				p.setDeploymentEnvironments(deList);
+			} catch (IOException e) {
+				logger.error("Error in getting deployment environments: ", e.getMessage());
+			}
+		}
+        return p;
     }
 
     public Optional<Product> partialUpdate(Product product) {
@@ -63,6 +79,15 @@ public class ProductService {
                     existingProduct.setUpdatedBy(product.getUpdatedBy());
                 }
 
+                Map<String, String> filter = new HashMap<>();
+    			filter.put("productId", String.valueOf(existingProduct.getId()));
+    			try {
+    				List<DeploymentEnvironment> pList = departmentProductEnvService.getDeploymentEnvironments(filter);
+    				existingProduct.setDeploymentEnvironments(pList);
+    			} catch (IOException e) {
+    				logger.error("Error in getting deployment environments ", e.getMessage());
+    			}
+    			
                 return existingProduct;
             })
             .map(productRepository::save);
@@ -71,13 +96,36 @@ public class ProductService {
     @Transactional(readOnly = true)
     public List<Product> findAll() {
         logger.debug("Request to get all Products");
-        return productRepository.findAll();
+        List<Product> list = productRepository.findAll();
+        Map<String, String> filter = new HashMap<>();
+		for(Product product: list) {
+			filter.clear();
+			filter.put("productId", String.valueOf(product.getId()));
+			try {
+				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(filter);
+				product.setDeploymentEnvironments(deList);
+			} catch (IOException e) {
+				logger.error("Error in getting deployment environments: ", e.getMessage());
+			}
+		}
+		return list;
     }
 
     @Transactional(readOnly = true)
     public Optional<Product> findOne(Long id) {
         logger.debug("Request to get Product : {}", id);
-        return productRepository.findById(id);
+        Optional<Product> op = productRepository.findById(id);
+        if(op.isPresent()) {
+			Map<String, String> filter = new HashMap<>();
+			filter.put("productId", String.valueOf(op.get().getId()));
+			try {
+				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(filter);
+				op.get().setDeploymentEnvironments(deList);
+			} catch (IOException e) {
+				logger.error("Error in getting deployment environments: ", e.getMessage());
+			}
+		}
+        return op;
     }
 
     public void delete(Long id) {
@@ -99,6 +147,19 @@ public class ProductService {
         if(StringUtils.isBlank(filter.get(Constants.UPDATED_ON))){
             product.setUpdatedOn(null);
         }
-        return productRepository.findAll(Example.of(product), Sort.by(Sort.Direction.DESC, "name"));
+        List<Product> list = productRepository.findAll(Example.of(product), Sort.by(Sort.Direction.DESC, "name"));
+        
+        Map<String, String> defilter = new HashMap<>();
+		for(Product p: list) {
+			defilter.clear();
+			defilter.put("productId", String.valueOf(p.getId()));
+			try {
+				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(defilter);
+				p.setDeploymentEnvironments(deList);
+			} catch (IOException e) {
+				logger.error("Error in getting deployment environments: ", e.getMessage());
+			}
+		}
+		return list;
     }
 }

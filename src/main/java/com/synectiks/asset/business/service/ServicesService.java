@@ -53,6 +53,9 @@ public class ServicesService {
                 if (services.getType() != null) {
                     existingServices.setType(services.getType());
                 }
+                if (services.getServiceNature() != null) {
+                    existingServices.setServiceNature(services.getServiceNature());
+                }
                 if (services.getCreatedOn() != null) {
                     existingServices.setCreatedOn(services.getCreatedOn());
                 }

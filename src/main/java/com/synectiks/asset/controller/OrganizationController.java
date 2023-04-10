@@ -146,9 +146,10 @@ public class OrganizationController {
      * {@code GET  /organizations} : get all the organizations.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of organizations in body.
+     * @throws IOException 
      */
     @GetMapping("/organizations")
-    public List<Organization> getAllOrganizations() {
+    public List<Organization> getAllOrganizations() throws IOException {
         logger.debug("REST request to get all Organizations");
         return organizationService.findAll();
     }
@@ -158,9 +159,10 @@ public class OrganizationController {
      *
      * @param id the id of the organization to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the organization, or with status {@code 404 (Not Found)}.
+     * @throws IOException 
      */
     @GetMapping("/organizations/{id}")
-    public ResponseEntity<Organization> getOrganization(@PathVariable Long id) {
+    public ResponseEntity<Organization> getOrganization(@PathVariable Long id) throws IOException {
         logger.debug("REST request to get Organization : {}", id);
         Optional<Organization> organization = organizationService.findOne(id);
         return ResponseUtil.wrapOrNotFound(organization);

@@ -26,55 +26,38 @@ public class DepartmentProductEnv extends AbstractAuditingEntity implements Seri
 	@Id
 	@GeneratedValue(strategy = GenerationType.IDENTITY)
 	@Column(name = "id")
-	private Long id;
+	private Long id;	
 
-	@Column(name = "product_id")
-	private Long productId;
-
+	@Column(name = "landing_zone")
+	private String landingZone;
+	
 	@Column(name = "department_id")
 	private Long departmentId;
+	
+	@Column(name = "product_id")
+	private Long productId;
 
 	@Column(name = "deployment_environment_id")
 	private Long deploymentEnvironmentId;
 
-	@Column(name = "landing_zone")
-	private String landingZone;
+	@Column(name = "module_id")
+	private Long moduleId;
+
+	@Column(name = "services_id")
+    private Long servicesId;
+
+	@Column(name = "service_type")
+	private String serviceType;
+
+	@Column(name = "service_nature")
+	private String serviceNature;
 
 	public Long getId() {
-		return this.id;
-	}
-
-	public DepartmentProductEnv id(Long id) {
-		this.setId(id);
-		return this;
+		return id;
 	}
 
 	public void setId(Long id) {
 		this.id = id;
-	}
-
-	public Long getProductId() {
-		return productId;
-	}
-
-	public void setProductId(Long productId) {
-		this.productId = productId;
-	}
-
-	public Long getDepartmentId() {
-		return departmentId;
-	}
-
-	public void setDepartmentId(Long departmentId) {
-		this.departmentId = departmentId;
-	}
-
-	public Long getDeploymentEnvironmentId() {
-		return deploymentEnvironmentId;
-	}
-
-	public void setDeploymentEnvironmentId(Long deploymentEnvironmentId) {
-		this.deploymentEnvironmentId = deploymentEnvironmentId;
 	}
 
 	public String getLandingZone() {
@@ -85,9 +68,66 @@ public class DepartmentProductEnv extends AbstractAuditingEntity implements Seri
 		this.landingZone = landingZone;
 	}
 
+	public Long getDepartmentId() {
+		return departmentId;
+	}
+
+	public void setDepartmentId(Long departmentId) {
+		this.departmentId = departmentId;
+	}
+
+	public Long getProductId() {
+		return productId;
+	}
+
+	public void setProductId(Long productId) {
+		this.productId = productId;
+	}
+
+	public Long getDeploymentEnvironmentId() {
+		return deploymentEnvironmentId;
+	}
+
+	public void setDeploymentEnvironmentId(Long deploymentEnvironmentId) {
+		this.deploymentEnvironmentId = deploymentEnvironmentId;
+	}
+
+	public Long getModuleId() {
+		return moduleId;
+	}
+
+	public void setModuleId(Long moduleId) {
+		this.moduleId = moduleId;
+	}
+
+	public Long getServicesId() {
+		return servicesId;
+	}
+
+	public void setServicesId(Long servicesId) {
+		this.servicesId = servicesId;
+	}
+
+	public String getServiceType() {
+		return serviceType;
+	}
+
+	public void setServiceType(String serviceType) {
+		this.serviceType = serviceType;
+	}
+
+	public String getServiceNature() {
+		return serviceNature;
+	}
+
+	public void setServiceNature(String serviceNature) {
+		this.serviceNature = serviceNature;
+	}
+
 	@Override
 	public int hashCode() {
-		return Objects.hash(departmentId, deploymentEnvironmentId, id, landingZone, productId);
+		return Objects.hash(departmentId, deploymentEnvironmentId, id, landingZone, moduleId, productId, serviceNature,
+				serviceType, servicesId);
 	}
 
 	@Override
@@ -102,15 +142,22 @@ public class DepartmentProductEnv extends AbstractAuditingEntity implements Seri
 		return Objects.equals(departmentId, other.departmentId)
 				&& Objects.equals(deploymentEnvironmentId, other.deploymentEnvironmentId)
 				&& Objects.equals(id, other.id) && Objects.equals(landingZone, other.landingZone)
-				&& Objects.equals(productId, other.productId);
+				&& Objects.equals(moduleId, other.moduleId) && Objects.equals(productId, other.productId)
+				&& Objects.equals(serviceNature, other.serviceNature) && Objects.equals(serviceType, other.serviceType)
+				&& Objects.equals(servicesId, other.servicesId);
 	}
 
 	@Override
 	public String toString() {
-		return "DepartmentProduct [id=" + id + ", productId=" + productId + ", departmentId=" + departmentId
-				+ ", deploymentEnvironmentId=" + deploymentEnvironmentId + ", landingZone=" + landingZone
-				+ ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", updatedBy=" + updatedBy + ", updatedOn="
-				+ updatedOn + "]";
+		return "DepartmentProductEnv [id=" + id + ", landingZone=" + landingZone + ", departmentId=" + departmentId
+				+ ", productId=" + productId + ", deploymentEnvironmentId=" + deploymentEnvironmentId + ", moduleId="
+				+ moduleId + ", servicesId=" + servicesId + ", serviceType=" + serviceType + ", serviceNature="
+				+ serviceNature + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", updatedBy=" + updatedBy
+				+ ", updatedOn=" + updatedOn + "]";
 	}
 
+	
+
+	
+	
 }

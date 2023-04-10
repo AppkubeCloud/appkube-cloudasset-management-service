@@ -56,16 +56,16 @@ public class DepartmentController {
 
 	@Autowired
 	private DepartmentService departmentService;
-	
+
 	@Autowired
 	private ProductService productService;
-	
+
 	@Autowired
 	private CloudEnvironmentService cloudEnvironmentService;
 
 	@Autowired
 	private DepartmentProductEnvService departmentProductEnvService;
-	
+
 	@Autowired
 	private DepartmentRepository departmentRepository;
 
@@ -213,54 +213,60 @@ public class DepartmentController {
 		log.debug("REST request to get all departments on given filters");
 		return departmentService.search(filter);
 	}
-	
+
 	/**
 	 * {@code POST  /departments/add-product} : Add a product in a department.
 	 *
 	 * @param departmentProductEnv the departmentProductEnv to create.
 	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
 	 *         body the new departmentProductEnv, or with status
-	 *         {@code 400 (Bad Request)} if the departmentProductEnv has already an ID.
+	 *         {@code 400 (Bad Request)} if the departmentProductEnv has already an
+	 *         ID.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
-	 * @throws IOException 
+	 * @throws IOException
 	 */
 	@PostMapping("/departments/add-product")
 	public ResponseEntity<Department> addProduct(@RequestBody DepartmentProductEnv departmentProductEnv)
 			throws URISyntaxException, IOException {
 		log.debug("REST request to add a product in a department : {}", departmentProductEnv);
-		
-		if (departmentProductEnv.getDepartmentId() == null) {
-			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
-		}
-		
-		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
-		if (!od.isPresent()) {
-			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
-		}
 
-		if (departmentProductEnv.getProductId() == null) {
-			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
-		}
-		
-		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
-		if (!op.isPresent()) {
-			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
-		}
-		
 		// find out cloud_environment on department and landing_zone
-		if(StringUtils.isBlank(departmentProductEnv.getLandingZone())) {
+		if (StringUtils.isBlank(departmentProductEnv.getLandingZone())) {
 			throw new BadRequestAlertException("Invalid landing zone/cloud environment", ENTITY_NAME, "idnull");
 		}
 		Map<String, String> obj = new HashMap<>();
 		obj.put("departmentId", String.valueOf(departmentProductEnv.getDepartmentId()));
 		obj.put("accountId", departmentProductEnv.getLandingZone());
 		List<CloudEnvironment> ceList = cloudEnvironmentService.search(obj);
-		if(ceList == null || (ceList != null && ceList.size() ==0)) {
+		if (ceList == null || (ceList != null && ceList.size() == 0)) {
 			throw new BadRequestAlertException("Landing zone/Cloud environment not found", ENTITY_NAME, "idnotfound");
 		}
-		
-		DepartmentProductEnv result = departmentProductEnvService.save(departmentProductEnv);
-		od = departmentService.findOne(departmentProductEnv.getDepartmentId());
+
+		if (departmentProductEnv.getDepartmentId() == null) {
+			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
+		}
+		if (!departmentRepository.existsById(departmentProductEnv.getDepartmentId())) {
+			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
+		}
+
+		if (departmentProductEnv.getProductId() == null) {
+			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
+		}
+		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
+		if (!op.isPresent()) {
+			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
+		}
+
+		Map<String, String> filter = new HashMap<>();
+		filter.put("landingZone", String.valueOf(departmentProductEnv.getLandingZone()));
+		filter.put("departmentId", String.valueOf(departmentProductEnv.getDepartmentId()));
+		filter.put("productId", String.valueOf(departmentProductEnv.getProductId()));
+		List<DepartmentProductEnv> dpeList = departmentProductEnvService.search(filter);
+		if(dpeList.size() > 0) {
+			throw new BadRequestAlertException("Product is already associated with department", ENTITY_NAME, "idexists");
+		}
+		departmentProductEnvService.save(departmentProductEnv);
+		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
 		
 		return ResponseEntity
 				.created(new URI("/api/departments/add-product/" + od.get().getId())).headers(HeaderUtil

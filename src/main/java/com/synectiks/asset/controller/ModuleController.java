@@ -1,5 +1,6 @@
 package com.synectiks.asset.controller;
 
+
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
@@ -35,197 +36,202 @@ import com.synectiks.asset.business.domain.DepartmentProductEnv;
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Module;
 import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
 import com.synectiks.asset.business.service.DepartmentProductEnvService;
 import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.business.service.DeploymentEnvironmentService;
 import com.synectiks.asset.business.service.ModuleService;
 import com.synectiks.asset.business.service.ProductService;
+import com.synectiks.asset.business.service.ServicesService;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.repository.DeploymentEnvironmentRepository;
+import com.synectiks.asset.repository.ModuleRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
+
 @RestController
 @RequestMapping("/api")
-public class DeploymentEnvironmentController {
-	
-    private final Logger log = LoggerFactory.getLogger(DeploymentEnvironmentController.class);
+public class ModuleController {
 
-    private static final String ENTITY_NAME = "DeploymentEnvironment";
+    private final Logger log = LoggerFactory.getLogger(ModuleController.class);
+
+    private static final String ENTITY_NAME = "Module";
 
     @Value("${jhipster.clientApp.name}")
     private String applicationName;
-
-    @Autowired
-    private DeploymentEnvironmentService deploymentEnvironmentService;
-
-    @Autowired
-    private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
-
+    
     @Autowired
 	private CloudEnvironmentService cloudEnvironmentService;
-
+    
     @Autowired
 	private DepartmentService departmentService;
 
 	@Autowired
 	private ProductService productService;
-	
-	@Autowired
-	private ModuleService moduleService;
-	
-	@Autowired
+
+    @Autowired
+    private DeploymentEnvironmentService deploymentEnvironmentService;
+
+    @Autowired
+    private ModuleService moduleService;
+
+    @Autowired
+    private ModuleRepository moduleRepository;
+
+    @Autowired
+    private ServicesService servicesService;
+
+    @Autowired
 	private DepartmentProductEnvService departmentProductEnvService;
-	
+    
     /**
-     * {@code POST  /deployment-environments} : Create a new deploymentEnvironment.
+     * {@code POST  /modules} : Create a new module.
      *
-     * @param deploymentEnvironment the deploymentEnvironment to create.
-     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new deploymentEnvironment, or with status {@code 400 (Bad Request)} if the deploymentEnvironment has already an ID.
+     * @param module the module to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new module, or with status {@code 400 (Bad Request)} if the module has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/deployment-environments")
-    public ResponseEntity<DeploymentEnvironment> createDeploymentEnvironment(
-        @Valid @RequestBody DeploymentEnvironment deploymentEnvironment
-    ) throws URISyntaxException {
-        log.debug("REST request to save DeploymentEnvironment : {}", deploymentEnvironment);
-        if (deploymentEnvironment.getId() != null) {
-            throw new BadRequestAlertException("A new deploymentEnvironment cannot already have an ID", ENTITY_NAME, "idexists");
+    @PostMapping("/modules")
+    public ResponseEntity<Module> createModule(@Valid @RequestBody Module module) throws URISyntaxException {
+        log.debug("REST request to save Module : {}", module);
+        if (module.getId() != null) {
+            throw new BadRequestAlertException("A new module cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        DeploymentEnvironment result = deploymentEnvironmentService.save(deploymentEnvironment);
+        Module result = moduleService.save(module);
         return ResponseEntity
-            .created(new URI("/api/deployment-environments/" + result.getId()))
+            .created(new URI("/api/modules/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /deployment-environments/:id} : Updates an existing deploymentEnvironment.
+     * {@code PUT  /modules/:id} : Updates an existing module.
      *
-     * @param id the id of the deploymentEnvironment to save.
-     * @param deploymentEnvironment the deploymentEnvironment to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated deploymentEnvironment,
-     * or with status {@code 400 (Bad Request)} if the deploymentEnvironment is not valid,
-     * or with status {@code 500 (Internal Server Error)} if the deploymentEnvironment couldn't be updated.
+     * @param id the id of the module to save.
+     * @param module the module to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated module,
+     * or with status {@code 400 (Bad Request)} if the module is not valid,
+     * or with status {@code 500 (Internal Server Error)} if the module couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/deployment-environments/{id}")
-    public ResponseEntity<DeploymentEnvironment> updateDeploymentEnvironment(
+    @PutMapping("/modules/{id}")
+    public ResponseEntity<Module> updateModule(
         @PathVariable(value = "id", required = false) final Long id,
-        @Valid @RequestBody DeploymentEnvironment deploymentEnvironment
+        @Valid @RequestBody Module module
     ) throws URISyntaxException {
-        log.debug("REST request to update DeploymentEnvironment : {}, {}", id, deploymentEnvironment);
-        if (deploymentEnvironment.getId() == null) {
+        log.debug("REST request to update Module : {}, {}", id, module);
+        if (module.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, deploymentEnvironment.getId())) {
+        if (!Objects.equals(id, module.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!deploymentEnvironmentRepository.existsById(id)) {
+        if (!moduleRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        DeploymentEnvironment result = deploymentEnvironmentService.save(deploymentEnvironment);
+        Module result = moduleService.save(module);
         return ResponseEntity
             .ok()
-            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, deploymentEnvironment.getId().toString()))
+            .headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, module.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PATCH  /deployment-environments/:id} : Partial updates given fields of an existing deploymentEnvironment, field will ignore if it is null
+     * {@code PATCH  /modules/:id} : Partial updates given fields of an existing module, field will ignore if it is null
      *
-     * @param id the id of the deploymentEnvironment to save.
-     * @param deploymentEnvironment the deploymentEnvironment to update.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated deploymentEnvironment,
-     * or with status {@code 400 (Bad Request)} if the deploymentEnvironment is not valid,
-     * or with status {@code 404 (Not Found)} if the deploymentEnvironment is not found,
-     * or with status {@code 500 (Internal Server Error)} if the deploymentEnvironment couldn't be updated.
+     * @param id the id of the module to save.
+     * @param module the module to update.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the updated module,
+     * or with status {@code 400 (Bad Request)} if the module is not valid,
+     * or with status {@code 404 (Not Found)} if the module is not found,
+     * or with status {@code 500 (Internal Server Error)} if the module couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/deployment-environments/{id}", consumes = { "application/json", "application/merge-patch+json" })
-    public ResponseEntity<DeploymentEnvironment> partialUpdateDeploymentEnvironment(
+    @PatchMapping(value = "/modules/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    public ResponseEntity<Module> partialUpdateModule(
         @PathVariable(value = "id", required = false) final Long id,
-        @NotNull @RequestBody DeploymentEnvironment deploymentEnvironment
+        @NotNull @RequestBody Module module
     ) throws URISyntaxException {
-        log.debug("REST request to partial update DeploymentEnvironment partially : {}, {}", id, deploymentEnvironment);
-        if (deploymentEnvironment.getId() == null) {
+        log.debug("REST request to partial update Module partially : {}, {}", id, module);
+        if (module.getId() == null) {
             throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
         }
-        if (!Objects.equals(id, deploymentEnvironment.getId())) {
+        if (!Objects.equals(id, module.getId())) {
             throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
         }
 
-        if (!deploymentEnvironmentRepository.existsById(id)) {
+        if (!moduleRepository.existsById(id)) {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        Optional<DeploymentEnvironment> result = deploymentEnvironmentService.partialUpdate(deploymentEnvironment);
+        Optional<Module> result = moduleService.partialUpdate(module);
 
         return ResponseUtil.wrapOrNotFound(
             result,
-            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, deploymentEnvironment.getId().toString())
+            HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, module.getId().toString())
         );
     }
 
     /**
-     * {@code GET  /deployment-environments} : get all the deploymentEnvironments.
+     * {@code GET  /modules} : get all the modules.
      *
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of deploymentEnvironments in body.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of modules in body.
      */
-    @GetMapping("/deployment-environments")
-    public List<DeploymentEnvironment> getAllDeploymentEnvironments() {
-        log.debug("REST request to get all DeploymentEnvironments");
-        return deploymentEnvironmentService.findAll();
+    @GetMapping("/modules")
+    public List<Module> getAllModules() {
+        log.debug("REST request to get all Modules");
+        return moduleService.findAll();
     }
 
     /**
-     * {@code GET  /deployment-environments/:id} : get the "id" deploymentEnvironment.
+     * {@code GET  /modules/:id} : get the "id" module.
      *
-     * @param id the id of the deploymentEnvironment to retrieve.
-     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the deploymentEnvironment, or with status {@code 404 (Not Found)}.
+     * @param id the id of the module to retrieve.
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the module, or with status {@code 404 (Not Found)}.
      */
-    @GetMapping("/deployment-environments/{id}")
-    public ResponseEntity<DeploymentEnvironment> getDeploymentEnvironment(@PathVariable Long id) {
-        log.debug("REST request to get DeploymentEnvironment : {}", id);
-        Optional<DeploymentEnvironment> deploymentEnvironment = deploymentEnvironmentService.findOne(id);
-        return ResponseUtil.wrapOrNotFound(deploymentEnvironment);
+    @GetMapping("/modules/{id}")
+    public ResponseEntity<Module> getModule(@PathVariable Long id) {
+        log.debug("REST request to get Module : {}", id);
+        Optional<Module> module = moduleService.findOne(id);
+        return ResponseUtil.wrapOrNotFound(module);
     }
 
     /**
-     * {@code DELETE  /deployment-environments/:id} : delete the "id" deploymentEnvironment.
+     * {@code DELETE  /modules/:id} : delete the "id" module.
      *
-     * @param id the id of the deploymentEnvironment to delete.
+     * @param id the id of the module to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/deployment-environments/{id}")
-    public ResponseEntity<Void> deleteDeploymentEnvironment(@PathVariable Long id) {
-        log.debug("REST request to delete DeploymentEnvironment : {}", id);
-        deploymentEnvironmentService.delete(id);
+    @DeleteMapping("/modules/{id}")
+    public ResponseEntity<Void> deleteModule(@PathVariable Long id) {
+        log.debug("REST request to delete Module : {}", id);
+        moduleService.delete(id);
         return ResponseEntity
             .noContent()
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
-
+    
     /**
-	 * {@code GET  /deployment-environments/search} : get all the deployment-environments on given filters.
+	 * {@code GET  /modules/search} : get all the modules on given filters.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-	 *         of deployment-environments in body.
+	 *         of modules in body.
 	 */
-	@GetMapping("/deployment-environments/search")
-	public List<DeploymentEnvironment> search(@RequestParam Map<String, String> filter) throws IOException {
-		log.debug("REST request to get all deployment-environments on given filters");
-		return deploymentEnvironmentService.search(filter);
+	@GetMapping("/modules/search")
+	public List<Module> search(@RequestParam Map<String, String> filter) throws IOException {
+		log.debug("REST request to get all modules on given filters");
+		return moduleService.search(filter);
 	}
-    
+	
+	
 	/**
-	 * {@code POST  /deployment-environments/add-module} : Add a module in a deployment-environment.
+	 * {@code POST  /modules/add-service} : Add a service in a module.
 	 *
 	 * @param departmentProductEnv the departmentProductEnv to create.
 	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
@@ -235,10 +241,10 @@ public class DeploymentEnvironmentController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 * @throws IOException
 	 */
-	@PostMapping("/deployment-environments/add-module")
-	public ResponseEntity<DeploymentEnvironment> addModule(@RequestBody DepartmentProductEnv departmentProductEnv)
+	@PostMapping("/modules/add-service")
+	public ResponseEntity<Module> addService(@RequestBody DepartmentProductEnv departmentProductEnv)
 			throws URISyntaxException, IOException {
-		log.debug("REST request to add a module : {}", departmentProductEnv);
+		log.debug("REST request to add a service in a module : {}", departmentProductEnv);
 
 		// find out cloud_environment on department and landing_zone
 		if (StringUtils.isBlank(departmentProductEnv.getLandingZone())) {
@@ -284,17 +290,27 @@ public class DeploymentEnvironmentController {
 			throw new BadRequestAlertException("Module not found", ENTITY_NAME, "idnotfound");
 		}
 		
+		if (departmentProductEnv.getServicesId() == null) {
+			throw new BadRequestAlertException("Invalid service id", ENTITY_NAME, "idnull");
+		}
+		Optional<Services> osr = servicesService.findOne(departmentProductEnv.getServicesId());
+		if (!osr.isPresent()) {
+			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
+		}
+		
 		Map<String, String> filter = new HashMap<>();
 		filter.put(Constants.LANDING_ZONE, departmentProductEnv.getLandingZone());
 		filter.put(Constants.DEPARTMENT_ID, String.valueOf(departmentProductEnv.getDepartmentId()));
 		filter.put(Constants.PRODUCT_ID, String.valueOf(departmentProductEnv.getProductId()));
 		filter.put(Constants.DEPLOYMENT_ENVIRONMENT_ID, String.valueOf(departmentProductEnv.getDeploymentEnvironmentId()));
 		filter.put(Constants.MODULE_ID, String.valueOf(departmentProductEnv.getModuleId()));
+		filter.put(Constants.SERVICES_ID, String.valueOf(departmentProductEnv.getServicesId()));
+		
 		List<DepartmentProductEnv> dpeList = departmentProductEnvService.search(filter);
 		if(dpeList.size() > 0) {
-			throw new BadRequestAlertException("Module is already associated with deployment environment", ENTITY_NAME, "idexists");
+			throw new BadRequestAlertException("Service is already associated with module", ENTITY_NAME, "idexists");
 		}
-		filter.remove(Constants.MODULE_ID);
+		filter.remove(Constants.SERVICES_ID);
 		dpeList = departmentProductEnvService.search(filter);
 		DepartmentProductEnv existingModule = null;
 		for(DepartmentProductEnv dpe: dpeList) {
@@ -302,26 +318,30 @@ public class DeploymentEnvironmentController {
 					&& dpe.getDepartmentId() == departmentProductEnv.getDepartmentId()
 					&& dpe.getProductId() == departmentProductEnv.getProductId()
 					&& dpe.getDeploymentEnvironmentId() == departmentProductEnv.getDeploymentEnvironmentId()
-					&& dpe.getModuleId() == null) {
+					&& dpe.getModuleId() == departmentProductEnv.getModuleId()
+					&& dpe.getServicesId() == null) {
 				existingModule = dpe;
 				break;
 			}
 		}
 		if(existingModule != null) {
-			existingModule.setModuleId(departmentProductEnv.getModuleId());
+			existingModule.setServicesId(departmentProductEnv.getServicesId());
+			existingModule.setServiceType(osr.get().getType());
+			existingModule.setServiceNature(osr.get().getServiceNature());
 			departmentProductEnvService.save(existingModule);
 		}else {
+			departmentProductEnv.setServiceType(osr.get().getType());
+			departmentProductEnv.setServiceNature(osr.get().getServiceNature());
 			departmentProductEnvService.save(departmentProductEnv);
 		}
 		
-		ode = deploymentEnvironmentService.findOne(departmentProductEnv.getDeploymentEnvironmentId());
+		om = moduleService.findOne(departmentProductEnv.getModuleId());
 
 		return ResponseEntity
-				.created(new URI("products/add-module/" + ode.get().getId())).headers(HeaderUtil
-						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, ode.get().getId().toString()))
-				.body(ode.get());
+				.created(new URI("/modules/add-service/" + om.get().getId())).headers(HeaderUtil
+						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, om.get().getId().toString()))
+				.body(om.get());
 	}
 	
-
 
 }

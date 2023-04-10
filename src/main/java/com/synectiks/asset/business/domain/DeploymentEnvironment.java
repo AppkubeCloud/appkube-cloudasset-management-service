@@ -1,11 +1,17 @@
 package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
-import java.time.Instant;
 import java.util.List;
 
-import javax.persistence.*;
-import javax.validation.constraints.*;
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.Table;
+import javax.persistence.Transient;
+import javax.validation.constraints.Size;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -19,110 +25,113 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 public class DeploymentEnvironment extends AbstractAuditingEntity implements Serializable {
 
-  private static final long serialVersionUID = 1L;
+	private static final long serialVersionUID = 1L;
 
-  @Id
-  @GeneratedValue(strategy = GenerationType.IDENTITY)
-  @Column(name = "id")
-  private Long id;
+	@Id
+	@GeneratedValue(strategy = GenerationType.IDENTITY)
+	@Column(name = "id")
+	private Long id;
 
-  @Column(name = "name")
-  private String name;
+	@Column(name = "name")
+	private String name;
 
-  @Size(max = 5000)
-  @Column(name = "description", length = 5000)
-  private String description;
+	@Size(max = 5000)
+	@Column(name = "description", length = 5000)
+	private String description;
 
-  @Column(name = "status")
-  private String status;
+	@Column(name = "status")
+	private String status;
 
-//  @Transient
-//  @JsonProperty
-//  private List<Services> serviceList;
-  
-  public Long getId() {
-    return this.id;
-  }
+	@Transient
+	@JsonProperty
+	private List<Module> modules;
 
-  public DeploymentEnvironment id(Long id) {
-    this.setId(id);
-    return this;
-  }
+	public Long getId() {
+		return this.id;
+	}
 
-  public void setId(Long id) {
-    this.id = id;
-  }
+	public DeploymentEnvironment id(Long id) {
+		this.setId(id);
+		return this;
+	}
 
-  public String getName() {
-    return this.name;
-  }
+	public void setId(Long id) {
+		this.id = id;
+	}
 
-  public DeploymentEnvironment name(String name) {
-    this.setName(name);
-    return this;
-  }
+	public String getName() {
+		return this.name;
+	}
 
-  public void setName(String name) {
-    this.name = name;
-  }
+	public DeploymentEnvironment name(String name) {
+		this.setName(name);
+		return this;
+	}
 
-  public String getDescription() {
-    return this.description;
-  }
+	public void setName(String name) {
+		this.name = name;
+	}
 
-  public DeploymentEnvironment description(String description) {
-    this.setDescription(description);
-    return this;
-  }
+	public String getDescription() {
+		return this.description;
+	}
 
-  public void setDescription(String description) {
-    this.description = description;
-  }
+	public DeploymentEnvironment description(String description) {
+		this.setDescription(description);
+		return this;
+	}
 
-  public String getStatus() {
-    return this.status;
-  }
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
-  public DeploymentEnvironment status(String status) {
-    this.setStatus(status);
-    return this;
-  }
+	public String getStatus() {
+		return this.status;
+	}
 
-  public void setStatus(String status) {
-    this.status = status;
-  }
+	public DeploymentEnvironment status(String status) {
+		this.setStatus(status);
+		return this;
+	}
 
-  @Override
-  public boolean equals(Object o) {
-    if (this == o) {
-      return true;
-    }
-    if (!(o instanceof DeploymentEnvironment)) {
-      return false;
-    }
-    return id != null && id.equals(((DeploymentEnvironment) o).id);
-  }
+	public void setStatus(String status) {
+		this.status = status;
+	}
 
-  @Override
-  public int hashCode() {
-    // see https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-    return getClass().hashCode();
-  }
+	@Override
+	public boolean equals(Object o) {
+		if (this == o) {
+			return true;
+		}
+		if (!(o instanceof DeploymentEnvironment)) {
+			return false;
+		}
+		return id != null && id.equals(((DeploymentEnvironment) o).id);
+	}
 
-  // prettier-ignore
-    @Override
-    public String toString() {
-        return "DeploymentEnvironment{" +
-            "id=" + getId() +
-            ", name='" + getName() + "'" +
-            ", description='" + getDescription() + "'" +
-            ", status='" + getStatus() + "'" +
-            ", createdOn='" + getCreatedOn() + "'" +
-            ", updatedOn='" + getUpdatedOn() + "'" +
-            ", updatedBy='" + getUpdatedBy() + "'" +
-            ", createdBy='" + getCreatedBy() + "'" +
-            "}";
-    }
+	@Override
+	public int hashCode() {
+		// see
+		// https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
+		return getClass().hashCode();
+	}
+
+	// prettier-ignore
+	@Override
+	public String toString() {
+		return "DeploymentEnvironment{" + "id=" + getId() + ", name='" + getName() + "'" + ", description='"
+				+ getDescription() + "'" + ", status='" + getStatus() + "'" + ", createdOn='" + getCreatedOn() + "'"
+				+ ", updatedOn='" + getUpdatedOn() + "'" + ", updatedBy='" + getUpdatedBy() + "'" + ", createdBy='"
+				+ getCreatedBy() + "'" + "}";
+	}
+
+	public List<Module> getModules() {
+		return modules;
+	}
+
+	public void setModules(List<Module> modules) {
+		this.modules = modules;
+	}
 
 //	public List<Services> getServiceList() {
 //		return serviceList;

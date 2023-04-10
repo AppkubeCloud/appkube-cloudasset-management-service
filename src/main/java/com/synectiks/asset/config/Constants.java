@@ -50,8 +50,8 @@ public final class Constants {
     public static final String SERVICE_LOAD_BALANCER = "Load Balancer";
     public static final String SERVICE_GATEWAY_SERVICE = "Gateway Services";
     public static final String SERVICE_BUSINESS_SERVICE = "Business Services";
-    public static final String SERVICE_BUSINESS_APP_SERVICE = "APP";
-    public static final String SERVICE_BUSINESS_DATA_SERVICE = "DATA";
+    public static final String APP_SERVICES = "APP";
+    public static final String DATA_SERVICES = "DATA";
 
     public static final String DATE_FORMAT_YYYY_MM_DD = "yyyy-MM-dd";
     public static final String DATE_FORMAT_MM_DD_YYYY = "MM-dd-yyyy";
@@ -123,8 +123,20 @@ public final class Constants {
     public static final String PRODUCT_ID = "productId";
     public static final String PRODUCT_NAME = "productName";
     public static final String ACCOUNT_ID = "accountId";
+    public static final String LANDING_ZONE = "landingZone";
     public static final String CREATED_ON = "createdOn";
     public static final String UPDATED_ON = "updatedOn";
+    
+    public static final String DEPLOYMENT_ENVIRONMENT_ID = "deploymentEnvironmentId";
+    public static final String DEPLOYMENT_ENVIRONMENT_NAME = "deploymentEnvironmentName";
+    public static final String SERVICE_NAME = "serviceName";
+    public static final String SERVICE_TYPE = "type";
+    public static final String SERVICE_NATURE = "serviceNature";
+    public static final String SERVICES_ID = "servicesId";
+    public static final String TAGGED = "Tagged";
+    
+    public static final String MODULE_ID = "moduleId";
+    
     private Constants() {
     }
 }

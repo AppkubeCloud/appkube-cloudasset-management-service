@@ -40,6 +40,10 @@ public class Services extends AbstractAuditingEntity implements Serializable {
 
 	@Column(name = "type")
 	private String type;
+	
+	@Column(name = "service_nature")
+	private String serviceNature;
+	
 
 	public Long getId() {
 		return this.id;
@@ -119,10 +123,20 @@ public class Services extends AbstractAuditingEntity implements Serializable {
 		return getClass().hashCode();
 	}
 
+	public String getServiceNature() {
+		return serviceNature;
+	}
+
+	public void setServiceNature(String serviceNature) {
+		this.serviceNature = serviceNature;
+	}
+
 	@Override
 	public String toString() {
 		return "Services [id=" + id + ", name=" + name + ", description=" + description + ", status=" + status
-				+ ", type=" + type + "]";
+				+ ", type=" + type + ", serviceNature=" + serviceNature + ", createdBy=" + createdBy + ", createdOn="
+				+ createdOn + ", updatedBy=" + updatedBy + ", updatedOn=" + updatedOn + "]";
 	}
 
+	
 }

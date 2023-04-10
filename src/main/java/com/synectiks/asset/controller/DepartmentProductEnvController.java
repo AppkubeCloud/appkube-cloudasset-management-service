@@ -9,6 +9,7 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -28,11 +29,15 @@ import org.springframework.web.bind.annotation.RestController;
 import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
 import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
 import com.synectiks.asset.business.service.DepartmentProductEnvService;
 import com.synectiks.asset.business.service.DepartmentService;
+import com.synectiks.asset.business.service.DeploymentEnvironmentService;
 import com.synectiks.asset.business.service.ProductService;
+import com.synectiks.asset.business.service.ServicesService;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.DepartmentProductEnvRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -63,6 +68,13 @@ public class DepartmentProductEnvController {
 	private DepartmentProductEnvService departmentProductEnvService;
 
 	@Autowired
+	private DeploymentEnvironmentService deploymentEnvironmentService;
+
+	@Autowired
+	private ServicesService servicesService;
+
+	
+	@Autowired
 	private DepartmentProductEnvRepository departmentProductEnvRepository;
 
 	/**
@@ -84,24 +96,25 @@ public class DepartmentProductEnvController {
 					"idexists");
 		}
 		
+		log.debug("validating department");
 		if (departmentProductEnv.getDepartmentId() == null) {
 			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
 		}
-		
 		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
 		if (!od.isPresent()) {
 			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
 		}
 
+		log.debug("validating product");
 		if (departmentProductEnv.getProductId() == null) {
 			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
 		}
-		
 		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
 		if (!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
 		}
 		
+		log.debug("validating landing zone");
 		Map<String, String> filter = new HashMap<>();
 		filter.put(Constants.DEPARTMENT_ID, String.valueOf(departmentProductEnv.getDepartmentId()));
 		filter.put(Constants.ACCOUNT_ID, departmentProductEnv.getLandingZone());
@@ -110,7 +123,29 @@ public class DepartmentProductEnvController {
 			throw new BadRequestAlertException("Landing zone(Account id) not found", ENTITY_NAME, "idnotfound");
 		}
 		
+		log.debug("validating deployment environment");
+		if (departmentProductEnv.getDeploymentEnvironmentId() == null) {
+			throw new BadRequestAlertException("Invalid deployment environment id", ENTITY_NAME, "idnull");
+		}
+		Optional<DeploymentEnvironment> de = deploymentEnvironmentService.findOne(departmentProductEnv.getDeploymentEnvironmentId());
+		if (!de.isPresent()) {
+			throw new BadRequestAlertException("Deployment environment not found", ENTITY_NAME, "idnotfound");
+		}
+		
+		log.debug("validating service");
+		if (departmentProductEnv.getServicesId() == null) {
+			throw new BadRequestAlertException("Invalid service id", ENTITY_NAME, "idnull");
+		}
+		Optional<Services> oss = servicesService.findOne(departmentProductEnv.getServicesId());
+		if (!oss.isPresent()) {
+			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
+		}
+		departmentProductEnv.setServiceType(oss.get().getType());
+		departmentProductEnv.setServiceNature(oss.get().getServiceNature());
+		
+		
 		DepartmentProductEnv result = departmentProductEnvService.save(departmentProductEnv);
+		
 		return ResponseEntity
 				.created(new URI("/api/department-product-env/" + result.getId())).headers(HeaderUtil
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -205,7 +240,6 @@ public class DepartmentProductEnvController {
 		if (departmentProductEnv.getDepartmentId() == null) {
 			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
 		}
-		
 		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
 		if (!od.isPresent()) {
 			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
@@ -214,7 +248,6 @@ public class DepartmentProductEnvController {
 		if (departmentProductEnv.getProductId() == null) {
 			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
 		}
-		
 		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
 		if (!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
@@ -228,6 +261,13 @@ public class DepartmentProductEnvController {
 			throw new BadRequestAlertException("Landing zone(Account id) not found", ENTITY_NAME, "idnotfound");
 		}
 
+		if (departmentProductEnv.getServicesId() == null) {
+			throw new BadRequestAlertException("Invalid service id", ENTITY_NAME, "idnull");
+		}
+		Optional<Services> oss = servicesService.findOne(departmentProductEnv.getServicesId());
+		if (!oss.isPresent()) {
+			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
+		}
 		
 		Optional<DepartmentProductEnv> result = departmentProductEnvService.partialUpdate(departmentProductEnv);
 

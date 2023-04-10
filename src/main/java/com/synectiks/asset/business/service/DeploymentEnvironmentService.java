@@ -1,6 +1,7 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,188 +16,143 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
-import com.synectiks.asset.business.domain.Organization;
+import com.synectiks.asset.business.domain.Module;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.DeploymentEnvironmentRepository;
 import com.synectiks.asset.util.JsonAndObjectConverterUtil;
 
 @Service
 public class DeploymentEnvironmentService {
-	
+
 	private final Logger log = LoggerFactory.getLogger(DeploymentEnvironmentService.class);
 
 	@Autowired
-    private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
+	private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
+
+	@Autowired
+	private DepartmentProductEnvService departmentProductEnvService;
 
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 
-    public DeploymentEnvironment save(DeploymentEnvironment deploymentEnvironment) {
-        log.debug("Request to save DeploymentEnvironment : {}", deploymentEnvironment);
-        return deploymentEnvironmentRepository.save(deploymentEnvironment);
-    }
+	public DeploymentEnvironment save(DeploymentEnvironment deploymentEnvironment) {
+		log.debug("Request to save DeploymentEnvironment : {}", deploymentEnvironment);
+		DeploymentEnvironment de = deploymentEnvironmentRepository.save(deploymentEnvironment);
 
-    public Optional<DeploymentEnvironment> partialUpdate(DeploymentEnvironment deploymentEnvironment) {
-        log.debug("Request to partially update DeploymentEnvironment : {}", deploymentEnvironment);
+		if (de != null) {
+			Map<String, String> filter = new HashMap<>();
+			filter.put("deploymentEnvironmentId", String.valueOf(de.getId()));
+			try {
+				List<Module> moduleList = departmentProductEnvService.getModules(filter);
+				de.setModules(moduleList);
+			} catch (IOException e) {
+				log.error("Error in getting modules: ", e.getMessage());
+			}
+		}
 
-        return deploymentEnvironmentRepository
-            .findById(deploymentEnvironment.getId())
-            .map(existingDeploymentEnvironment -> {
-                if (deploymentEnvironment.getName() != null) {
-                    existingDeploymentEnvironment.setName(deploymentEnvironment.getName());
-                }
-                if (deploymentEnvironment.getDescription() != null) {
-                    existingDeploymentEnvironment.setDescription(deploymentEnvironment.getDescription());
-                }
-                if (deploymentEnvironment.getStatus() != null) {
-                    existingDeploymentEnvironment.setStatus(deploymentEnvironment.getStatus());
-                }
+		return de;
+	}
 
-                return existingDeploymentEnvironment;
-            })
-            .map(deploymentEnvironmentRepository::save);
-    }
+	public Optional<DeploymentEnvironment> partialUpdate(DeploymentEnvironment deploymentEnvironment) {
+		log.debug("Request to partially update DeploymentEnvironment : {}", deploymentEnvironment);
 
-    @Transactional(readOnly = true)
-    public List<DeploymentEnvironment> findAll() {
-        log.debug("Request to get all DeploymentEnvironments");
-        return deploymentEnvironmentRepository.findAll();
-    }
+		return deploymentEnvironmentRepository.findById(deploymentEnvironment.getId())
+				.map(existingDeploymentEnvironment -> {
+					if (deploymentEnvironment.getName() != null) {
+						existingDeploymentEnvironment.setName(deploymentEnvironment.getName());
+					}
+					if (deploymentEnvironment.getDescription() != null) {
+						existingDeploymentEnvironment.setDescription(deploymentEnvironment.getDescription());
+					}
+					if (deploymentEnvironment.getStatus() != null) {
+						existingDeploymentEnvironment.setStatus(deploymentEnvironment.getStatus());
+					}
 
-    @Transactional(readOnly = true)
-    public Optional<DeploymentEnvironment> findOne(Long id) {
-        log.debug("Request to get DeploymentEnvironment : {}", id);
-        return deploymentEnvironmentRepository.findById(id);
-    }
+					Map<String, String> filter = new HashMap<>();
+					filter.put("deploymentEnvironmentId", String.valueOf(existingDeploymentEnvironment.getId()));
+					try {
+						List<Module> moduleList = departmentProductEnvService.getModules(filter);
+						existingDeploymentEnvironment.setModules(moduleList);
+					} catch (IOException e) {
+						log.error("Error in getting modules: ", e.getMessage());
+					}
 
-    public void delete(Long id) {
-        log.debug("Request to delete DeploymentEnvironment : {}", id);
-        deploymentEnvironmentRepository.deleteById(id);
-    }
+					return existingDeploymentEnvironment;
+				}).map(deploymentEnvironmentRepository::save);
+	}
 
-    @Transactional(readOnly = true)
-    public List<DeploymentEnvironment> search(Map<String, String> filter) throws IOException {
-    	log.debug("Request to get all DeploymentEnvironment on given filters");
+	@Transactional(readOnly = true)
+	public List<DeploymentEnvironment> findAll() {
+		log.debug("Request to get all DeploymentEnvironments");
+		List<DeploymentEnvironment> list = deploymentEnvironmentRepository.findAll();
+		Map<String, String> filter = new HashMap<>();
+		for (DeploymentEnvironment depEnv : list) {
+			filter.clear();
+			filter.put("deploymentEnvironmentId", String.valueOf(depEnv.getId()));
+			try {
+				List<Module> deList = departmentProductEnvService.getModules(filter);
+				depEnv.setModules(deList);
+			} catch (IOException e) {
+				log.error("Error in getting modules: ", e.getMessage());
+			}
+		}
+		return list;
 
-    	DeploymentEnvironment deploymentEnvironment = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, DeploymentEnvironment.class);
+	}
 
-        //unset default value if createdOn is not coming in filter
-        if(StringUtils.isBlank(filter.get(Constants.CREATED_ON))){
-            deploymentEnvironment.setCreatedOn(null);
-        }
-        //unset default value if updatedOn is not coming in filter
-        if(StringUtils.isBlank(filter.get(Constants.UPDATED_ON))){
-            deploymentEnvironment.setUpdatedOn(null);
-        }
-        return deploymentEnvironmentRepository.findAll(Example.of(deploymentEnvironment), Sort.by(Sort.Direction.DESC, "name"));
-    }
+	@Transactional(readOnly = true)
+	public Optional<DeploymentEnvironment> findOne(Long id) {
+		log.debug("Request to get DeploymentEnvironment : {}", id);
+		Optional<DeploymentEnvironment> ode = deploymentEnvironmentRepository.findById(id);
+		if (ode.isPresent()) {
+			Map<String, String> filter = new HashMap<>();
+			filter.put("deploymentEnvironmentId", String.valueOf(ode.get().getId()));
+			try {
+				List<Module> deList = departmentProductEnvService.getModules(filter);
+				ode.get().setModules(deList);
+			} catch (IOException e) {
+				log.error("Error in getting modules: ", e.getMessage());
+			}
+		}
+		return ode;
+	}
 
-    
-//	private static final Logger logger = LoggerFactory.getLogger(DeploymentEnvironmentService.class);
-//		
-//	@Autowired
-//	DeploymentEnvironmentRepository deploymentEnvironmentRepository;
-//	
-//	public Optional<DeploymentEnvironment> getDeploymentEnvironment(Long id) {
-//		logger.info("Get deployment environment by id: {}", id);
-//		return deploymentEnvironmentRepository.findById(id);
-//	}
-//	
-//	public List<DeploymentEnvironment> getAllDeploymentEnvironment() {
-//		logger.info("Get all deployment environment");
-//		return deploymentEnvironmentRepository.findAll(Sort.by(Direction.DESC, "id"));
-//	}
-//	
-//	public Optional<DeploymentEnvironment> deleteDeploymentEnvironment(Long id) {
-//		logger.info("Delete deployment environment by id: {}", id);
-//		Optional<DeploymentEnvironment> oObj = getDeploymentEnvironment(id);
-//		if(!oObj.isPresent()) {
-//			logger.warn("Id {} not found. deployment environment cannot be deleted", id);
-//			return oObj;
-//		}
-//		deploymentEnvironmentRepository.deleteById(id);
-//		return oObj;
-//	}
-//	
-//	public DeploymentEnvironment createDeploymentEnvironment(DeploymentEnvironment obj){
-//		logger.info("Create new deployment environment");
-//		if(!StringUtils.isBlank(obj.getStatus())) {
-//			obj.setStatus(obj.getStatus().toUpperCase());
-//		}
-//		Instant instant = Instant.now();
-//		obj.setCreatedOn(instant);
-//		obj.setUpdatedOn(instant);
-//		return deploymentEnvironmentRepository.save(obj);
-//	}
-//	
-//	public DeploymentEnvironment updateDeploymentEnvironment(DeploymentEnvironment obj){
-//		logger.info("Update deployment environment. Id: {}", obj.getId());
-//		if(!deploymentEnvironmentRepository.existsById(obj.getId())) {
-//			throw new BadRequestAlertException("Entity not found", "DeploymentEnvironment", "idnotfound");
-//		}
-//		if(!StringUtils.isBlank(obj.getStatus())) {
-//			obj.setStatus(obj.getStatus().toUpperCase());
-//		}
-//		obj.setUpdatedOn(Instant.now());
-//		return deploymentEnvironmentRepository.save(obj);
-//	}
-//	
-//	public Optional<DeploymentEnvironment> partialUpdateDeploymentEnvironment(DeploymentEnvironment obj){
-//		logger.info("Update deployment environment partialy. Id: {}", obj.getId());
-//		if(!deploymentEnvironmentRepository.existsById(obj.getId())) {
-//			throw new BadRequestAlertException("Entity not found", "DeploymentEnvironment", "idnotfound");
-//		}
-//		
-//		Optional<DeploymentEnvironment> result = deploymentEnvironmentRepository.findById(obj.getId())
-//			.map(existingObj ->{
-//				if(!StringUtils.isBlank(obj.getName())) {
-//					existingObj.setName(obj.getName());
-//				}
-//				if(!StringUtils.isBlank(obj.getDescription())) {
-//					existingObj.setDescription(obj.getDescription());
-//				}
-//				if(!StringUtils.isBlank(obj.getStatus())) {
-//					existingObj.setStatus(obj.getStatus().toUpperCase());
-//				}
-//				existingObj.updatedOn(Instant.now());
-//				return existingObj;
-//			})
-//			.map(deploymentEnvironmentRepository::save);
-//		return result;
-//	}
-//	
-//	public List<DeploymentEnvironment> searchAllDeploymentEnvironment(Map<String, String> obj) {
-//		logger.info("Search deployment environment");
-//		DeploymentEnvironment cld = new DeploymentEnvironment();
-//		boolean isFilter = false;
-//		
-//		if(!StringUtils.isBlank(obj.get("id"))) {
-//			cld.setId(Long.parseLong(obj.get("id")));
-//			isFilter = true;
-//		}
-//		
-//		if(!StringUtils.isBlank(obj.get("name"))) {
-//			cld.setName(obj.get("name"));
-//			isFilter = true;
-//		}
-//		
-//		if(!StringUtils.isBlank(obj.get("description"))) {
-//			cld.setDescription(obj.get("description"));
-//			isFilter = true;
-//		}
-//		
-//		if(!StringUtils.isBlank(obj.get("status"))) {
-//			cld.setStatus(obj.get("status").toUpperCase());
-//			isFilter = true;
-//		}
-//		
-//		List<DeploymentEnvironment> list = null;
-//		if(isFilter) {
-//			list = deploymentEnvironmentRepository.findAll(Example.of(cld), Sort.by(Direction.DESC, "id"));
-//		}else {
-//			list = deploymentEnvironmentRepository.findAll(Sort.by(Direction.DESC, "id"));
-//		}
-//		return list;
-//	}
-	
+	public void delete(Long id) {
+		log.debug("Request to delete DeploymentEnvironment : {}", id);
+		deploymentEnvironmentRepository.deleteById(id);
+	}
+
+	@Transactional(readOnly = true)
+	public List<DeploymentEnvironment> search(Map<String, String> filter) throws IOException {
+		log.debug("Request to get all DeploymentEnvironment on given filters");
+
+		DeploymentEnvironment deploymentEnvironment = jsonAndObjectConverterUtil
+				.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, DeploymentEnvironment.class);
+
+		// unset default value if createdOn is not coming in filter
+		if (StringUtils.isBlank(filter.get(Constants.CREATED_ON))) {
+			deploymentEnvironment.setCreatedOn(null);
+		}
+		// unset default value if updatedOn is not coming in filter
+		if (StringUtils.isBlank(filter.get(Constants.UPDATED_ON))) {
+			deploymentEnvironment.setUpdatedOn(null);
+		}
+		List<DeploymentEnvironment> list = deploymentEnvironmentRepository.findAll(Example.of(deploymentEnvironment),
+				Sort.by(Sort.Direction.DESC, "name"));
+
+		Map<String, String> modulefilter = new HashMap<>();
+		for (DeploymentEnvironment de : list) {
+			modulefilter.clear();
+			modulefilter.put("deploymentEnvironmentId", String.valueOf(de.getId()));
+			try {
+				List<Module> deList = departmentProductEnvService.getModules(modulefilter);
+				de.setModules(deList);
+			} catch (IOException e) {
+				log.error("Error in getting modules: ", e.getMessage());
+			}
+		}
+		return list;
+	}
+
+
 }

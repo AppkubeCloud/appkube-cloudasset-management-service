@@ -6,6 +6,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -16,12 +17,17 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.synectiks.asset.business.domain.Department;
 import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.DeploymentEnvironment;
+import com.synectiks.asset.business.domain.Module;
 import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.DepartmentProductEnvRepository;
+import com.synectiks.asset.repository.DeploymentEnvironmentRepository;
+import com.synectiks.asset.repository.ModuleRepository;
 import com.synectiks.asset.repository.ProductRepository;
+import com.synectiks.asset.repository.ServicesRepository;
 import com.synectiks.asset.util.JsonAndObjectConverterUtil;
 
 @Service
@@ -43,6 +49,15 @@ public class DepartmentProductEnvService {
 	
 	@Autowired
 	private ProductRepository productRepository;
+	
+	@Autowired
+	private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
+	
+	@Autowired
+	private ModuleRepository moduleRepository;
+	
+	@Autowired
+	private ServicesRepository servicesRepository;
 	
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
@@ -81,6 +96,15 @@ public class DepartmentProductEnvService {
                 }
                 if (departmentProductEnv.getLandingZone() != null) {
                     existingDepartmentProduct.setLandingZone(departmentProductEnv.getLandingZone());
+                }
+                if (departmentProductEnv.getServicesId() != null) {
+                    existingDepartmentProduct.setServicesId(departmentProductEnv.getServicesId());
+                }
+                if (departmentProductEnv.getServiceType() != null) {
+                    existingDepartmentProduct.setServiceType(departmentProductEnv.getServiceType());
+                }
+                if (departmentProductEnv.getServiceNature() != null) {
+                    existingDepartmentProduct.setServiceNature(departmentProductEnv.getServiceNature());
                 }
                 return existingDepartmentProduct;
             })
@@ -122,131 +146,97 @@ public class DepartmentProductEnvService {
 		return departmentProductEnvRepository.findAll(Example.of(departmentProductEnv), Sort.by(Sort.Direction.DESC, "id"));
 	}
     
-	public List<Product> getProducts(Map<String, String> filter, Department department) throws IOException {
+	public List<Product> getProducts(Map<String, String> filter) throws IOException {
 		logger.debug("Getting products of given department");
-		if(filter == null) {
-			filter = new HashMap<>();
-			filter.put("departmentId", String.valueOf(department.getId()));
-		}
-		
 		List<DepartmentProductEnv> list = search(filter);
 		List<Long> idList = new ArrayList<>();
 		for(DepartmentProductEnv dpe: list) {
 			idList.add(dpe.getProductId());
 		}
-		return findAllById(idList);
+		return findAllProductsById(idList);
 	}
 	
-	public List<Product> findAllById(List<Long> idList){
-		return productRepository.findAllById(idList);
+	public List<Product> findAllProductsById(List<Long> idList){
+		List<Product> list = productRepository.findAllById(idList);
+		Map<String, String> filter = new HashMap<>();
+		for(Product product: list) {
+			filter.clear();
+			filter.put(Constants.PRODUCT_ID, String.valueOf(product.getId()));
+			try {
+				List<DeploymentEnvironment> deList = getDeploymentEnvironments(filter);
+				product.setDeploymentEnvironments(deList);
+			} catch (IOException e) {
+				logger.error("Error in getting deployment environments: ", e.getMessage());
+			}
+		}
+		return list;
 	}
 	
-//	public Department atachProduct(Long departmentid, Long cloudEnvironmentId, Long productId ){
-//		logger.info("Attaching product to the department");
-//		Optional<Department> oDp = departmentService.findOne(departmentid);
-//		Optional<CloudEnvironment> oCle = cloudEnvironmentService.getCloudEnvironment(cloudEnvironmentId);
-//		Optional<Product> op = productService.findOne(productId);
-//		if(!oDp.isPresent()) {
-//			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
-//		}		
-//		if(!oCle.isPresent()) {
-//			throw new BadRequestAlertException("Cloud environment not found", "CloudEnvironment", "idnotfound");
-//		}
-//		if(!op.isPresent()) {
-//			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
-//		}
-//		
-//
-//		DepartmentProductEnv dp = new DepartmentProductEnv();
-//		dp.setProduct(op.get());
-//		dp.setCloudEnvironment(oCle.get());
-//		dp.setDepartment(oDp.get());
-//		dp.setStatus(Constants.ACTIVE);
-//		Instant instant = Instant.now();
-//		dp.setDescription(oDp.get().getName() + " is associated with product "+op.get().getName());
-//		dp.setCreatedOn(instant);
-//		dp.setUpdatedOn(instant);
-//		dp = departmentProductRepository.save(dp);
-//		Department department =  dp.getDepartment();
-////		department.setProductList(getAllProductsOfDepartment(dp.getDepartment()));
-//		return department;
-//	}
-//	
-//	public boolean detachProduct(Long departmentid, Long cloudEnvironmentId, Long productId){
-//		logger.info("Detaching product from a department");
-//		Optional<Department> oDp = departmentService.findOne(departmentid);
-//		Optional<CloudEnvironment> oCle = cloudEnvironmentService.getCloudEnvironment(cloudEnvironmentId);
-//		Optional<Product> op = productService.findOne(productId);
-//		if(!oDp.isPresent()) {
-//			throw new BadRequestAlertException("Department not found", "Department", "idnotfound");
-//		}		
-//		if(!oCle.isPresent()) {
-//			throw new BadRequestAlertException("Cloud environment not found", "CloudEnvironment", "idnotfound");
-//		}
-//		if(!op.isPresent()) {
-//			throw new BadRequestAlertException("Product not found", "Product", "idnotfound");
-//		}
-//		
-//		DepartmentProductEnv dp = new DepartmentProductEnv();
-//		dp.setProduct(op.get());
-//		dp.setCloudEnvironment(oCle.get());
-//		dp.setDepartment(oDp.get());
-//		
-//		Optional<DepartmentProductEnv> odp = departmentProductRepository.findOne(Example.of(dp));
-//		if(odp.isPresent()) {
-//			departmentProductRepository.deleteById(odp.get().getId());
-//			logger.info("Product deleted from department successfully");
-//			return true;
-//		}
-//		logger.warn("Product deletion from department failed");
-//		return false;
-//	}
-//	
-//	public List<Product> getAllProductsOfDepartment(Department department) {
-//		DepartmentProductEnv dp = new DepartmentProductEnv();
-//		dp.setDepartment(department);
-//		List<Product> productList = new ArrayList<>();
-//		List<DepartmentProductEnv> listDp = departmentProductRepository.findAll(Example.of(dp),  Sort.by(Direction.DESC, "id"));
-//		for(DepartmentProductEnv d: listDp) {
-//			Product product = d.getProduct();
-////			product.setServiceList(productServicesService.getAllServicesOfProduct(product));
-//			productList.add(product);
-//		}
-//		return productList;
-//	}
-//
-//	public List<Product> getAllProducts(Department department, CloudEnvironment cloudEnvironment) {
-//		DepartmentProductEnv dp = new DepartmentProductEnv();
-//		dp.setDepartment(department);
-//		dp.setCloudEnvironment(cloudEnvironment);
-//		List<Product> productList = new ArrayList<>();
-//		List<DepartmentProductEnv> listDp = departmentProductRepository.findAll(Example.of(dp),  Sort.by(Direction.DESC, "id"));
-//		for(DepartmentProductEnv d: listDp) {
-//			Product product = d.getProduct();
-////			product.setServiceList(productServicesService.getAllServicesOfProduct(product));
-//			productList.add(product);
-//		}
-//		return productList;
-//	}
-//	
-//	public List<Product> getAllProductsOfDepartment(Long departmentId) {
-//		Optional<Department> od = departmentService.findOne(departmentId);
-//		if(!od.isPresent()) {
-//			return Collections.emptyList();
-//		}
-//		return getAllProductsOfDepartment(od.get());
-//	}
-//	
-//	public List<Product> getAllProducts(Long departmentId, Long cloudEnvId) {
-//		Optional<Department> od = departmentService.findOne(departmentId);
-//		Optional<CloudEnvironment> oce = cloudEnvironmentService.getCloudEnvironment(cloudEnvId);
-//		if(!od.isPresent()) {
-//			return Collections.emptyList();
-//		}
-//		if(!oce.isPresent()) {
-//			return Collections.emptyList();
-//		}
-//		return getAllProducts(od.get(), oce.get());
-//	}
 	
+	public List<DeploymentEnvironment> getDeploymentEnvironments(Map<String, String> filter) throws IOException {
+		logger.debug("Getting deployment environments");
+		List<DepartmentProductEnv> list = search(filter);
+		List<Long> idList = new ArrayList<>();
+		for(DepartmentProductEnv dpe: list) {
+			idList.add(dpe.getDeploymentEnvironmentId());
+		}
+		return findAllDeploymentEnvironmentsById(idList);
+	}
+	
+	public List<DeploymentEnvironment> findAllDeploymentEnvironmentsById(List<Long> idList){
+		List<DeploymentEnvironment> list = deploymentEnvironmentRepository.findAllById(idList);
+		Map<String, String> filter = new HashMap<>();
+		for(DeploymentEnvironment de: list) {
+			filter.clear();
+			filter.put(Constants.DEPLOYMENT_ENVIRONMENT_ID, String.valueOf(de.getId()));
+			try {
+				List<Module> deList = getModules(filter);
+				de.setModules(deList);
+			} catch (IOException e) {
+				logger.error("Error in getting modules: ", e.getMessage());
+			}
+		}
+		return list;
+	}
+	
+	public List<Module> getModules(Map<String, String> filter) throws IOException {
+		logger.debug("Getting modules");
+		List<DepartmentProductEnv> list = search(filter);
+		List<Long> idList = new ArrayList<>();
+		for(DepartmentProductEnv dpe: list) {
+			idList.add(dpe.getModuleId());
+		}
+		return findAllModulesById(idList);
+	}
+	
+	public List<Module> findAllModulesById(List<Long> idList){
+		List<Module> list = moduleRepository.findAllById(idList);
+		Map<String, String> filter = new HashMap<>();
+		for(Module md: list) {
+			filter.clear();
+			filter.put(Constants.MODULE_ID, String.valueOf(md.getId()));
+			try {
+				List<Services> deList = getServices(filter);
+				md.setAppServices(deList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.APP_SERVICES)).collect(Collectors.toList()));
+				md.setDataServices(deList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.DATA_SERVICES)).collect(Collectors.toList()));
+			} catch (IOException e) {
+				logger.error("Error in getting app services: ", e.getMessage());
+			}
+		}
+		return list;
+	}
+
+	public List<Services> getServices(Map<String, String> filter) throws IOException {
+		logger.debug("Getting services");
+		List<DepartmentProductEnv> list = search(filter);
+		List<Long> idList = new ArrayList<>();
+		for(DepartmentProductEnv dpe: list) {
+			idList.add(dpe.getServicesId());
+		}
+		return findAllServicesById(idList);
+	}
+	
+	public List<Services> findAllServicesById(List<Long> idList){
+		return servicesRepository.findAllById(idList);
+	}
 }
