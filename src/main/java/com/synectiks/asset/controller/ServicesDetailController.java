@@ -13,7 +13,6 @@ import java.util.Optional;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import com.synectiks.asset.util.UniqueProductUtil;
 import org.apache.commons.io.FileUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
@@ -46,10 +45,10 @@ import com.synectiks.asset.response.AvailabilityResponse;
 import com.synectiks.asset.response.DataProtectionResponse;
 import com.synectiks.asset.response.PerformanceResponse;
 import com.synectiks.asset.response.SecurityResponse;
-import com.synectiks.asset.response.ServiceBillingResponse;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.response.UserExperianceResponse;
 import com.synectiks.asset.util.RandomUtil;
+import com.synectiks.asset.util.UniqueProductUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @RestController

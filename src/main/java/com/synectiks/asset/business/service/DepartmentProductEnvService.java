@@ -35,15 +35,6 @@ public class DepartmentProductEnvService {
 	
 	private final Logger logger = LoggerFactory.getLogger(DepartmentProductEnvService.class);
 	
-//	@Autowired
-//	private ProductService productService;
-//	
-//	@Autowired
-//	private CloudEnvironmentService cloudEnvironmentService;
-//	
-//	@Autowired
-//	private ProductServicesService productServicesService;
-	
 	@Autowired
 	private DepartmentProductEnvRepository departmentProductEnvRepository;
 	
@@ -73,6 +64,30 @@ public class DepartmentProductEnvService {
         return departmentProductEnvRepository
             .findById(departmentProductEnv.getId())
             .map(existingDepartmentProduct -> {
+            	if (departmentProductEnv.getLandingZone() != null) {
+                    existingDepartmentProduct.setLandingZone(departmentProductEnv.getLandingZone());
+                }
+                if (departmentProductEnv.getDepartmentId() != null) {
+                    existingDepartmentProduct.setDepartmentId(departmentProductEnv.getDepartmentId());
+                }
+                if (departmentProductEnv.getProductId() != null) {
+                    existingDepartmentProduct.setProductId(departmentProductEnv.getProductId());
+                }
+                if (departmentProductEnv.getDeploymentEnvironmentId() != null) {
+                    existingDepartmentProduct.setDeploymentEnvironmentId(departmentProductEnv.getDeploymentEnvironmentId());
+                }
+                if (departmentProductEnv.getModuleId() != null) {
+                    existingDepartmentProduct.setModuleId(departmentProductEnv.getModuleId());
+                }
+                if (departmentProductEnv.getServicesId() != null) {
+                    existingDepartmentProduct.setServicesId(departmentProductEnv.getServicesId());
+                }
+                if (departmentProductEnv.getServiceType() != null) {
+                    existingDepartmentProduct.setServiceType(departmentProductEnv.getServiceType());
+                }
+                if (departmentProductEnv.getServiceNature() != null) {
+                    existingDepartmentProduct.setServiceNature(departmentProductEnv.getServiceNature());
+                }
                 if (departmentProductEnv.getCreatedOn() != null) {
                     existingDepartmentProduct.setCreatedOn(departmentProductEnv.getCreatedOn());
                 }
@@ -84,27 +99,6 @@ public class DepartmentProductEnvService {
                 }
                 if (departmentProductEnv.getCreatedBy() != null) {
                     existingDepartmentProduct.setCreatedBy(departmentProductEnv.getCreatedBy());
-                }
-                if (departmentProductEnv.getDepartmentId() != null) {
-                    existingDepartmentProduct.setDepartmentId(departmentProductEnv.getDepartmentId());
-                }
-                if (departmentProductEnv.getProductId() != null) {
-                    existingDepartmentProduct.setProductId(departmentProductEnv.getProductId());
-                }
-                if (departmentProductEnv.getDeploymentEnvironmentId() != null) {
-                    existingDepartmentProduct.setDeploymentEnvironmentId(departmentProductEnv.getDeploymentEnvironmentId());
-                }
-                if (departmentProductEnv.getLandingZone() != null) {
-                    existingDepartmentProduct.setLandingZone(departmentProductEnv.getLandingZone());
-                }
-                if (departmentProductEnv.getServicesId() != null) {
-                    existingDepartmentProduct.setServicesId(departmentProductEnv.getServicesId());
-                }
-                if (departmentProductEnv.getServiceType() != null) {
-                    existingDepartmentProduct.setServiceType(departmentProductEnv.getServiceType());
-                }
-                if (departmentProductEnv.getServiceNature() != null) {
-                    existingDepartmentProduct.setServiceNature(departmentProductEnv.getServiceNature());
                 }
                 return existingDepartmentProduct;
             })

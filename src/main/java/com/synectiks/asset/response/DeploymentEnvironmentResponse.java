@@ -1,7 +1,6 @@
 package com.synectiks.asset.response;
 
 import java.io.Serializable;
-import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
@@ -24,11 +23,7 @@ public class DeploymentEnvironmentResponse implements Serializable {
 
   private Long id;
   private String name;
-  private ProductBillingResponse productBilling;
-//  private List<ServiceResponse> serviceList;
-  private List<ServiceCategoryResponse> serviceCategoryList;
-  
-  
+
   public static DeploymentEnvironmentResponse from(DeploymentEnvironment depEnv) {
 	  return DeploymentEnvironmentResponse.builder()
 			  .id(depEnv.getId())

@@ -11,7 +11,6 @@ import org.apache.commons.lang3.RandomStringUtils;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.amazonaws.services.s3.AmazonS3;
@@ -22,8 +21,6 @@ import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.domain.Dashboard;
 import com.synectiks.asset.domain.DashboardMeta;
-import com.synectiks.asset.domain.ServiceProviderCloudAccount;
-import com.synectiks.asset.util.Utils;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service

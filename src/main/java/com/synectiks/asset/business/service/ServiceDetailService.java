@@ -10,7 +10,6 @@ import java.util.stream.Collectors;
 
 import javax.transaction.Transactional;
 
-import com.synectiks.asset.util.UniqueProductUtil;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +31,6 @@ import com.synectiks.asset.domain.AccountServices;
 import com.synectiks.asset.domain.Catalogue;
 import com.synectiks.asset.domain.Dashboard;
 import com.synectiks.asset.domain.ServiceDetail;
-import com.synectiks.asset.domain.ServiceProviderCloudAccount;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.AccountTree;
 import com.synectiks.asset.response.App;
@@ -52,7 +50,7 @@ import com.synectiks.asset.response.Vpc;
 import com.synectiks.asset.response.catalogue.CloudDashboard;
 import com.synectiks.asset.util.JacsonNodeAndMapConvertUtil;
 import com.synectiks.asset.util.RandomUtil;
-import com.synectiks.asset.util.Utils;
+import com.synectiks.asset.util.UniqueProductUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 @Service
