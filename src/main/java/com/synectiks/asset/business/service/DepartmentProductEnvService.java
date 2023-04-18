@@ -129,11 +129,11 @@ public class DepartmentProductEnvService {
 		DepartmentProductEnv departmentProductEnv = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, DepartmentProductEnv.class);
 
 		// unset default value if createdOn is not coming in filter
-		if (StringUtils.isBlank(filter.get(Constants.CREATED_ON))) {
+		if (filter.containsKey(Constants.CREATED_ON) && StringUtils.isBlank(filter.get(Constants.CREATED_ON))) {
 			departmentProductEnv.setCreatedOn(null);
 		}
 		// unset default value if updatedOn is not coming in filter
-		if (StringUtils.isBlank(filter.get(Constants.UPDATED_ON))) {
+		if (filter.containsKey(Constants.UPDATED_ON) && StringUtils.isBlank(filter.get(Constants.UPDATED_ON))) {
 			departmentProductEnv.setUpdatedOn(null);
 		}
 		
