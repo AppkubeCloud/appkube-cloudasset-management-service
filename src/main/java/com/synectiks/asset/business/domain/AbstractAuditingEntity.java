@@ -37,7 +37,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     @CreatedDate
     @Column(name = "created_on", updatable = false, columnDefinition = "TIMESTAMP")
 //    @JsonIgnore
-    protected LocalDateTime createdOn;
+    protected LocalDateTime createdOn = LocalDateTime.now(ZoneId.of(Constants.DEFAULT_TIMEZONE));
 
     @LastModifiedBy
     @Column(name = "updated_by", length = 255)
@@ -47,7 +47,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     @LastModifiedDate
     @Column(name = "updated_on", columnDefinition = "TIMESTAMP")
 //    @JsonIgnore
-    protected LocalDateTime updatedOn;
+    protected LocalDateTime updatedOn = LocalDateTime.now(ZoneId.of(Constants.DEFAULT_TIMEZONE));
 
 
     public String getCreatedBy() {
@@ -63,7 +63,7 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     }
 
     public void setCreatedOn(LocalDateTime createdOn) {
-        this.createdOn = LocalDateTime.now(ZoneId.of(Constants.DEFAULT_TIMEZONE));;
+        this.createdOn = createdOn;
     }
 
     public String getUpdatedBy() {
@@ -79,6 +79,6 @@ public abstract class AbstractAuditingEntity<T> implements Serializable {
     }
 
     public void setUpdatedOn(LocalDateTime updatedOn) {
-        this.updatedOn = LocalDateTime.now(ZoneId.of(Constants.DEFAULT_TIMEZONE));;
+        this.updatedOn = updatedOn;
     }
 }
