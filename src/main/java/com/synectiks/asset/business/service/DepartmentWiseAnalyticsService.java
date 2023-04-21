@@ -32,7 +32,7 @@ public class DepartmentWiseAnalyticsService {
 	DepartmentService departmentService;
 	
 	@Autowired
-	DepartmentProductEnvService departmentProductService;
+	ServiceAllocationService departmentProductService;
 	
 //	@Autowired
 //	ProductDeploymentService productDeploymentService;

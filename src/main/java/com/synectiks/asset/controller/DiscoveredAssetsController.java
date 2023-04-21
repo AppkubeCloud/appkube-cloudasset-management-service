@@ -72,9 +72,7 @@ public class DiscoveredAssetsController {
         if (discoveredAssets.getId() != null) {
             throw new BadRequestAlertException("A new discoveredAssets cannot already have an ID", ENTITY_NAME, "idexists");
         }
-        if(!StringUtils.isBlank(discoveredAssets.getTag())) {
-        	discoveredAssets.setTagStatus(Constants.TAGGED);
-        }
+        
         DiscoveredAssets result = discoveredAssetsService.save(discoveredAssets);
         return ResponseEntity
             .created(new URI("/api/discovered-assets/" + result.getId()))
@@ -144,9 +142,7 @@ public class DiscoveredAssetsController {
             throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
         }
 
-        if(!StringUtils.isBlank(discoveredAssets.getTag())) {
-        	discoveredAssets.setTagStatus(Constants.TAGGED);
-        }
+        
         Optional<DiscoveredAssets> result = discoveredAssetsService.partialUpdate(discoveredAssets);
 
         return ResponseUtil.wrapOrNotFound(

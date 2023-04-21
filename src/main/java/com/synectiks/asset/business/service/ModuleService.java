@@ -37,7 +37,7 @@ public class ModuleService  {
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
     
     @Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 
     
     public Module save(Module module) {

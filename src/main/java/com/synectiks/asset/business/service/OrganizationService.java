@@ -27,7 +27,7 @@ public class OrganizationService {
 	private static final Logger logger = LoggerFactory.getLogger(OrganizationService.class);
 	
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;

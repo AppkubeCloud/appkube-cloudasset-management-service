@@ -31,11 +31,11 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
-import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
-import com.synectiks.asset.business.service.DepartmentProductEnvService;
+import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.business.service.DeploymentEnvironmentService;
 import com.synectiks.asset.business.service.ProductService;
@@ -67,7 +67,7 @@ public class ProductController {
 	private CloudEnvironmentService cloudEnvironmentService;
 
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 
 	@Autowired
 	private DeploymentEnvironmentService deploymentEnvironmentService;
@@ -230,7 +230,7 @@ public class ProductController {
 	 * @throws IOException
 	 */
 	@PostMapping("/products/add-dep-env")
-	public ResponseEntity<Product> addDeploymentEnvironment(@RequestBody DepartmentProductEnv departmentProductEnv)
+	public ResponseEntity<Product> addDeploymentEnvironment(@RequestBody ServiceAllocation departmentProductEnv)
 			throws URISyntaxException, IOException {
 		logger.debug("REST request to add a deployment environment in a product: {}", departmentProductEnv);
 
@@ -274,14 +274,14 @@ public class ProductController {
 		filter.put(Constants.DEPARTMENT_ID, String.valueOf(departmentProductEnv.getDepartmentId()));
 		filter.put(Constants.PRODUCT_ID, String.valueOf(departmentProductEnv.getProductId()));
 		filter.put(Constants.DEPLOYMENT_ENVIRONMENT_ID, String.valueOf(departmentProductEnv.getDeploymentEnvironmentId()));
-		List<DepartmentProductEnv> dpeList = departmentProductEnvService.search(filter);
+		List<ServiceAllocation> dpeList = departmentProductEnvService.search(filter);
 		if(dpeList.size() > 0) {
 			throw new BadRequestAlertException("Deployment environment is already associated with product", ENTITY_NAME, "idexists");
 		}
 		filter.remove(Constants.DEPLOYMENT_ENVIRONMENT_ID);
 		dpeList = departmentProductEnvService.search(filter);
-		DepartmentProductEnv existingDpe = null;
-		for(DepartmentProductEnv dpe: dpeList) {
+		ServiceAllocation existingDpe = null;
+		for(ServiceAllocation dpe: dpeList) {
 			if(dpe.getLandingZone().equals(departmentProductEnv.getLandingZone())
 					&& dpe.getDepartmentId() == departmentProductEnv.getDepartmentId()
 					&& dpe.getProductId() == departmentProductEnv.getProductId()

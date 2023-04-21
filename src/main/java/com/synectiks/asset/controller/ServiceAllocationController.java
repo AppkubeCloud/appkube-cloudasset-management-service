@@ -28,18 +28,18 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
-import com.synectiks.asset.business.domain.DepartmentProductEnv;
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Product;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
-import com.synectiks.asset.business.service.DepartmentProductEnvService;
 import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.business.service.DeploymentEnvironmentService;
 import com.synectiks.asset.business.service.ProductService;
+import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.business.service.ServicesService;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.repository.DepartmentProductEnvRepository;
+import com.synectiks.asset.repository.ServiceAllocationRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -47,10 +47,10 @@ import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
-public class DepartmentProductEnvController {
+public class ServiceAllocationController {
 
-	private final Logger log = LoggerFactory.getLogger(DepartmentProductEnvController.class);
-	private static final String ENTITY_NAME = "DepartmentProductEnv";
+	private final Logger log = LoggerFactory.getLogger(ServiceAllocationController.class);
+	private static final String ENTITY_NAME = "ServiceAllocation";
 
 	@Value("${jhipster.clientApp.name}")
 	private String applicationName;
@@ -65,252 +65,258 @@ public class DepartmentProductEnvController {
 	private CloudEnvironmentService cloudEnvironmentService;
 	
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService serviceAllocationService;
 
 	@Autowired
 	private DeploymentEnvironmentService deploymentEnvironmentService;
 
 	@Autowired
 	private ServicesService servicesService;
-
 	
 	@Autowired
-	private DepartmentProductEnvRepository departmentProductEnvRepository;
+	private ServiceAllocationRepository serviceAllocationRepository;
 
 	/**
-	 * {@code POST  /department-product-env} : Create a new departmentProductEnv.
+	 * {@code POST  /service-allocations} : Create a new serviceAllocation.
 	 *
-	 * @param departmentProductEnv the departmentProductEnv to create.
+	 * @param serviceAllocation the serviceAllocation to create.
 	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
-	 *         body the new departmentProductEnv, or with status
-	 *         {@code 400 (Bad Request)} if the departmentProductEnv has already an ID.
+	 *         body the new serviceAllocation, or with status
+	 *         {@code 400 (Bad Request)} if the serviceAllocation has already an ID.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 * @throws IOException 
 	 */
-	@PostMapping("/department-product-env")
-	public ResponseEntity<DepartmentProductEnv> createDepartmentEnvProduct(@RequestBody DepartmentProductEnv departmentProductEnv)
+	@PostMapping("/service-allocations")
+	public ResponseEntity<ServiceAllocation> createServiceAllocation(@RequestBody ServiceAllocation serviceAllocation)
 			throws URISyntaxException, IOException {
-		log.debug("REST request to save DepartmentProductEnv : {}", departmentProductEnv);
-		if (departmentProductEnv.getId() != null) {
-			throw new BadRequestAlertException("A new departmentProductEnv cannot already have an ID", ENTITY_NAME,
+		log.debug("REST request to save ServiceAllocation : {}", serviceAllocation);
+		if (serviceAllocation.getId() != null) {
+			throw new BadRequestAlertException("A new serviceAllocation cannot already have an ID", ENTITY_NAME,
 					"idexists");
 		}
 		
 		log.debug("validating department");
-		if (departmentProductEnv.getDepartmentId() == null) {
+		if (serviceAllocation.getDepartmentId() == null) {
 			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
 		}
-		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
+		Optional<Department> od = departmentService.findOne(serviceAllocation.getDepartmentId());
 		if (!od.isPresent()) {
 			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
 		}
 
 		log.debug("validating product");
-		if (departmentProductEnv.getProductId() == null) {
+		if (serviceAllocation.getProductId() == null) {
 			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
 		}
-		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
+		Optional<Product> op = productService.findOne(serviceAllocation.getProductId());
 		if (!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
 		}
 		
 		log.debug("validating landing zone");
 		Map<String, String> filter = new HashMap<>();
-		filter.put(Constants.DEPARTMENT_ID, String.valueOf(departmentProductEnv.getDepartmentId()));
-		filter.put(Constants.ACCOUNT_ID, departmentProductEnv.getLandingZone());
+		filter.put(Constants.DEPARTMENT_ID, String.valueOf(serviceAllocation.getDepartmentId()));
+		filter.put(Constants.ACCOUNT_ID, serviceAllocation.getLandingZone());
 		List<CloudEnvironment> ceList = cloudEnvironmentService.search(filter);
 		if(ceList == null || ( ceList != null && ceList.size() == 0)) {
 			throw new BadRequestAlertException("Landing zone(Account id) not found", ENTITY_NAME, "idnotfound");
 		}
 		
 		log.debug("validating deployment environment");
-		if (departmentProductEnv.getDeploymentEnvironmentId() == null) {
+		if (serviceAllocation.getDeploymentEnvironmentId() == null) {
 			throw new BadRequestAlertException("Invalid deployment environment id", ENTITY_NAME, "idnull");
 		}
-		Optional<DeploymentEnvironment> de = deploymentEnvironmentService.findOne(departmentProductEnv.getDeploymentEnvironmentId());
+		Optional<DeploymentEnvironment> de = deploymentEnvironmentService.findOne(serviceAllocation.getDeploymentEnvironmentId());
 		if (!de.isPresent()) {
 			throw new BadRequestAlertException("Deployment environment not found", ENTITY_NAME, "idnotfound");
 		}
 		
 		log.debug("validating service");
-		if (departmentProductEnv.getServicesId() == null) {
+		if (serviceAllocation.getServicesId() == null) {
 			throw new BadRequestAlertException("Invalid service id", ENTITY_NAME, "idnull");
 		}
-		Optional<Services> oss = servicesService.findOne(departmentProductEnv.getServicesId());
+		Optional<Services> oss = servicesService.findOne(serviceAllocation.getServicesId());
 		if (!oss.isPresent()) {
 			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
 		}
-		departmentProductEnv.setServiceType(oss.get().getType());
-		departmentProductEnv.setServiceNature(oss.get().getServiceNature());
+		serviceAllocation.setServiceType(oss.get().getType());
+		serviceAllocation.setServiceNature(oss.get().getServiceNature());
 		
+		if(!StringUtils.isBlank(serviceAllocation.getTag())) {
+			serviceAllocation.setTagStatus(Constants.TAGGED);
+        }
 		
-		DepartmentProductEnv result = departmentProductEnvService.save(departmentProductEnv);
+		ServiceAllocation result = serviceAllocationService.save(serviceAllocation);
 		
 		return ResponseEntity
-				.created(new URI("/api/department-product-env/" + result.getId())).headers(HeaderUtil
+				.created(new URI("/api/service-allocations/" + result.getId())).headers(HeaderUtil
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
 				.body(result);
 	}
 
 	/**
-	 * {@code PUT  /department-product-env/:id} : Updates an existing
-	 * departmentProductEnv.
+	 * {@code PUT  /service-allocations/:id} : Updates an existing
+	 * serviceAllocation.
 	 *
-	 * @param id                the id of the departmentProductEnv to save.
-	 * @param departmentProductEnv the departmentProductEnv to update.
+	 * @param id                the id of the serviceAllocation to save.
+	 * @param serviceAllocation the serviceAllocation to update.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
-	 *         the updated departmentProductEnv, or with status
-	 *         {@code 400 (Bad Request)} if the departmentProductEnv is not valid, or
+	 *         the updated serviceAllocation, or with status
+	 *         {@code 400 (Bad Request)} if the serviceAllocation is not valid, or
 	 *         with status {@code 500 (Internal Server Error)} if the
-	 *         departmentProductEnv couldn't be updated.
+	 *         serviceAllocation couldn't be updated.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
-	@PutMapping("/department-product-env/{id}")
-	public ResponseEntity<DepartmentProductEnv> updateDepartmentProductEnv(
+	@PutMapping("/service-allocations/{id}")
+	public ResponseEntity<ServiceAllocation> updateServiceAllocation(
 			@PathVariable(value = "id", required = false) final Long id,
-			@RequestBody DepartmentProductEnv departmentProductEnv) throws URISyntaxException {
-		log.debug("REST request to update DepartmentProductEnv : {}, {}", id, departmentProductEnv);
-		if (departmentProductEnv.getId() == null) {
+			@RequestBody ServiceAllocation serviceAllocation) throws URISyntaxException {
+		log.debug("REST request to update ServiceAllocation : {}, {}", id, serviceAllocation);
+		if (serviceAllocation.getId() == null) {
 			throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
 		}
-		if (!Objects.equals(id, departmentProductEnv.getId())) {
+		if (!Objects.equals(id, serviceAllocation.getId())) {
 			throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
 		}
 
-		if (!departmentProductEnvRepository.existsById(id)) {
+		if (!serviceAllocationRepository.existsById(id)) {
 			throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
 		}
 		
-		if (departmentProductEnv.getDepartmentId() == null) {
+		if (serviceAllocation.getDepartmentId() == null) {
 			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
 		}
 		
-		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
+		Optional<Department> od = departmentService.findOne(serviceAllocation.getDepartmentId());
 		if (!od.isPresent()) {
 			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
 		}
 
-		if (departmentProductEnv.getProductId() == null) {
+		if (serviceAllocation.getProductId() == null) {
 			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
 		}
 		
-		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
+		Optional<Product> op = productService.findOne(serviceAllocation.getProductId());
 		if (!op.isPresent()) {
 			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
 		}
 
 		
-		DepartmentProductEnv result = departmentProductEnvService.save(departmentProductEnv);
+		ServiceAllocation result = serviceAllocationService.save(serviceAllocation);
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME,
-				departmentProductEnv.getId().toString())).body(result);
+				serviceAllocation.getId().toString())).body(result);
 	}
 
 	/**
-	 * {@code PATCH  /department-product-env/:id} : Partial updates given fields of an
-	 * existing departmentProductEnv, field will ignore if it is null
+	 * {@code PATCH  /service-allocations/:id} : Partial updates given fields of an
+	 * existing serviceAllocation, field will ignore if it is null
 	 *
-	 * @param id                the id of the departmentProductEnv to save.
-	 * @param departmentProductEnv the departmentProductEnv to update.
+	 * @param id                the id of the serviceAllocation to save.
+	 * @param serviceAllocation the serviceAllocation to update.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
-	 *         the updated departmentProductEnv, or with status
-	 *         {@code 400 (Bad Request)} if the departmentProductEnv is not valid, or
-	 *         with status {@code 404 (Not Found)} if the departmentProductEnv is not
+	 *         the updated serviceAllocation, or with status
+	 *         {@code 400 (Bad Request)} if the serviceAllocation is not valid, or
+	 *         with status {@code 404 (Not Found)} if the serviceAllocation is not
 	 *         found, or with status {@code 500 (Internal Server Error)} if the
-	 *         departmentProductEnv couldn't be updated.
+	 *         serviceAllocation couldn't be updated.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 * @throws IOException 
 	 */
-	@PatchMapping(value = "/department-product-env/{id}", consumes = { "application/json",
+	@PatchMapping(value = "/service-allocations/{id}", consumes = { "application/json",
 			"application/merge-patch+json" })
-	public ResponseEntity<DepartmentProductEnv> partialUpdateDepartmentProductEnv(
+	public ResponseEntity<ServiceAllocation> partialUpdateServiceAllocation(
 			@PathVariable(value = "id", required = false) final Long id,
-			@RequestBody DepartmentProductEnv departmentProductEnv) throws URISyntaxException, IOException {
-		log.debug("REST request to partial update DepartmentProductEnv partially : {}, {}", id, departmentProductEnv);
-		if (departmentProductEnv.getId() == null) {
+			@RequestBody ServiceAllocation serviceAllocation) throws URISyntaxException, IOException {
+		log.debug("REST request to partial update ServiceAllocation partially : {}, {}", id, serviceAllocation);
+		if (serviceAllocation.getId() == null) {
 			throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
 		}
-		if (!Objects.equals(id, departmentProductEnv.getId())) {
+		if (!Objects.equals(id, serviceAllocation.getId())) {
 			throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
 		}
 
-		if (!departmentProductEnvRepository.existsById(id)) {
+		if (!serviceAllocationRepository.existsById(id)) {
 			throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
 		}
-
-		if (departmentProductEnv.getDepartmentId() == null) {
-			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
-		}
-		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
-		if (!od.isPresent()) {
-			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
-		}
-
-		if (departmentProductEnv.getProductId() == null) {
-			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
-		}
-		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
-		if (!op.isPresent()) {
-			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
-		}
+//
+//		if (serviceAllocation.getDepartmentId() == null) {
+//			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
+//		}
+//		Optional<Department> od = departmentService.findOne(serviceAllocation.getDepartmentId());
+//		if (!od.isPresent()) {
+//			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
+//		}
+//
+//		if (serviceAllocation.getProductId() == null) {
+//			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
+//		}
+//		Optional<Product> op = productService.findOne(serviceAllocation.getProductId());
+//		if (!op.isPresent()) {
+//			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
+//		}
+//		
+//		Map<String, String> filter = new HashMap<>();
+//		filter.put(Constants.DEPARTMENT_ID, String.valueOf(serviceAllocation.getDepartmentId()));
+//		filter.put(Constants.ACCOUNT_ID, serviceAllocation.getLandingZone());
+//		List<CloudEnvironment> ceList = cloudEnvironmentService.search(filter);
+//		if(ceList == null || ( ceList != null && ceList.size() == 0)) {
+//			throw new BadRequestAlertException("Landing zone(Account id) not found", ENTITY_NAME, "idnotfound");
+//		}
+//
+//		if (serviceAllocation.getServicesId() == null) {
+//			throw new BadRequestAlertException("Invalid service id", ENTITY_NAME, "idnull");
+//		}
+//		Optional<Services> oss = servicesService.findOne(serviceAllocation.getServicesId());
+//		if (!oss.isPresent()) {
+//			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
+//		}
 		
-		Map<String, String> filter = new HashMap<>();
-		filter.put(Constants.DEPARTMENT_ID, String.valueOf(departmentProductEnv.getDepartmentId()));
-		filter.put(Constants.ACCOUNT_ID, departmentProductEnv.getLandingZone());
-		List<CloudEnvironment> ceList = cloudEnvironmentService.search(filter);
-		if(ceList == null || ( ceList != null && ceList.size() == 0)) {
-			throw new BadRequestAlertException("Landing zone(Account id) not found", ENTITY_NAME, "idnotfound");
-		}
-
-		if (departmentProductEnv.getServicesId() == null) {
-			throw new BadRequestAlertException("Invalid service id", ENTITY_NAME, "idnull");
-		}
-		Optional<Services> oss = servicesService.findOne(departmentProductEnv.getServicesId());
-		if (!oss.isPresent()) {
-			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
-		}
+		if(!StringUtils.isBlank(serviceAllocation.getTag())) {
+			serviceAllocation.setTagStatus(Constants.TAGGED);
+        }
 		
-		Optional<DepartmentProductEnv> result = departmentProductEnvService.partialUpdate(departmentProductEnv);
+		Optional<ServiceAllocation> result = serviceAllocationService.partialUpdate(serviceAllocation);
 
 		return ResponseUtil.wrapOrNotFound(result, HeaderUtil.createEntityUpdateAlert(applicationName, false,
-				ENTITY_NAME, departmentProductEnv.getId().toString()));
+				ENTITY_NAME, serviceAllocation.getId().toString()));
 	}
 
 	/**
-	 * {@code GET  /department-product-env} : get all the departmentProductEnv.
+	 * {@code GET  /service-allocations} : get all the serviceAllocation.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-	 *         of departmentProductEnv in body.
+	 *         of serviceAllocation in body.
 	 */
-	@GetMapping("/department-product-env")
-	public List<DepartmentProductEnv> getAllDepartmentProductEnv() {
-		log.debug("REST request to get all DepartmentProductEnv");
-		return departmentProductEnvService.findAll();
+	@GetMapping("/service-allocations")
+	public List<ServiceAllocation> getAllServiceAllocation() {
+		log.debug("REST request to get all ServiceAllocation");
+		return serviceAllocationService.findAll();
 	}
 
 	/**
-	 * {@code GET  /department-product-env/:id} : get the "id" departmentProductEnv.
+	 * {@code GET  /service-allocations/:id} : get the "id" serviceAllocation.
 	 *
-	 * @param id the id of the departmentProductEnv to retrieve.
+	 * @param id the id of the serviceAllocation to retrieve.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
-	 *         the departmentProductEnv, or with status {@code 404 (Not Found)}.
+	 *         the serviceAllocation, or with status {@code 404 (Not Found)}.
 	 */
-	@GetMapping("/department-product-env/{id}")
-	public ResponseEntity<DepartmentProductEnv> getDepartmentProductEnv(@PathVariable Long id) {
-		log.debug("REST request to get DepartmentProductEnv : {}", id);
-		Optional<DepartmentProductEnv> departmentProductEnv = departmentProductEnvService.findOne(id);
-		return ResponseUtil.wrapOrNotFound(departmentProductEnv);
+	@GetMapping("/service-allocations/{id}")
+	public ResponseEntity<ServiceAllocation> getServiceAllocation(@PathVariable Long id) {
+		log.debug("REST request to get ServiceAllocation : {}", id);
+		Optional<ServiceAllocation> serviceAllocation = serviceAllocationService.findOne(id);
+		return ResponseUtil.wrapOrNotFound(serviceAllocation);
 	}
 
 	/**
-	 * {@code DELETE  /department-product-env/:id} : delete the "id" departmentProductEnv.
+	 * {@code DELETE  /service-allocations/:id} : delete the "id" serviceAllocation.
 	 *
-	 * @param id the id of the departmentProductEnv to delete.
+	 * @param id the id of the serviceAllocation to delete.
 	 * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
 	 */
-	@DeleteMapping("/department-product-env/{id}")
-	public ResponseEntity<Void> deleteDepartmentProductEnv(@PathVariable Long id) {
-		log.debug("REST request to delete DepartmentProductEnv : {}", id);
-		departmentProductEnvService.delete(id);
+	@DeleteMapping("/service-allocations/{id}")
+	public ResponseEntity<Void> deleteServiceAllocation(@PathVariable Long id) {
+		log.debug("REST request to delete ServiceAllocation : {}", id);
+		serviceAllocationService.delete(id);
 		return ResponseEntity.noContent()
 				
 				.headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
@@ -318,15 +324,15 @@ public class DepartmentProductEnvController {
 	}
 
 	/**
-	 * {@code GET  /department-product-env/search} : get all the departmentProductEnv on given filters.
+	 * {@code GET  /service-allocations/search} : get all the serviceAllocation on given filters.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-	 *         of departmentProductEnv in body.
+	 *         of serviceAllocation in body.
 	 */
-	@GetMapping("/department-product-env/search")
-	public List<DepartmentProductEnv> search(@RequestParam Map<String, String> filter) throws IOException {
-		log.debug("REST request to get all departmentProductEnv on given filters");
-		return departmentProductEnvService.search(filter);
+	@GetMapping("/service-allocations/search")
+	public List<ServiceAllocation> search(@RequestParam Map<String, String> filter) throws IOException {
+		log.debug("REST request to get all serviceAllocation on given filters");
+		return serviceAllocationService.search(filter);
 	}
 	
 	

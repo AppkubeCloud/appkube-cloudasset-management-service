@@ -63,12 +63,6 @@ public class DiscoveredAssetsService {
                 if (discoveredAssets.getArn() != null) {
                     existingDiscoveredAssets.setArn(discoveredAssets.getArn());
                 }
-                if (discoveredAssets.getTagStatus() != null) {
-                    existingDiscoveredAssets.setTagStatus(discoveredAssets.getTagStatus());
-                }
-                if (discoveredAssets.getTag() != null) {
-                    existingDiscoveredAssets.setTag(discoveredAssets.getTag());
-                }
                 if (discoveredAssets.getStatus() != null) {
                     existingDiscoveredAssets.setStatus(discoveredAssets.getStatus());
                 }

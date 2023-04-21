@@ -31,12 +31,12 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
-import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Module;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
-import com.synectiks.asset.business.service.DepartmentProductEnvService;
+import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.business.service.DeploymentEnvironmentService;
 import com.synectiks.asset.business.service.ModuleService;
@@ -78,7 +78,7 @@ public class DeploymentEnvironmentController {
 	private ModuleService moduleService;
 	
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 	
     /**
      * {@code POST  /deployment-environments} : Create a new deploymentEnvironment.
@@ -236,7 +236,7 @@ public class DeploymentEnvironmentController {
 	 * @throws IOException
 	 */
 	@PostMapping("/deployment-environments/add-module")
-	public ResponseEntity<DeploymentEnvironment> addModule(@RequestBody DepartmentProductEnv departmentProductEnv)
+	public ResponseEntity<DeploymentEnvironment> addModule(@RequestBody ServiceAllocation departmentProductEnv)
 			throws URISyntaxException, IOException {
 		log.debug("REST request to add a module : {}", departmentProductEnv);
 
@@ -290,14 +290,14 @@ public class DeploymentEnvironmentController {
 		filter.put(Constants.PRODUCT_ID, String.valueOf(departmentProductEnv.getProductId()));
 		filter.put(Constants.DEPLOYMENT_ENVIRONMENT_ID, String.valueOf(departmentProductEnv.getDeploymentEnvironmentId()));
 		filter.put(Constants.MODULE_ID, String.valueOf(departmentProductEnv.getModuleId()));
-		List<DepartmentProductEnv> dpeList = departmentProductEnvService.search(filter);
+		List<ServiceAllocation> dpeList = departmentProductEnvService.search(filter);
 		if(dpeList.size() > 0) {
 			throw new BadRequestAlertException("Module is already associated with deployment environment", ENTITY_NAME, "idexists");
 		}
 		filter.remove(Constants.MODULE_ID);
 		dpeList = departmentProductEnvService.search(filter);
-		DepartmentProductEnv existingModule = null;
-		for(DepartmentProductEnv dpe: dpeList) {
+		ServiceAllocation existingModule = null;
+		for(ServiceAllocation dpe: dpeList) {
 			if(dpe.getLandingZone().equals(departmentProductEnv.getLandingZone())
 					&& dpe.getDepartmentId() == departmentProductEnv.getDepartmentId()
 					&& dpe.getProductId() == departmentProductEnv.getProductId()

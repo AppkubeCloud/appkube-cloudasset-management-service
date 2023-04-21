@@ -17,13 +17,13 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Module;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.repository.DepartmentProductEnvRepository;
+import com.synectiks.asset.repository.ServiceAllocationRepository;
 import com.synectiks.asset.repository.DeploymentEnvironmentRepository;
 import com.synectiks.asset.repository.ModuleRepository;
 import com.synectiks.asset.repository.ProductRepository;
@@ -31,12 +31,12 @@ import com.synectiks.asset.repository.ServicesRepository;
 import com.synectiks.asset.util.JsonAndObjectConverterUtil;
 
 @Service
-public class DepartmentProductEnvService {
+public class ServiceAllocationService {
 	
-	private final Logger logger = LoggerFactory.getLogger(DepartmentProductEnvService.class);
+	private final Logger logger = LoggerFactory.getLogger(ServiceAllocationService.class);
 	
 	@Autowired
-	private DepartmentProductEnvRepository departmentProductEnvRepository;
+	private ServiceAllocationRepository serviceAllocationRepository;
 	
 	@Autowired
 	private ProductRepository productRepository;
@@ -53,98 +53,104 @@ public class DepartmentProductEnvService {
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 	
-    public DepartmentProductEnv save(DepartmentProductEnv departmentProductEnv) {
-        logger.debug("Request to save departmentProductEnv : {}", departmentProductEnv);
-        return departmentProductEnvRepository.save(departmentProductEnv);
+    public ServiceAllocation save(ServiceAllocation serviceAllocation) {
+        logger.debug("Request to save serviceAllocation : {}", serviceAllocation);
+        return serviceAllocationRepository.save(serviceAllocation);
     }
 
-    public Optional<DepartmentProductEnv> partialUpdate(DepartmentProductEnv departmentProductEnv) {
-        logger.debug("Request to partially update departmentProductEnv : {}", departmentProductEnv);
+    public Optional<ServiceAllocation> partialUpdate(ServiceAllocation serviceAllocation) {
+        logger.debug("Request to partially update serviceAllocation : {}", serviceAllocation);
 
-        return departmentProductEnvRepository
-            .findById(departmentProductEnv.getId())
-            .map(existingDepartmentProduct -> {
-            	if (departmentProductEnv.getLandingZone() != null) {
-                    existingDepartmentProduct.setLandingZone(departmentProductEnv.getLandingZone());
+        return serviceAllocationRepository
+            .findById(serviceAllocation.getId())
+            .map(existingServiceAllocation -> {
+            	if (serviceAllocation.getLandingZone() != null) {
+                    existingServiceAllocation.setLandingZone(serviceAllocation.getLandingZone());
                 }
-                if (departmentProductEnv.getDepartmentId() != null) {
-                    existingDepartmentProduct.setDepartmentId(departmentProductEnv.getDepartmentId());
+                if (serviceAllocation.getDepartmentId() != null) {
+                    existingServiceAllocation.setDepartmentId(serviceAllocation.getDepartmentId());
                 }
-                if (departmentProductEnv.getProductId() != null) {
-                    existingDepartmentProduct.setProductId(departmentProductEnv.getProductId());
+                if (serviceAllocation.getProductId() != null) {
+                    existingServiceAllocation.setProductId(serviceAllocation.getProductId());
                 }
-                if (departmentProductEnv.getDeploymentEnvironmentId() != null) {
-                    existingDepartmentProduct.setDeploymentEnvironmentId(departmentProductEnv.getDeploymentEnvironmentId());
+                if (serviceAllocation.getDeploymentEnvironmentId() != null) {
+                    existingServiceAllocation.setDeploymentEnvironmentId(serviceAllocation.getDeploymentEnvironmentId());
                 }
-                if (departmentProductEnv.getModuleId() != null) {
-                    existingDepartmentProduct.setModuleId(departmentProductEnv.getModuleId());
+                if (serviceAllocation.getModuleId() != null) {
+                    existingServiceAllocation.setModuleId(serviceAllocation.getModuleId());
                 }
-                if (departmentProductEnv.getServicesId() != null) {
-                    existingDepartmentProduct.setServicesId(departmentProductEnv.getServicesId());
+                if (serviceAllocation.getServicesId() != null) {
+                    existingServiceAllocation.setServicesId(serviceAllocation.getServicesId());
                 }
-                if (departmentProductEnv.getServiceType() != null) {
-                    existingDepartmentProduct.setServiceType(departmentProductEnv.getServiceType());
+                if (serviceAllocation.getServiceType() != null) {
+                    existingServiceAllocation.setServiceType(serviceAllocation.getServiceType());
                 }
-                if (departmentProductEnv.getServiceNature() != null) {
-                    existingDepartmentProduct.setServiceNature(departmentProductEnv.getServiceNature());
+                if (serviceAllocation.getServiceNature() != null) {
+                    existingServiceAllocation.setServiceNature(serviceAllocation.getServiceNature());
                 }
-                if (departmentProductEnv.getCreatedOn() != null) {
-                    existingDepartmentProduct.setCreatedOn(departmentProductEnv.getCreatedOn());
+                if (serviceAllocation.getTagStatus() != null) {
+                	existingServiceAllocation.setTagStatus(serviceAllocation.getTagStatus());
                 }
-                if (departmentProductEnv.getUpdatedOn() != null) {
-                    existingDepartmentProduct.setUpdatedOn(departmentProductEnv.getUpdatedOn());
+                if (serviceAllocation.getTag() != null) {
+                    existingServiceAllocation.setTag(serviceAllocation.getTag());
                 }
-                if (departmentProductEnv.getUpdatedBy() != null) {
-                    existingDepartmentProduct.setUpdatedBy(departmentProductEnv.getUpdatedBy());
+                if (serviceAllocation.getCreatedOn() != null) {
+                    existingServiceAllocation.setCreatedOn(serviceAllocation.getCreatedOn());
                 }
-                if (departmentProductEnv.getCreatedBy() != null) {
-                    existingDepartmentProduct.setCreatedBy(departmentProductEnv.getCreatedBy());
+                if (serviceAllocation.getUpdatedOn() != null) {
+                    existingServiceAllocation.setUpdatedOn(serviceAllocation.getUpdatedOn());
                 }
-                return existingDepartmentProduct;
+                if (serviceAllocation.getUpdatedBy() != null) {
+                    existingServiceAllocation.setUpdatedBy(serviceAllocation.getUpdatedBy());
+                }
+                if (serviceAllocation.getCreatedBy() != null) {
+                    existingServiceAllocation.setCreatedBy(serviceAllocation.getCreatedBy());
+                }
+                return existingServiceAllocation;
             })
-            .map(departmentProductEnvRepository::save);
+            .map(serviceAllocationRepository::save);
     }
 
     @Transactional(readOnly = true)
-    public List<DepartmentProductEnv> findAll() {
-        logger.debug("Request to get all departmentProductEnv");
-        return departmentProductEnvRepository.findAll();
+    public List<ServiceAllocation> findAll() {
+        logger.debug("Request to get all serviceAllocation");
+        return serviceAllocationRepository.findAll();
     }
 
     @Transactional(readOnly = true)
-    public Optional<DepartmentProductEnv> findOne(Long id) {
-        logger.debug("Request to get departmentProductEnv : {}", id);
-        return departmentProductEnvRepository.findById(id);
+    public Optional<ServiceAllocation> findOne(Long id) {
+        logger.debug("Request to get serviceAllocation : {}", id);
+        return serviceAllocationRepository.findById(id);
     }
 
     public void delete(Long id) {
-        logger.debug("Request to delete departmentProductEnv : {}", id);
-        departmentProductEnvRepository.deleteById(id);
+        logger.debug("Request to delete serviceAllocation : {}", id);
+        serviceAllocationRepository.deleteById(id);
     }
     
     @Transactional(readOnly = true)
-	public List<DepartmentProductEnv> search(Map<String, String> filter) throws IOException {
-		logger.debug("Request to get all departmentProductEnv on given filters");
+	public List<ServiceAllocation> search(Map<String, String> filter) throws IOException {
+		logger.debug("Request to get all serviceAllocation on given filters");
 		
-		DepartmentProductEnv departmentProductEnv = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, DepartmentProductEnv.class);
+		ServiceAllocation serviceAllocation = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, ServiceAllocation.class);
 
 		// unset default value if createdOn is not coming in filter
 		if (StringUtils.isBlank(filter.get(Constants.CREATED_ON))) {
-			departmentProductEnv.setCreatedOn(null);
+			serviceAllocation.setCreatedOn(null);
 		}
 		// unset default value if updatedOn is not coming in filter
 		if (StringUtils.isBlank(filter.get(Constants.UPDATED_ON))) {
-			departmentProductEnv.setUpdatedOn(null);
+			serviceAllocation.setUpdatedOn(null);
 		}
 		
-		return departmentProductEnvRepository.findAll(Example.of(departmentProductEnv), Sort.by(Sort.Direction.DESC, "id"));
+		return serviceAllocationRepository.findAll(Example.of(serviceAllocation), Sort.by(Sort.Direction.DESC, "id"));
 	}
     
 	public List<Product> getProducts(Map<String, String> filter) throws IOException {
 		logger.debug("Getting products of given department");
-		List<DepartmentProductEnv> list = search(filter);
+		List<ServiceAllocation> list = search(filter);
 		List<Long> idList = new ArrayList<>();
-		for(DepartmentProductEnv dpe: list) {
+		for(ServiceAllocation dpe: list) {
 			idList.add(dpe.getProductId());
 		}
 		return findAllProductsById(idList);
@@ -169,9 +175,9 @@ public class DepartmentProductEnvService {
 	
 	public List<DeploymentEnvironment> getDeploymentEnvironments(Map<String, String> filter) throws IOException {
 		logger.debug("Getting deployment environments");
-		List<DepartmentProductEnv> list = search(filter);
+		List<ServiceAllocation> list = search(filter);
 		List<Long> idList = new ArrayList<>();
-		for(DepartmentProductEnv dpe: list) {
+		for(ServiceAllocation dpe: list) {
 			idList.add(dpe.getDeploymentEnvironmentId());
 		}
 		return findAllDeploymentEnvironmentsById(idList);
@@ -195,9 +201,9 @@ public class DepartmentProductEnvService {
 	
 	public List<Module> getModules(Map<String, String> filter) throws IOException {
 		logger.debug("Getting modules");
-		List<DepartmentProductEnv> list = search(filter);
+		List<ServiceAllocation> list = search(filter);
 		List<Long> idList = new ArrayList<>();
-		for(DepartmentProductEnv dpe: list) {
+		for(ServiceAllocation dpe: list) {
 			idList.add(dpe.getModuleId());
 		}
 		return findAllModulesById(idList);
@@ -222,9 +228,9 @@ public class DepartmentProductEnvService {
 
 	public List<Services> getServices(Map<String, String> filter) throws IOException {
 		logger.debug("Getting services");
-		List<DepartmentProductEnv> list = search(filter);
+		List<ServiceAllocation> list = search(filter);
 		List<Long> idList = new ArrayList<>();
-		for(DepartmentProductEnv dpe: list) {
+		for(ServiceAllocation dpe: list) {
 			idList.add(dpe.getServicesId());
 		}
 		return findAllServicesById(idList);

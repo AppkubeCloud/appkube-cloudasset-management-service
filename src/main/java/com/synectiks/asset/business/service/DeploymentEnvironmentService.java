@@ -30,7 +30,7 @@ public class DeploymentEnvironmentService {
 	private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
 
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;

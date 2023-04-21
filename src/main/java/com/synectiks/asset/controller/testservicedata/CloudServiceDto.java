@@ -5,7 +5,6 @@ import java.io.FileReader;
 import java.io.IOException;
 import java.io.Serializable;
 import java.util.HashMap;
-import java.util.Map;
 
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
@@ -28,7 +27,6 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 	private static final long serialVersionUID = 1L;
 
 	private CloudServiceLocation cloudManagedServiceLoaction;
-	
 
 	public CloudServiceLocation getCloudManagedServiceLoaction() {
 		return cloudManagedServiceLoaction;
@@ -44,16 +42,9 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 		private String landingZone;
 		private String productEnclave;
 		private String cloudElementType;
-		// private Map<String, String> cloudElementId;
 		private String cloudElementId;
-
+		private String managementUrl;
 		
-		public String getCloudElementId() {
-			return cloudElementId;
-		}
-		public void setCloudElementId(String cloudElementId) {
-			this.cloudElementId = cloudElementId;
-		}
 		public String getLandingZone() {
 			return landingZone;
 		}
@@ -72,13 +63,12 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 		public void setCloudElementType(String cloudElementType) {
 			this.cloudElementType = cloudElementType;
 		}
-		// public Map<String, String> getCloudElementId() {
-		// 	return cloudElementId;
-		// }
-		// public void setCloudElementId(Map<String, String> cloudElementId) {
-		// 	this.cloudElementId = cloudElementId;
-		// }
-		private String managementUrl;
+		public String getCloudElementId() {
+			return cloudElementId;
+		}
+		public void setCloudElementId(String cloudElementId) {
+			this.cloudElementId = cloudElementId;
+		}
 		public String getManagementUrl() {
 			return managementUrl;
 		}
@@ -115,11 +105,9 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 		this.setAssociatedCommonService((String)jsonObject.get("associatedCommonService"));
 		this.setAssociatedBusinessService((String)jsonObject.get("associatedBusinessService"));
 		
-		
 		JSONObject cloudJson = (JSONObject)jsonObject.get("cloudManagedServiceLoaction");
-		CloudServiceLocation csl = new CloudServiceLocation();
 		
-	
+		CloudServiceLocation csl = new CloudServiceLocation();
 		csl.setLandingZone((String)cloudJson.get("landingZone"));
 		csl.setProductEnclave((String)cloudJson.get("productEnclave"));
 		csl.setCloudElementId((String)cloudJson.get("cloudElementId"));
@@ -140,6 +128,6 @@ public class CloudServiceDto extends ServiceDto implements Serializable{
 		ServiceDetail sd = ServiceDetail.builder().metadata_json(obj).build();
 		ServiceDetailService sds = AssetserviceApp.getBean(ServiceDetailService.class);
 		sds.createServiceDetail(sd);
-		
 	}
+	
 }

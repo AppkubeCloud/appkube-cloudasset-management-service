@@ -32,13 +32,13 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
-import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.DeploymentEnvironment;
 import com.synectiks.asset.business.domain.Module;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.business.domain.Services;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
-import com.synectiks.asset.business.service.DepartmentProductEnvService;
+import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.business.service.DeploymentEnvironmentService;
 import com.synectiks.asset.business.service.ModuleService;
@@ -85,7 +85,7 @@ public class ModuleController {
     private ServicesService servicesService;
 
     @Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
     
     /**
      * {@code POST  /modules} : Create a new module.
@@ -242,7 +242,7 @@ public class ModuleController {
 	 * @throws IOException
 	 */
 	@PostMapping("/modules/add-service")
-	public ResponseEntity<Module> addService(@RequestBody DepartmentProductEnv departmentProductEnv)
+	public ResponseEntity<Module> addService(@RequestBody ServiceAllocation departmentProductEnv)
 			throws URISyntaxException, IOException {
 		log.debug("REST request to add a service in a module : {}", departmentProductEnv);
 
@@ -306,14 +306,14 @@ public class ModuleController {
 		filter.put(Constants.MODULE_ID, String.valueOf(departmentProductEnv.getModuleId()));
 		filter.put(Constants.SERVICES_ID, String.valueOf(departmentProductEnv.getServicesId()));
 		
-		List<DepartmentProductEnv> dpeList = departmentProductEnvService.search(filter);
+		List<ServiceAllocation> dpeList = departmentProductEnvService.search(filter);
 		if(dpeList.size() > 0) {
 			throw new BadRequestAlertException("Service is already associated with module", ENTITY_NAME, "idexists");
 		}
 		filter.remove(Constants.SERVICES_ID);
 		dpeList = departmentProductEnvService.search(filter);
-		DepartmentProductEnv existingModule = null;
-		for(DepartmentProductEnv dpe: dpeList) {
+		ServiceAllocation existingModule = null;
+		for(ServiceAllocation dpe: dpeList) {
 			if(dpe.getLandingZone().equals(departmentProductEnv.getLandingZone())
 					&& dpe.getDepartmentId() == departmentProductEnv.getDepartmentId()
 					&& dpe.getProductId() == departmentProductEnv.getProductId()

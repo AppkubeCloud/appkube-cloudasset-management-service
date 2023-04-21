@@ -31,10 +31,10 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
-import com.synectiks.asset.business.domain.DepartmentProductEnv;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
-import com.synectiks.asset.business.service.DepartmentProductEnvService;
+import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.business.service.ProductService;
 import com.synectiks.asset.repository.DepartmentRepository;
@@ -64,7 +64,7 @@ public class DepartmentController {
 	private CloudEnvironmentService cloudEnvironmentService;
 
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 
 	@Autowired
 	private DepartmentRepository departmentRepository;
@@ -226,7 +226,7 @@ public class DepartmentController {
 	 * @throws IOException
 	 */
 	@PostMapping("/departments/add-product")
-	public ResponseEntity<Department> addProduct(@RequestBody DepartmentProductEnv departmentProductEnv)
+	public ResponseEntity<Department> addProduct(@RequestBody ServiceAllocation departmentProductEnv)
 			throws URISyntaxException, IOException {
 		log.debug("REST request to add a product in a department : {}", departmentProductEnv);
 
@@ -261,7 +261,7 @@ public class DepartmentController {
 		filter.put("landingZone", String.valueOf(departmentProductEnv.getLandingZone()));
 		filter.put("departmentId", String.valueOf(departmentProductEnv.getDepartmentId()));
 		filter.put("productId", String.valueOf(departmentProductEnv.getProductId()));
-		List<DepartmentProductEnv> dpeList = departmentProductEnvService.search(filter);
+		List<ServiceAllocation> dpeList = departmentProductEnvService.search(filter);
 		if(dpeList.size() > 0) {
 			throw new BadRequestAlertException("Product is already associated with department", ENTITY_NAME, "idexists");
 		}

@@ -43,13 +43,6 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
     @Column(name = "arn")
     private String arn;
 
-    @Column(name = "tag_status")
-    private String tagStatus;
-
-    @Size(max = 500)
-    @Column(name = "tag", length = 500)
-    private String tag;
-
     @Column(name = "status")
     private String status;
 
@@ -144,32 +137,6 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
         this.arn = arn;
     }
 
-    public String getTagStatus() {
-        return this.tagStatus;
-    }
-
-    public DiscoveredAssets tagStatus(String tagStatus) {
-        this.setTagStatus(tagStatus);
-        return this;
-    }
-
-    public void setTagStatus(String tagStatus) {
-        this.tagStatus = tagStatus;
-    }
-
-    public String getTag() {
-        return this.tag;
-    }
-
-    public DiscoveredAssets tag(String tag) {
-        this.setTag(tag);
-        return this;
-    }
-
-    public void setTag(String tag) {
-        this.tag = tag;
-    }
-
     public String getStatus() {
         return this.status;
     }
@@ -211,8 +178,6 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
             ", landingZone='" + getLandingZone() + "'" +
             ", productEnclave='" + getProductEnclave() + "'" +
             ", arn='" + getArn() + "'" +
-            ", tagStatus='" + getTagStatus() + "'" +
-            ", tag='" + getTag() + "'" +
             ", status='" + getStatus() + "'" +
             ", createdOn='" + getCreatedOn() + "'" +
             ", updatedOn='" + getUpdatedOn() + "'" +

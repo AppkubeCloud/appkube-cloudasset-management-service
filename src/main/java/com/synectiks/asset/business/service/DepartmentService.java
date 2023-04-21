@@ -34,7 +34,7 @@ public class DepartmentService {
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 	
 	
 	public Department save(Department department) {

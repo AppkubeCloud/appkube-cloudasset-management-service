@@ -30,7 +30,7 @@ public class ProductService {
 	private ProductRepository productRepository;
 	
 	@Autowired
-	private DepartmentProductEnvService departmentProductEnvService;
+	private ServiceAllocationService departmentProductEnvService;
 	
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
