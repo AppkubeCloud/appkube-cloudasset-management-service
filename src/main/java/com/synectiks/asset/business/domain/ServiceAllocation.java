@@ -1,18 +1,23 @@
 package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
 import java.util.Objects;
+import java.util.Set;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A ServiceAllocation.
@@ -73,14 +78,10 @@ public class ServiceAllocation extends AbstractAuditingEntity implements Seriali
 	@Column(name = "product_enclave_arn", length = 500)
 	private String productEnclaveArn;
 	
-	@Size(max = 20)
-	@Column(name = "tag_status")
-	private String tagStatus;
-
-	@Size(max = 500)
-	@Column(name = "tag", length = 500)
-	private String tag;
-
+	@OneToMany(mappedBy = "serviceAllocation")
+    @JsonIgnoreProperties(value = { "serviceAllocation", "discoveredAsset" }, allowSetters = true)
+    private Set<AssetServiceTag> assetServiceTags = new HashSet<>();
+	
 	public Long getId() {
 		return id;
 	}
@@ -201,27 +202,13 @@ public class ServiceAllocation extends AbstractAuditingEntity implements Seriali
 		this.productEnclaveArn = productEnclaveArn;
 	}
 
-	public String getTagStatus() {
-		return tagStatus;
-	}
-
-	public void setTagStatus(String tagStatus) {
-		this.tagStatus = tagStatus;
-	}
-
-	public String getTag() {
-		return tag;
-	}
-
-	public void setTag(String tag) {
-		this.tag = tag;
-	}
+	
 
 	@Override
 	public int hashCode() {
 		return Objects.hash(departmentId, deploymentEnvironmentId, id, landingZone, managementArn, managementNamespace,
 				managementType, moduleId, productEnclave, productEnclaveArn, productEnclaveId, productId, serviceNature,
-				serviceType, servicesId, tag, tagStatus);
+				serviceType, servicesId);
 	}
 
 	@Override
@@ -243,8 +230,7 @@ public class ServiceAllocation extends AbstractAuditingEntity implements Seriali
 				&& Objects.equals(productEnclaveArn, other.productEnclaveArn)
 				&& Objects.equals(productEnclaveId, other.productEnclaveId)
 				&& Objects.equals(productId, other.productId) && Objects.equals(serviceNature, other.serviceNature)
-				&& Objects.equals(serviceType, other.serviceType) && Objects.equals(servicesId, other.servicesId)
-				&& Objects.equals(tag, other.tag) && Objects.equals(tagStatus, other.tagStatus);
+				&& Objects.equals(serviceType, other.serviceType) && Objects.equals(servicesId, other.servicesId);
 	}
 
 	@Override
@@ -254,9 +240,16 @@ public class ServiceAllocation extends AbstractAuditingEntity implements Seriali
 				+ moduleId + ", servicesId=" + servicesId + ", serviceType=" + serviceType + ", serviceNature="
 				+ serviceNature + ", managementType=" + managementType + ", managementArn=" + managementArn
 				+ ", managementNamespace=" + managementNamespace + ", productEnclave=" + productEnclave
-				+ ", productEnclaveId=" + productEnclaveId + ", productEnclaveArn=" + productEnclaveArn + ", tagStatus="
-				+ tagStatus + ", tag=" + tag + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", updatedBy="
+				+ ", productEnclaveId=" + productEnclaveId + ", productEnclaveArn=" + productEnclaveArn + ", createdBy=" + createdBy + ", createdOn=" + createdOn + ", updatedBy="
 				+ updatedBy + ", updatedOn=" + updatedOn + "]";
+	}
+
+	public Set<AssetServiceTag> getAssetServiceTags() {
+		return assetServiceTags;
+	}
+
+	public void setAssetServiceTags(Set<AssetServiceTag> assetServiceTags) {
+		this.assetServiceTags = assetServiceTags;
 	}
 
 	

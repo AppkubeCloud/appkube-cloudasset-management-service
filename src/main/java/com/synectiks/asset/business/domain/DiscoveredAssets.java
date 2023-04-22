@@ -1,14 +1,21 @@
 package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
+import java.util.HashSet;
+import java.util.Set;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 import javax.validation.constraints.Size;
+
+import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
  * A DiscoveredAssets.
@@ -45,7 +52,14 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
 
     @Column(name = "status")
     private String status;
+    
+    @Column(name = "tag_status")
+    private String tagStatus;
 
+    @OneToMany(mappedBy = "discoveredAsset")
+    @JsonIgnoreProperties(value = { "discoveredAsset", "discoveredAsset" }, allowSetters = true)
+    private Set<AssetServiceTag> assetServiceTags = new HashSet<>();
+    
     public Long getId() {
         return this.id;
     }
@@ -185,4 +199,20 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
             ", createdBy='" + getCreatedBy() + "'" +
             "}";
     }
+
+	public String getTagStatus() {
+		return tagStatus;
+	}
+
+	public void setTagStatus(String tagStatus) {
+		this.tagStatus = tagStatus;
+	}
+
+	public Set<AssetServiceTag> getAssetServiceTags() {
+		return assetServiceTags;
+	}
+
+	public void setAssetServiceTags(Set<AssetServiceTag> assetServiceTags) {
+		this.assetServiceTags = assetServiceTags;
+	}
 }

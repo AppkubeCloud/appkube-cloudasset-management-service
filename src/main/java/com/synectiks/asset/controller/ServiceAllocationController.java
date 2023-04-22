@@ -9,7 +9,6 @@ import java.util.Map;
 import java.util.Objects;
 import java.util.Optional;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -142,10 +141,6 @@ public class ServiceAllocationController {
 		serviceAllocation.setServiceType(oss.get().getType());
 		serviceAllocation.setServiceNature(oss.get().getServiceNature());
 		
-		if(!StringUtils.isBlank(serviceAllocation.getTag())) {
-			serviceAllocation.setTagStatus(Constants.TAGGED);
-        }
-		
 		ServiceAllocation result = serviceAllocationService.save(serviceAllocation);
 		
 		return ResponseEntity
@@ -270,10 +265,6 @@ public class ServiceAllocationController {
 //		if (!oss.isPresent()) {
 //			throw new BadRequestAlertException("Service not found", ENTITY_NAME, "idnotfound");
 //		}
-		
-		if(!StringUtils.isBlank(serviceAllocation.getTag())) {
-			serviceAllocation.setTagStatus(Constants.TAGGED);
-        }
 		
 		Optional<ServiceAllocation> result = serviceAllocationService.partialUpdate(serviceAllocation);
 

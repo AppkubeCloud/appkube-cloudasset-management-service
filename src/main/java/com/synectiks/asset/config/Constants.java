@@ -134,6 +134,8 @@ public final class Constants {
     public static final String SERVICE_NATURE = "serviceNature";
     public static final String SERVICES_ID = "servicesId";
     public static final String TAGGED = "Tagged";
+    public static final String DISCOVERED_ASSET_ID = "discoveredAssetId";
+    public static final String SERVICE_ALLOCATION_ID = "serviceAllocationId";
     
     public static final String MODULE_ID = "moduleId";
     

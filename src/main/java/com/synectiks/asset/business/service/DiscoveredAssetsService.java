@@ -66,6 +66,9 @@ public class DiscoveredAssetsService {
                 if (discoveredAssets.getStatus() != null) {
                     existingDiscoveredAssets.setStatus(discoveredAssets.getStatus());
                 }
+                if (discoveredAssets.getTagStatus() != null) {
+                    existingDiscoveredAssets.setTagStatus(discoveredAssets.getTagStatus());
+                }
                 if (discoveredAssets.getCreatedOn() != null) {
                     existingDiscoveredAssets.setCreatedOn(discoveredAssets.getCreatedOn());
                 }

@@ -88,12 +88,6 @@ public class ServiceAllocationService {
                 if (serviceAllocation.getServiceNature() != null) {
                     existingServiceAllocation.setServiceNature(serviceAllocation.getServiceNature());
                 }
-                if (serviceAllocation.getTagStatus() != null) {
-                	existingServiceAllocation.setTagStatus(serviceAllocation.getTagStatus());
-                }
-                if (serviceAllocation.getTag() != null) {
-                    existingServiceAllocation.setTag(serviceAllocation.getTag());
-                }
                 if (serviceAllocation.getCreatedOn() != null) {
                     existingServiceAllocation.setCreatedOn(serviceAllocation.getCreatedOn());
                 }
