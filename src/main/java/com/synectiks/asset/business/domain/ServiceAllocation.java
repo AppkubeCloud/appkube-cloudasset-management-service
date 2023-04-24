@@ -80,7 +80,7 @@ public class ServiceAllocation extends AbstractAuditingEntity implements Seriali
 	
 	@OneToMany(mappedBy = "serviceAllocation")
     @JsonIgnoreProperties(value = { "serviceAllocation", "discoveredAsset" }, allowSetters = true)
-    private Set<AssetServiceTag> assetServiceTags = new HashSet<>();
+    private Set<Tag> assetServiceTags = new HashSet<>();
 	
 	public Long getId() {
 		return id;
@@ -244,11 +244,11 @@ public class ServiceAllocation extends AbstractAuditingEntity implements Seriali
 				+ updatedBy + ", updatedOn=" + updatedOn + "]";
 	}
 
-	public Set<AssetServiceTag> getAssetServiceTags() {
+	public Set<Tag> getAssetServiceTags() {
 		return assetServiceTags;
 	}
 
-	public void setAssetServiceTags(Set<AssetServiceTag> assetServiceTags) {
+	public void setAssetServiceTags(Set<Tag> assetServiceTags) {
 		this.assetServiceTags = assetServiceTags;
 	}
 

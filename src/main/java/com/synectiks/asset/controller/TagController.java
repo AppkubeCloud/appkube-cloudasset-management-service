@@ -27,10 +27,10 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.synectiks.asset.business.domain.AssetServiceTag;
-import com.synectiks.asset.business.service.AssetServiceTagService;
+import com.synectiks.asset.business.domain.Tag;
+import com.synectiks.asset.business.service.TagService;
 import com.synectiks.asset.business.service.ServiceAllocationService;
-import com.synectiks.asset.repository.AssetServiceTagRepository;
+import com.synectiks.asset.repository.TagRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
@@ -38,62 +38,62 @@ import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
 @RequestMapping("/api")
-public class AssetServiceTagController {
+public class TagController {
 
-	private final Logger log = LoggerFactory.getLogger(AssetServiceTagController.class);
+	private final Logger log = LoggerFactory.getLogger(TagController.class);
 
-	private static final String ENTITY_NAME = "AssetServiceTag";
+	private static final String ENTITY_NAME = "Tag";
 
 	@Value("${jhipster.clientApp.name}")
 	private String applicationName;
 
 	@Autowired
-	private AssetServiceTagService assetServiceTagService;
+	private TagService tagService;
 
 	@Autowired
 	private ServiceAllocationService serviceAllocationService;
 
 	@Autowired
-	private AssetServiceTagRepository assetServiceTagRepository;
+	private TagRepository tagRepository;
 
 	/**
-	 * {@code POST  /tag-asset} : Create a new AssetServiceTag.
+	 * {@code POST  /tags} : Create a new Tag.
 	 *
-	 * @param assetServiceTag the AssetServiceTag to create.
+	 * @param tag the Tag to create.
 	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
-	 *         body the new assetServiceTag, or with status {@code 400 (Bad Request)} if
-	 *         the assetServiceTag has already an ID.
+	 *         body the new tag, or with status {@code 400 (Bad Request)} if
+	 *         the tag has already an ID.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
-	@PostMapping("/tag-asset")
-	public ResponseEntity<AssetServiceTag> createTag(@Valid @RequestBody AssetServiceTag assetServiceTag)
+	@PostMapping("/tags")
+	public ResponseEntity<Tag> createTag(@Valid @RequestBody Tag assetServiceTag)
 			throws URISyntaxException {
 		log.debug("REST request to save tag : {}", assetServiceTag);
 		if (assetServiceTag.getId() != null) {
 			throw new BadRequestAlertException("A new assetServiceTag cannot already have an ID", ENTITY_NAME, "idexists");
 		}
-		AssetServiceTag result = assetServiceTagService.save(assetServiceTag);
+		Tag result = tagService.save(assetServiceTag);
 		return ResponseEntity
-				.created(new URI("/api/tag-asset/" + result.getId())).headers(HeaderUtil
+				.created(new URI("/api/tag/" + result.getId())).headers(HeaderUtil
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
 				.body(result);
 	}
 
 	/**
-	 * {@code PUT  /tag-asset/:id} : Updates an existing assetServiceTag.
+	 * {@code PUT  /tags/:id} : Updates an existing tag.
 	 *
-	 * @param id         the id of the assetServiceTag to save.
-	 * @param assetServiceTag the assetServiceTag to update.
+	 * @param id         the id of the tag to save.
+	 * @param tag the tag to update.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
-	 *         the updated assetServiceTag, or with status {@code 400 (Bad Request)} if
-	 *         the assetServiceTag is not valid, or with status
-	 *         {@code 500 (Internal Server Error)} if the assetServiceTag couldn't be
+	 *         the updated tag, or with status {@code 400 (Bad Request)} if
+	 *         the tag is not valid, or with status
+	 *         {@code 500 (Internal Server Error)} if the tag couldn't be
 	 *         updated.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
-	@PutMapping("/tag-asset/{id}")
-	public ResponseEntity<AssetServiceTag> updateAssetServiceTag(@PathVariable(value = "id", required = false) final Long id,
-			@Valid @RequestBody AssetServiceTag assetServiceTag) throws URISyntaxException {
+	@PutMapping("/tags/{id}")
+	public ResponseEntity<Tag> updateAssetServiceTag(@PathVariable(value = "id", required = false) final Long id,
+			@Valid @RequestBody Tag assetServiceTag) throws URISyntaxException {
 		log.debug("REST request to update tag : {}, {}", id, assetServiceTag);
 		if (assetServiceTag.getId() == null) {
 			throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");
@@ -102,33 +102,33 @@ public class AssetServiceTagController {
 			throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
 		}
 
-		if (!assetServiceTagRepository.existsById(id)) {
+		if (!tagRepository.existsById(id)) {
 			throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
 		}
 
-		AssetServiceTag result = assetServiceTagService.save(assetServiceTag);
+		Tag result = tagService.save(assetServiceTag);
 		return ResponseEntity.ok().headers(
 				HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, assetServiceTag.getId().toString()))
 				.body(result);
 	}
 
 	/**
-	 * {@code PATCH  /tag-asset/:id} : Partial updates given fields of an existing
-	 * AssetServiceTag, field will ignore if it is null
+	 * {@code PATCH  /tags/:id} : Partial updates given fields of an existing
+	 * tag, field will ignore if it is null
 	 *
-	 * @param id         the id of the assetServiceTag to save.
-	 * @param assetServiceTag the assetServiceTag to update.
+	 * @param id         the id of the Tag to save.
+	 * @param tag the tag to update.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
-	 *         the updated assetServiceTag, or with status {@code 400 (Bad Request)} if
-	 *         the assetServiceTag is not valid, or with status {@code 404 (Not Found)}
-	 *         if the assetServiceTag is not found, or with status
-	 *         {@code 500 (Internal Server Error)} if the assetServiceTag couldn't be
+	 *         the updated tag, or with status {@code 400 (Bad Request)} if
+	 *         the tag is not valid, or with status {@code 404 (Not Found)}
+	 *         if the tag is not found, or with status
+	 *         {@code 500 (Internal Server Error)} if the tag couldn't be
 	 *         updated.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
-	@PatchMapping(value = "/tag-asset/{id}", consumes = { "application/json", "application/merge-patch+json" })
-	public ResponseEntity<AssetServiceTag> partialUpdateAssetServiceTag(
-			@PathVariable(value = "id", required = false) final Long id, @NotNull @RequestBody AssetServiceTag assetServiceTag)
+	@PatchMapping(value = "/tags/{id}", consumes = { "application/json", "application/merge-patch+json" })
+	public ResponseEntity<Tag> partialUpdateAssetServiceTag(
+			@PathVariable(value = "id", required = false) final Long id, @NotNull @RequestBody Tag assetServiceTag)
 			throws URISyntaxException {
 		log.debug("REST request to update tag partially : {}, {}", id, assetServiceTag);
 		if (assetServiceTag.getId() == null) {
@@ -138,80 +138,75 @@ public class AssetServiceTagController {
 			throw new BadRequestAlertException("Invalid ID", ENTITY_NAME, "idinvalid");
 		}
 
-		if (!assetServiceTagRepository.existsById(id)) {
+		if (!tagRepository.existsById(id)) {
 			throw new BadRequestAlertException("Entity not found", ENTITY_NAME, "idnotfound");
 		}
 
-		Optional<AssetServiceTag> result = assetServiceTagService.partialUpdate(assetServiceTag);
+		Optional<Tag> result = tagService.partialUpdate(assetServiceTag);
 
 		return ResponseUtil.wrapOrNotFound(result,
 				HeaderUtil.createEntityUpdateAlert(applicationName, false, ENTITY_NAME, assetServiceTag.getId().toString()));
 	}
 
 	/**
-	 * {@code GET  /tag-asset} : get all the tags.
+	 * {@code GET  /tag} : get all the tags.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-	 *         of assetServiceTag in body.
+	 *         of tag in body.
 	 */
-	@GetMapping("/tag-asset")
-	public List<AssetServiceTag> getAllAssetServiceTags() {
+	@GetMapping("/tags")
+	public List<Tag> getAllAssetServiceTags() {
 		log.debug("REST request to get all AssetServiceTags");
-		return assetServiceTagService.findAll();
+		return tagService.findAll();
 	}
 
 	/**
-	 * {@code GET  /tag-asset/:id} : get the "id" assetServiceTags.
+	 * {@code GET  /tag/:id} : get the "id" tags.
 	 *
-	 * @param id the id of the assetServiceTags to retrieve.
+	 * @param id the id of the tags to retrieve.
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body
 	 *         the assetServiceTags, or with status {@code 404 (Not Found)}.
 	 */
-	@GetMapping("/tag-asset/{id}")
-	public ResponseEntity<AssetServiceTag> getAssetServiceTag(@PathVariable Long id) {
+	@GetMapping("/tags/{id}")
+	public ResponseEntity<Tag> getAssetServiceTag(@PathVariable Long id) {
 		log.debug("REST request to get assetServiceTag : {}", id);
-		Optional<AssetServiceTag> assetServiceTag = assetServiceTagService.findOne(id);
+		Optional<Tag> assetServiceTag = tagService.findOne(id);
 		return ResponseUtil.wrapOrNotFound(assetServiceTag);
 	}
 
 	/**
-	 * {@code DELETE  /tag-asset/:id} : delete the "id" assetServiceTags.
+	 * {@code DELETE  /tag/:id} : delete the "id" tags.
 	 *
-	 * @param id the id of the assetServiceTags to delete.
+	 * @param id the id of the tags to delete.
 	 * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
 	 * @throws IOException 
 	 */
-	@DeleteMapping("/tag-asset/{id}")
+	@DeleteMapping("/tags/{id}")
 	public ResponseEntity<Void> deleteAssetServiceTags(@PathVariable Long id) throws IOException {
 		log.debug("REST request to delete assetServiceTags : {}", id);
-		assetServiceTagService.delete(id);
+		tagService.delete(id);
 		return ResponseEntity.noContent()
 				.headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
 				.build();
 	}
 
-	/**
-	 * {@code GET  /tag-asset/search} : get all the assetServiceTags on given filters.
-	 *
-	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
-	 *         of tags in body.
-	 */
-	@GetMapping("/tag-asset/search")
-	public List<AssetServiceTag> search(@RequestParam Map<String, String> filter) throws IOException {
-		log.debug("REST request to get all tags on given filters");
-		return assetServiceTagService.search(filter);
-	}
+	
+//	@GetMapping("/tag/search")
+//	public List<AssetServiceTag> search(@RequestParam Map<String, String> filter) throws IOException {
+//		log.debug("REST request to get all tags on given filters");
+//		return assetServiceTagService.search(filter);
+//	}
 
 	/**
-	 * {@code GET  /tag-asset/tags/search} : get all the tags on given filters.
+	 * {@code GET  /tag/search} : get all the tags on given filters.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
 	 *         of tags in body.
 	 */
-	@GetMapping("/tag-asset/tags/search")
-	public List<AssetServiceTag> searchTag(@RequestParam Map<String, String> filter) throws IOException {
+	@GetMapping("/tags/search")
+	public List<Tag> searchTag(@RequestParam Map<String, String> filter) throws IOException {
 		log.debug("REST request to get all tags on given filters");
-		return assetServiceTagService.searchTag(filter);
+		return tagService.searchTag(filter);
 	}
 	
 }

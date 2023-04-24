@@ -14,11 +14,11 @@ import javax.validation.constraints.Size;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 
 /**
- * A AssetServiceTag.
+ * A Tag.
  */
 @Entity
-@Table(name = "asset_service_tag")
-public class AssetServiceTag extends AbstractAuditingEntity implements Serializable {
+@Table(name = "tag")
+public class Tag extends AbstractAuditingEntity implements Serializable {
 
     private static final long serialVersionUID = 1L;
 

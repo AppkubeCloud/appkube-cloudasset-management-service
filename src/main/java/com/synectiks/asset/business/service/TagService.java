@@ -15,20 +15,20 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.synectiks.asset.business.domain.AssetServiceTag;
+import com.synectiks.asset.business.domain.Tag;
 import com.synectiks.asset.business.domain.DiscoveredAssets;
 import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.repository.AssetServiceTagRepository;
+import com.synectiks.asset.repository.TagRepository;
 import com.synectiks.asset.util.JsonAndObjectConverterUtil;
 
 @Service
-public class AssetServiceTagService {
+public class TagService {
 
-	private final Logger logger = LoggerFactory.getLogger(AssetServiceTagService.class);
+	private final Logger logger = LoggerFactory.getLogger(TagService.class);
 
 	@Autowired
-	private AssetServiceTagRepository assetServiceTagRepository;
+	private TagRepository assetServiceTagRepository;
 	
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
@@ -40,9 +40,9 @@ public class AssetServiceTagService {
 	private DiscoveredAssetsService discoveredAssetsService;
 	
 	
-	public AssetServiceTag save(AssetServiceTag assetServiceTag) {
+	public Tag save(Tag assetServiceTag) {
 		logger.debug("Request to save AssetServiceTag : {}", assetServiceTag);
-		AssetServiceTag d = assetServiceTagRepository.save(assetServiceTag);
+		Tag d = assetServiceTagRepository.save(assetServiceTag);
 		if (d != null) {
 			DiscoveredAssets ds = assetServiceTag.getDiscoveredAsset();
 			ds.setTagStatus(Constants.TAGGED);
@@ -51,7 +51,7 @@ public class AssetServiceTagService {
 		return d;
 	}
 
-	public Optional<AssetServiceTag> partialUpdate(AssetServiceTag assetServiceTag) {
+	public Optional<Tag> partialUpdate(Tag assetServiceTag) {
 		logger.debug("Request to partially update AssetServiceTag : {}", assetServiceTag);
 
 		return assetServiceTagRepository.findById(assetServiceTag.getId()).map(existingDepartment -> {
@@ -88,29 +88,29 @@ public class AssetServiceTagService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<AssetServiceTag> findAll() {
+	public List<Tag> findAll() {
 		logger.debug("Request to get all AssetServiceTags");
-		List<AssetServiceTag> list = assetServiceTagRepository.findAll();
+		List<Tag> list = assetServiceTagRepository.findAll();
 		return list;
 	}
 
 	@Transactional(readOnly = true)
-	public Optional<AssetServiceTag> findOne(Long id) {
+	public Optional<Tag> findOne(Long id) {
 		logger.debug("Request to get AssetServiceTag : {}", id);
-		Optional<AssetServiceTag> osa = assetServiceTagRepository.findById(id);
+		Optional<Tag> osa = assetServiceTagRepository.findById(id);
 		return osa;
 		
 	}
 
 	public void delete(Long id) throws IOException {
 		logger.debug("Request to delete AssetServiceTag : {}", id);
-		Optional<AssetServiceTag> oas = findOne(id);
+		Optional<Tag> oas = findOne(id);
 		if(oas.isPresent()) {
 			DiscoveredAssets ds = oas.get().getDiscoveredAsset();
 			assetServiceTagRepository.deleteById(id);
 			Map<String, String> filter = new HashMap<>();
 			filter.put(Constants.DISCOVERED_ASSET_ID, String.valueOf(oas.get().getDiscoveredAsset().getId()));
-			List<AssetServiceTag> list = search(filter);
+			List<Tag> list = search(filter);
 			if (list != null && list.size() == 0) {
 				ds.setTagStatus(null);
 				discoveredAssetsService.save(ds);
@@ -119,7 +119,7 @@ public class AssetServiceTagService {
 	}
 
 	@Transactional(readOnly = true)
-	public List<AssetServiceTag> search(Map<String, String> filter) throws IOException {
+	public List<Tag> search(Map<String, String> filter) throws IOException {
 		logger.debug("Request to get all assetServiceTag on given filters");
 
 		DiscoveredAssets discoveredAssets = null;
@@ -139,7 +139,7 @@ public class AssetServiceTagService {
 			filter.remove(Constants.SERVICE_ALLOCATION_ID);
 		}
 		
-		AssetServiceTag assetServiceTag = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, AssetServiceTag.class);
+		Tag assetServiceTag = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, Tag.class);
 
 		// unset default value if createdOn is not coming in filter
 		if (StringUtils.isBlank(filter.get(Constants.CREATED_ON))) {
@@ -155,14 +155,14 @@ public class AssetServiceTagService {
 		if (serviceAllocation != null) {
 			assetServiceTag.setServiceAllocation(serviceAllocation);
 		}
-		List<AssetServiceTag> list = assetServiceTagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
+		List<Tag> list = assetServiceTagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
 		
 		return list;
 	}
 	
 	
 	@Transactional(readOnly = true)
-	public List<AssetServiceTag> searchTag(Map<String, String> filter) throws IOException {
+	public List<Tag> searchTag(Map<String, String> filter) throws IOException {
 		logger.debug("Request to get all tags on given filters");
 
 		DiscoveredAssets discoveredAssets = null;
@@ -180,7 +180,7 @@ public class AssetServiceTagService {
 			serviceAllocation = saList.get(0);
 		}
 		
-		AssetServiceTag assetServiceTag = new AssetServiceTag();
+		Tag assetServiceTag = new Tag();
 		assetServiceTag.setCreatedOn(null);
 		assetServiceTag.setUpdatedOn(null);
 		assetServiceTag.setDiscoveredAsset(discoveredAssets);
@@ -195,7 +195,7 @@ public class AssetServiceTagService {
 			assetServiceTag.setUpdatedOn(null);
 		}
 		
-		List<AssetServiceTag> list = assetServiceTagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
+		List<Tag> list = assetServiceTagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
 		
 		return list;
 	}

@@ -58,7 +58,7 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
 
     @OneToMany(mappedBy = "discoveredAsset")
     @JsonIgnoreProperties(value = { "discoveredAsset", "discoveredAsset" }, allowSetters = true)
-    private Set<AssetServiceTag> assetServiceTags = new HashSet<>();
+    private Set<Tag> assetServiceTags = new HashSet<>();
     
     public Long getId() {
         return this.id;
@@ -208,11 +208,11 @@ public class DiscoveredAssets extends AbstractAuditingEntity implements Serializ
 		this.tagStatus = tagStatus;
 	}
 
-	public Set<AssetServiceTag> getAssetServiceTags() {
+	public Set<Tag> getAssetServiceTags() {
 		return assetServiceTags;
 	}
 
-	public void setAssetServiceTags(Set<AssetServiceTag> assetServiceTags) {
+	public void setAssetServiceTags(Set<Tag> assetServiceTags) {
 		this.assetServiceTags = assetServiceTags;
 	}
 }
