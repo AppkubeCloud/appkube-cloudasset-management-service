@@ -27,8 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.synectiks.asset.business.domain.DiscoveredAssets;
+import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.Tag;
 import com.synectiks.asset.business.service.TagService;
+import com.synectiks.asset.business.service.DiscoveredAssetsService;
 import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.repository.TagRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -54,6 +57,9 @@ public class TagController {
 	private ServiceAllocationService serviceAllocationService;
 
 	@Autowired
+	private DiscoveredAssetsService discoveredAssetsService;
+	
+	@Autowired
 	private TagRepository tagRepository;
 
 	/**
@@ -66,17 +72,31 @@ public class TagController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PostMapping("/tags")
-	public ResponseEntity<Tag> createTag(@Valid @RequestBody Tag assetServiceTag)
+	public ResponseEntity<Tag> createTag(@Valid @RequestBody Tag tag)
 			throws URISyntaxException {
-		log.debug("REST request to save tag : {}", assetServiceTag);
-		if (assetServiceTag.getId() != null) {
-			throw new BadRequestAlertException("A new assetServiceTag cannot already have an ID", ENTITY_NAME, "idexists");
+		log.debug("REST request to save tag : {}", tag);
+		if (tag.getId() != null) {
+			throw new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists");
 		}
-		Tag result = tagService.save(assetServiceTag);
+		Optional<DiscoveredAssets> oda = discoveredAssetsService.findOne(tag.getDiscoveredAsset().getId());
+		if(!oda.isPresent()) {
+			throw new BadRequestAlertException("Invalid discovered asset id", ENTITY_NAME, "idnull");
+		}
+		ServiceAllocation serviceAllocation = tag.getServiceAllocation();
+		serviceAllocation.setCreatedOn(null);
+		serviceAllocation.setUpdatedOn(null);
+		Optional<ServiceAllocation> osa = serviceAllocationService.findOne(serviceAllocation);
+		if(!osa.isPresent()) {
+			throw new BadRequestAlertException("ServiceAllocation not found", ENTITY_NAME, "idnotfound");
+		}
+		
+		tag.setServiceAllocation(osa.get());
+		Tag result = tagService.save(tag);
 		return ResponseEntity
-				.created(new URI("/api/tag/" + result.getId())).headers(HeaderUtil
+				.created(new URI("/api/tags/" + result.getId())).headers(HeaderUtil
 						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
 				.body(result);
+		
 	}
 
 	/**
@@ -149,7 +169,7 @@ public class TagController {
 	}
 
 	/**
-	 * {@code GET  /tag} : get all the tags.
+	 * {@code GET  /tags} : get all the tags.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
 	 *         of tag in body.
@@ -175,7 +195,7 @@ public class TagController {
 	}
 
 	/**
-	 * {@code DELETE  /tag/:id} : delete the "id" tags.
+	 * {@code DELETE  /tags/:id} : delete the "id" tags.
 	 *
 	 * @param id the id of the tags to delete.
 	 * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.

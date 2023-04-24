@@ -117,6 +117,12 @@ public class ServiceAllocationService {
         return serviceAllocationRepository.findById(id);
     }
 
+    @Transactional(readOnly = true)
+    public Optional<ServiceAllocation> findOne(ServiceAllocation serviceAllocation) {
+        logger.debug("Request to find serviceAllocation");
+        return serviceAllocationRepository.findOne(Example.of(serviceAllocation));
+    }
+    
     public void delete(Long id) {
         logger.debug("Request to delete serviceAllocation : {}", id);
         serviceAllocationRepository.deleteById(id);
