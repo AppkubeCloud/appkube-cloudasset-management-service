@@ -89,6 +89,14 @@ public class TestServiceDataGeneratorController {
 		return sd;
 
 	}
+
+
+	@GetMapping("/create-action")
+	public ResponseEntity<ServiceDto> createTestDatass(@RequestParam Map<String, String> obj) throws JsonParseException, JsonMappingException, IOException{
+		logger.info("Request to create service detail test data");
+		cmdb.gitToCmdb(obj);
+		return ResponseEntity.status(HttpStatus.OK).body(null);
+	}
 	
 
 	
