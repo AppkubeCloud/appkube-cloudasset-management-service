@@ -34,6 +34,7 @@ import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
 import com.synectiks.asset.business.service.DepartmentService;
+import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.CloudEnvironmentRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -88,29 +89,35 @@ public class CloudEnvironmentController {
 			}
 		}
         
-        String accountId = cloudEnvironment.getRoleArn().split(":")[4];
+        String accountId = cloudEnvironment.getAccountId();
         Map<String, String> filter = new HashMap<>();
-        filter.put("accountId", accountId);
+        if(Constants.AWS.equalsIgnoreCase(cloudEnvironment.getCloud().toUpperCase())) {
+        	accountId = cloudEnvironment.getRoleArn().split(":")[4];
+        	cloudEnvironment.setAccountId(accountId);
+        }
+        
+        filter.put(Constants.ACCOUNT_ID, cloudEnvironment.getAccountId());
+        filter.put(Constants.DEPARTMENT_ID, String.valueOf(cloudEnvironment.getDepartment().getId()));
         List<CloudEnvironment> list = cloudEnvironmentService.search(filter);
          
         CloudEnvironment result = null;
         if(list == null || (list != null && list.size() == 0)) {
         	result = cloudEnvironmentService.save(cloudEnvironment);
         }else {
-        	Set<String> set = new HashSet<>();
-        	for(CloudEnvironment ce: list) {
-        		set.add(ce.getRoleArn());
-        	}
-        	if(set.size() == 1) {
-        		Optional<String> oArn = set.stream().findFirst();
-        		if(oArn.isPresent() && oArn.get().equals(cloudEnvironment.getRoleArn())) {
-        			result = cloudEnvironmentService.save(cloudEnvironment);
-        		}else  {
-        			throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
-        		} 
-        	}else {
+//        	Set<String> set = new HashSet<>();
+//        	for(CloudEnvironment ce: list) {
+//        		set.add(ce.getRoleArn());
+//        	}
+//        	if(set.size() == 1) {
+//        		Optional<String> oArn = set.stream().findFirst();
+//        		if(oArn.isPresent() && oArn.get().equals(cloudEnvironment.getRoleArn())) {
+//        			result = cloudEnvironmentService.save(cloudEnvironment);
+//        		}else  {
+//        			throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
+//        		} 
+//        	}else {
         		throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
-        	}
+//        	}
         }
         
         

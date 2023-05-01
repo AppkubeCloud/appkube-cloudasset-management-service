@@ -28,7 +28,7 @@ public class TagService {
 	private final Logger logger = LoggerFactory.getLogger(TagService.class);
 
 	@Autowired
-	private TagRepository assetServiceTagRepository;
+	private TagRepository tagRepository;
 	
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
@@ -42,7 +42,7 @@ public class TagService {
 	
 	public Tag save(Tag assetServiceTag) {
 		logger.debug("Request to save AssetServiceTag : {}", assetServiceTag);
-		Tag d = assetServiceTagRepository.save(assetServiceTag);
+		Tag d = tagRepository.save(assetServiceTag);
 		if (d != null) {
 			DiscoveredAssets ds = assetServiceTag.getDiscoveredAsset();
 			ds.setTagStatus(Constants.TAGGED);
@@ -54,7 +54,7 @@ public class TagService {
 	public Optional<Tag> partialUpdate(Tag assetServiceTag) {
 		logger.debug("Request to partially update AssetServiceTag : {}", assetServiceTag);
 
-		return assetServiceTagRepository.findById(assetServiceTag.getId()).map(existingDepartment -> {
+		return tagRepository.findById(assetServiceTag.getId()).map(existingDepartment -> {
 			if (assetServiceTag.getDiscoveredAsset() != null) {
 				Optional<DiscoveredAssets> od = discoveredAssetsService.findOne(assetServiceTag.getDiscoveredAsset().getId());
 				if(od.isPresent()) {
@@ -84,20 +84,20 @@ public class TagService {
 			}
 			
 			return existingDepartment;
-		}).map(assetServiceTagRepository::save);
+		}).map(tagRepository::save);
 	}
 
 	@Transactional(readOnly = true)
 	public List<Tag> findAll() {
 		logger.debug("Request to get all AssetServiceTags");
-		List<Tag> list = assetServiceTagRepository.findAll();
+		List<Tag> list = tagRepository.findAll();
 		return list;
 	}
 
 	@Transactional(readOnly = true)
 	public Optional<Tag> findOne(Long id) {
 		logger.debug("Request to get AssetServiceTag : {}", id);
-		Optional<Tag> osa = assetServiceTagRepository.findById(id);
+		Optional<Tag> osa = tagRepository.findById(id);
 		return osa;
 		
 	}
@@ -107,7 +107,7 @@ public class TagService {
 		Optional<Tag> oas = findOne(id);
 		if(oas.isPresent()) {
 			DiscoveredAssets ds = oas.get().getDiscoveredAsset();
-			assetServiceTagRepository.deleteById(id);
+			tagRepository.deleteById(id);
 			Map<String, String> filter = new HashMap<>();
 			filter.put(Constants.DISCOVERED_ASSET_ID, String.valueOf(oas.get().getDiscoveredAsset().getId()));
 			List<Tag> list = search(filter);
@@ -155,7 +155,7 @@ public class TagService {
 		if (serviceAllocation != null) {
 			assetServiceTag.setServiceAllocation(serviceAllocation);
 		}
-		List<Tag> list = assetServiceTagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
+		List<Tag> list = tagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
 		
 		return list;
 	}
@@ -195,7 +195,7 @@ public class TagService {
 			assetServiceTag.setUpdatedOn(null);
 		}
 		
-		List<Tag> list = assetServiceTagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
+		List<Tag> list = tagRepository.findAll(Example.of(assetServiceTag), Sort.by(Sort.Direction.DESC, "id"));
 		
 		return list;
 	}

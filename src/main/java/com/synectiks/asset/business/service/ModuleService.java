@@ -37,7 +37,7 @@ public class ModuleService  {
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
     
     @Autowired
-	private ServiceAllocationService departmentProductEnvService;
+	private ServiceAllocationService serviceAllocationService;
 
     
     public Module save(Module module) {
@@ -47,7 +47,7 @@ public class ModuleService  {
 			Map<String, String> filter = new HashMap<>();
 			filter.put(Constants.MODULE_ID, String.valueOf(m.getId()));
 			try {
-				List<Services> servicesList = departmentProductEnvService.getServices(filter);
+				List<Services> servicesList = serviceAllocationService.getServices(filter);
 				m.setAppServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.APP_SERVICES)).collect(Collectors.toList()));
 				m.setDataServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.DATA_SERVICES)).collect(Collectors.toList()));
 			} catch (IOException e) {
@@ -88,7 +88,7 @@ public class ModuleService  {
                 Map<String, String> filter = new HashMap<>();
     			filter.put(Constants.MODULE_ID, String.valueOf(existingModule.getId()));
     			try {
-    				List<Services> servicesList = departmentProductEnvService.getServices(filter);
+    				List<Services> servicesList = serviceAllocationService.getServices(filter);
     				existingModule.setAppServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.APP_SERVICES)).collect(Collectors.toList()));
     				existingModule.setDataServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.DATA_SERVICES)).collect(Collectors.toList()));
     			} catch (IOException e) {
@@ -109,7 +109,7 @@ public class ModuleService  {
         	filter.clear();
     		filter.put(Constants.MODULE_ID, String.valueOf(m.getId()));
     		try {
-    			List<Services> servicesList = departmentProductEnvService.getServices(filter);
+    			List<Services> servicesList = serviceAllocationService.getServices(filter);
     			m.setAppServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.APP_SERVICES)).collect(Collectors.toList()));
     			m.setDataServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.DATA_SERVICES)).collect(Collectors.toList()));
     		} catch (IOException e) {
@@ -127,7 +127,7 @@ public class ModuleService  {
         	Map<String, String> filter = new HashMap<>();
 			filter.put(Constants.MODULE_ID, String.valueOf(om.get().getId()));
 			try {
-				List<Services> servicesList = departmentProductEnvService.getServices(filter);
+				List<Services> servicesList = serviceAllocationService.getServices(filter);
 				om.get().setAppServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.APP_SERVICES)).collect(Collectors.toList()));
 				om.get().setDataServices(servicesList.stream().filter(sd -> sd.getType().equalsIgnoreCase(Constants.DATA_SERVICES)).collect(Collectors.toList()));
 			} catch (IOException e) {

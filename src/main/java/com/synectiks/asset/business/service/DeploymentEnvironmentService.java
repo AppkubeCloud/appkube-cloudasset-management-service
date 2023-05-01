@@ -30,7 +30,7 @@ public class DeploymentEnvironmentService {
 	private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
 
 	@Autowired
-	private ServiceAllocationService departmentProductEnvService;
+	private ServiceAllocationService serviceAllocationService;
 
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
@@ -43,7 +43,7 @@ public class DeploymentEnvironmentService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("deploymentEnvironmentId", String.valueOf(de.getId()));
 			try {
-				List<Module> moduleList = departmentProductEnvService.getModules(filter);
+				List<Module> moduleList = serviceAllocationService.getModules(filter);
 				de.setModules(moduleList);
 			} catch (IOException e) {
 				log.error("Error in getting modules: ", e.getMessage());
@@ -71,7 +71,7 @@ public class DeploymentEnvironmentService {
 					Map<String, String> filter = new HashMap<>();
 					filter.put("deploymentEnvironmentId", String.valueOf(existingDeploymentEnvironment.getId()));
 					try {
-						List<Module> moduleList = departmentProductEnvService.getModules(filter);
+						List<Module> moduleList = serviceAllocationService.getModules(filter);
 						existingDeploymentEnvironment.setModules(moduleList);
 					} catch (IOException e) {
 						log.error("Error in getting modules: ", e.getMessage());
@@ -90,7 +90,7 @@ public class DeploymentEnvironmentService {
 			filter.clear();
 			filter.put("deploymentEnvironmentId", String.valueOf(depEnv.getId()));
 			try {
-				List<Module> deList = departmentProductEnvService.getModules(filter);
+				List<Module> deList = serviceAllocationService.getModules(filter);
 				depEnv.setModules(deList);
 			} catch (IOException e) {
 				log.error("Error in getting modules: ", e.getMessage());
@@ -108,7 +108,7 @@ public class DeploymentEnvironmentService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("deploymentEnvironmentId", String.valueOf(ode.get().getId()));
 			try {
-				List<Module> deList = departmentProductEnvService.getModules(filter);
+				List<Module> deList = serviceAllocationService.getModules(filter);
 				ode.get().setModules(deList);
 			} catch (IOException e) {
 				log.error("Error in getting modules: ", e.getMessage());
@@ -145,7 +145,7 @@ public class DeploymentEnvironmentService {
 			modulefilter.clear();
 			modulefilter.put("deploymentEnvironmentId", String.valueOf(de.getId()));
 			try {
-				List<Module> deList = departmentProductEnvService.getModules(modulefilter);
+				List<Module> deList = serviceAllocationService.getModules(modulefilter);
 				de.setModules(deList);
 			} catch (IOException e) {
 				log.error("Error in getting modules: ", e.getMessage());

@@ -203,8 +203,8 @@ public class ServiceAllocationService {
 		logger.debug("Getting modules");
 		List<ServiceAllocation> list = search(filter);
 		List<Long> idList = new ArrayList<>();
-		for(ServiceAllocation dpe: list) {
-			idList.add(dpe.getModuleId());
+		for(ServiceAllocation sa: list) {
+			idList.add(sa.getModuleId());
 		}
 		return findAllModulesById(idList);
 	}
@@ -230,13 +230,13 @@ public class ServiceAllocationService {
 		logger.debug("Getting services");
 		List<ServiceAllocation> list = search(filter);
 		List<Long> idList = new ArrayList<>();
-		for(ServiceAllocation dpe: list) {
-			idList.add(dpe.getServicesId());
+		for(ServiceAllocation sa: list) {
+			idList.add(sa.getServicesId());
 		}
 		return findAllServicesById(idList);
 	}
 	
-	public List<Services> findAllServicesById(List<Long> idList){
-		return servicesRepository.findAllById(idList);
+	public List<Services> findAllServicesById(List<Long> list){
+		return servicesRepository.findAllById(list);
 	}
 }

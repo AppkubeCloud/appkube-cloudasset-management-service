@@ -34,7 +34,7 @@ public class DepartmentService {
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 
 	@Autowired
-	private ServiceAllocationService departmentProductEnvService;
+	private ServiceAllocationService serviceAllocationService;
 	
 	
 	public Department save(Department department) {
@@ -44,7 +44,7 @@ public class DepartmentService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("departmentId", String.valueOf(d.getId()));
 			try {
-				List<Product> pList = departmentProductEnvService.getProducts(filter);
+				List<Product> pList = serviceAllocationService.getProducts(filter);
 				d.setProducts(pList);
 			} catch (IOException e) {
 				logger.error("Error in getting products ", e.getMessage());
@@ -78,7 +78,7 @@ public class DepartmentService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("departmentId", String.valueOf(existingDepartment.getId()));
 			try {
-				List<Product> pList = departmentProductEnvService.getProducts(filter);
+				List<Product> pList = serviceAllocationService.getProducts(filter);
 				existingDepartment.setProducts(pList);
 			} catch (IOException e) {
 				logger.error("Error in getting products ", e.getMessage());
@@ -96,7 +96,7 @@ public class DepartmentService {
 			filter.clear();
 			filter.put("departmentId", String.valueOf(department.getId()));
 			try {
-				List<Product> pList = departmentProductEnvService.getProducts(filter);
+				List<Product> pList = serviceAllocationService.getProducts(filter);
 				department.setProducts(pList);
 			} catch (IOException e) {
 				logger.error("Error in getting products ", e.getMessage());
@@ -113,7 +113,7 @@ public class DepartmentService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("departmentId", String.valueOf(od.get().getId()));
 			try {
-				List<Product> pList = departmentProductEnvService.getProducts(filter);
+				List<Product> pList = serviceAllocationService.getProducts(filter);
 				od.get().setProducts(pList);
 			} catch (IOException e) {
 				logger.error("Error in getting products ", e.getMessage());
@@ -173,7 +173,7 @@ public class DepartmentService {
 			prdFilter.clear();
 			prdFilter.put("departmentId", String.valueOf(dept.getId()));
 			try {
-				List<Product> pList = departmentProductEnvService.getProducts(prdFilter);
+				List<Product> pList = serviceAllocationService.getProducts(prdFilter);
 				dept.setProducts(pList);
 			} catch (IOException e) {
 				logger.error("Error in getting products ", e.getMessage());

@@ -30,7 +30,7 @@ public class ProductService {
 	private ProductRepository productRepository;
 	
 	@Autowired
-	private ServiceAllocationService departmentProductEnvService;
+	private ServiceAllocationService serviceAllocationService;
 	
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
@@ -42,7 +42,7 @@ public class ProductService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("productId", String.valueOf(p.getId()));
 			try {
-				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(filter);
+				List<DeploymentEnvironment> deList = serviceAllocationService.getDeploymentEnvironments(filter);
 				p.setDeploymentEnvironments(deList);
 			} catch (IOException e) {
 				logger.error("Error in getting deployment environments: ", e.getMessage());
@@ -82,7 +82,7 @@ public class ProductService {
                 Map<String, String> filter = new HashMap<>();
     			filter.put("productId", String.valueOf(existingProduct.getId()));
     			try {
-    				List<DeploymentEnvironment> pList = departmentProductEnvService.getDeploymentEnvironments(filter);
+    				List<DeploymentEnvironment> pList = serviceAllocationService.getDeploymentEnvironments(filter);
     				existingProduct.setDeploymentEnvironments(pList);
     			} catch (IOException e) {
     				logger.error("Error in getting deployment environments ", e.getMessage());
@@ -102,7 +102,7 @@ public class ProductService {
 			filter.clear();
 			filter.put("productId", String.valueOf(product.getId()));
 			try {
-				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(filter);
+				List<DeploymentEnvironment> deList = serviceAllocationService.getDeploymentEnvironments(filter);
 				product.setDeploymentEnvironments(deList);
 			} catch (IOException e) {
 				logger.error("Error in getting deployment environments: ", e.getMessage());
@@ -119,7 +119,7 @@ public class ProductService {
 			Map<String, String> filter = new HashMap<>();
 			filter.put("productId", String.valueOf(op.get().getId()));
 			try {
-				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(filter);
+				List<DeploymentEnvironment> deList = serviceAllocationService.getDeploymentEnvironments(filter);
 				op.get().setDeploymentEnvironments(deList);
 			} catch (IOException e) {
 				logger.error("Error in getting deployment environments: ", e.getMessage());
@@ -154,7 +154,7 @@ public class ProductService {
 			defilter.clear();
 			defilter.put("productId", String.valueOf(p.getId()));
 			try {
-				List<DeploymentEnvironment> deList = departmentProductEnvService.getDeploymentEnvironments(defilter);
+				List<DeploymentEnvironment> deList = serviceAllocationService.getDeploymentEnvironments(defilter);
 				p.setDeploymentEnvironments(deList);
 			} catch (IOException e) {
 				logger.error("Error in getting deployment environments: ", e.getMessage());

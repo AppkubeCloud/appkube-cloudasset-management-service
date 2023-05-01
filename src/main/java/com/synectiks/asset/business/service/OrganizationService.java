@@ -27,7 +27,7 @@ public class OrganizationService {
 	private static final Logger logger = LoggerFactory.getLogger(OrganizationService.class);
 	
 	@Autowired
-	private ServiceAllocationService departmentProductEnvService;
+	private ServiceAllocationService serviceAllocationService;
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;
@@ -80,7 +80,7 @@ public class OrganizationService {
     		for(Department d: o.getDepartments()) {
     			filter.clear();
     			filter.put("departmentId", String.valueOf(d.getId()));
-    			d.setProducts(departmentProductEnvService.getProducts(filter));
+    			d.setProducts(serviceAllocationService.getProducts(filter));
     		}
     	}
     	return list;
@@ -95,7 +95,7 @@ public class OrganizationService {
     		for(Department d: o.get().getDepartments()) {
     			filter.clear();
     			filter.put("departmentId", String.valueOf(d.getId()));
-    			d.setProducts(departmentProductEnvService.getProducts(filter));
+    			d.setProducts(serviceAllocationService.getProducts(filter));
     		}
     	}
     	return o;
@@ -135,7 +135,7 @@ public class OrganizationService {
     			if(!StringUtils.isBlank(landingZone)) {
     				prdfilter.put("landingZone", landingZone);
     			}
-    			d.setProducts(departmentProductEnvService.getProducts(prdfilter));
+    			d.setProducts(serviceAllocationService.getProducts(prdfilter));
     		}
     	}
     	return list;
