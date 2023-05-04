@@ -38,6 +38,7 @@ import com.synectiks.asset.business.service.DepartmentService;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.CloudEnvironmentRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
+import com.synectiks.asset.web.rest.errors.DuplicateRequestAlertException;
 
 import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
@@ -121,7 +122,7 @@ public class CloudEnvironmentController {
 //        			throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
 //        		} 
 //        	}else {
-        		throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
+        		throw new DuplicateRequestAlertException("cloudEnvironment already exists", ENTITY_NAME, "idexists");
 //        	}
         }
         
