@@ -219,7 +219,7 @@ public class ProductController {
 	}
 
 	/**
-	 * {@code POST  /products/add-dep-env} : Add a deployment environment in a product.
+	 * {@code POST  /products/add/env} : Add a deployment environment in a product.
 	 *
 	 * @param departmentProductEnv the departmentProductEnv to create.
 	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
@@ -229,7 +229,7 @@ public class ProductController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 * @throws IOException
 	 */
-	@PostMapping("/products/add-dep-env")
+	@PostMapping("/products/add/env")
 	public ResponseEntity<Product> addDeploymentEnvironment(@RequestBody ServiceAllocation departmentProductEnv)
 			throws URISyntaxException, IOException {
 		logger.debug("REST request to add a deployment environment in a product: {}", departmentProductEnv);

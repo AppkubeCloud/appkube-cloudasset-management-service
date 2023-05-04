@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -93,9 +94,13 @@ public class CloudEnvironmentController {
         Map<String, String> filter = new HashMap<>();
         if(Constants.AWS.equalsIgnoreCase(cloudEnvironment.getCloud().toUpperCase())) {
         	accountId = cloudEnvironment.getRoleArn().split(":")[4];
-        	cloudEnvironment.setAccountId(accountId);
+        }else if(StringUtils.isBlank(accountId)) {
+        	log.warn("Account id/Landing zone not found");
+			throw new BadRequestAlertException("Account id/Landing zone not found", ENTITY_NAME, "idnotfound");
         }
+        cloudEnvironment.setAccountId(accountId);
         
+        filter.put("cloud", cloudEnvironment.getCloud().toUpperCase());
         filter.put(Constants.ACCOUNT_ID, cloudEnvironment.getAccountId());
         filter.put(Constants.DEPARTMENT_ID, String.valueOf(cloudEnvironment.getDepartment().getId()));
         List<CloudEnvironment> list = cloudEnvironmentService.search(filter);

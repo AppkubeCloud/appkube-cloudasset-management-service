@@ -47,11 +47,15 @@ public class RandomUtil {
 	    return generatedString;
 	}
 	
-//	public static void main(String a[]) {
+	public static void main(String a[]) {
 //		Random rd = new Random(); // creating Random object
 //		int rangeMin = 98;
 //		int rangeMax = 100;
 //		Float randomValue = rangeMin + (rangeMax - rangeMin) * rd.nextFloat();
 //	    System.out.println(randomValue);
-//	}
+		String input = "897373451";
+		String result = input.replaceAll("^\"|\"$", "");
+		System.out.println(input);
+		System.out.println(result);
+	}
 }

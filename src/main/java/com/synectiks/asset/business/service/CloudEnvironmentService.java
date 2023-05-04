@@ -36,7 +36,7 @@ public class CloudEnvironmentService {
 	
     public CloudEnvironment save(CloudEnvironment cloudEnvironment) {
         logger.debug("Request to save CloudEnvironment : {}", cloudEnvironment);
-        cloudEnvironment.setAccountId(cloudEnvironment.getRoleArn().split(":")[4]);
+//        cloudEnvironment.setAccountId(cloudEnvironment.getRoleArn().split(":")[4]);
         return cloudEnvironmentRepository.save(cloudEnvironment);
     }
 

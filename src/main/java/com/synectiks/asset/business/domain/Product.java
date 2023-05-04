@@ -21,12 +21,23 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
 import com.fasterxml.jackson.annotation.JsonProperty;
 
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
+import lombok.Setter;
+
 /**
  * A Product.
  */
 @Entity
 @Table(name = "product")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
+@Getter
+@Setter
+@NoArgsConstructor
+@AllArgsConstructor
+@Builder
 public class Product extends AbstractAuditingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
@@ -46,6 +57,73 @@ public class Product extends AbstractAuditingEntity implements Serializable {
 	@Column(name = "status")
 	private String status;
 
+	@Column(name = "landing_zone")
+	private String landingZone;
+	
+	@Column(name = "organization_id")
+	private Long organizationId;
+	
+	@Column(name = "department_id")
+	private Long departmentId;
+	
+	@Column(name = "deployment_environment_id")
+	private Long deploymentEnvironmentId;
+	
+	@Column(name = "module_name")
+	private String moduleName;
+	
+	@Column(name = "service_name")
+	private String serviceName;
+	
+	@Column(name = "service_category")
+	private String serviceCategory; //(app[NodesJs / Golang], data[SQLDB, CacheDB])
+	
+	@Column(name = "service_type")
+	private String serviceType; //(app/data)
+	
+	@Column(name = "service_nature")
+	private String serviceNature; //(business/common)
+	
+	@Column(name = "discovered_asset_id")
+	private Long discoveredAssetId;
+	
+	@Size(max = 500)
+	@Column(name = "tag", length = 500)
+	private String tag;
+	
+	@Column(name = "hosting_type")
+	private String hostingType; // CLOUD/cluster/GLOBAL
+	
+	@Column(name = "hosting_url")
+	private String hostingUrl; // cluster arn
+	
+	@Column(name = "hosting_namespace")
+	private String hostingNamespace; // cluster namespace
+	
+	@Column(name = "service_location")
+	private String serviceLocation; // global service/cloud service location
+	
+	@Column(name = "product_enclave")
+	private String productEnclave; // VPC
+	
+	@Column(name = "product_enclave_id")
+	private String productEnclaveId; // VPC ID
+	
+	@Column(name = "product_enclave_arn")
+	private String productEnclaveArn;
+	
+	@Column(name = "cloud_element")
+	private String cloudElement;
+	
+	@Column(name = "cloud_element_id")
+	private String cloudElementId;
+	
+	@Column(name = "cloud_element_key")
+	private String cloudElementKey;
+	
+	@Column(name = "service_detail_id")
+	private Long serviceDetailId;
+	
 	@OneToMany(mappedBy = "product")
 	@JsonIgnoreProperties(value = { "product" }, allowSetters = true)
 	private Set<Module> modules = new HashSet<>();
@@ -54,99 +132,7 @@ public class Product extends AbstractAuditingEntity implements Serializable {
 	@JsonProperty
 	private List<DeploymentEnvironment> deploymentEnvironments;
 
-	public Long getId() {
-		return this.id;
-	}
+	
 
-	public Product id(Long id) {
-		this.setId(id);
-		return this;
-	}
-
-	public void setId(Long id) {
-		this.id = id;
-	}
-
-	public String getName() {
-		return this.name;
-	}
-
-	public Product name(String name) {
-		this.setName(name);
-		return this;
-	}
-
-	public void setName(String name) {
-		this.name = name;
-	}
-
-	public String getDescription() {
-		return this.description;
-	}
-
-	public Product description(String description) {
-		this.setDescription(description);
-		return this;
-	}
-
-	public void setDescription(String description) {
-		this.description = description;
-	}
-
-	public String getStatus() {
-		return this.status;
-	}
-
-	public Product status(String status) {
-		this.setStatus(status);
-		return this;
-	}
-
-	public void setStatus(String status) {
-		this.status = status;
-	}
-
-	public Set<Module> getModules() {
-		return modules;
-	}
-
-	public void setModules(Set<Module> modules) {
-		this.modules = modules;
-	}
-
-	public List<DeploymentEnvironment> getDeploymentEnvironments() {
-		return deploymentEnvironments;
-	}
-
-	public void setDeploymentEnvironments(List<DeploymentEnvironment> deploymentEnvironments) {
-		this.deploymentEnvironments = deploymentEnvironments;
-	}
-
-	@Override
-	public boolean equals(Object o) {
-		if (this == o) {
-			return true;
-		}
-		if (!(o instanceof Product)) {
-			return false;
-		}
-		return id != null && id.equals(((Product) o).id);
-	}
-
-	@Override
-	public int hashCode() {
-		// see
-		// https://vladmihalcea.com/how-to-implement-equals-and-hashcode-using-the-jpa-entity-identifier/
-		return getClass().hashCode();
-	}
-
-	// prettier-ignore
-	@Override
-	public String toString() {
-		return "Product{" + "id=" + getId() + ", name='" + getName() + "'" + ", description='" + getDescription() + "'"
-				+ ", status='" + getStatus() + "'" + ", createdOn='" + getCreatedOn() + "'" + ", updatedOn='"
-				+ getUpdatedOn() + "'" + ", updatedBy='" + getUpdatedBy() + "'" + ", createdBy='" + getCreatedBy() + "'"
-				+ "}";
-	}
-
+	
 }
