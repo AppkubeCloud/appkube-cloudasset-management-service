@@ -3,6 +3,7 @@ package com.synectiks.asset.business.service;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
@@ -14,6 +15,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.Organization;
 import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.ProductRepository;
@@ -27,15 +30,35 @@ public class ProductService {
 	@Autowired
 	private ProductRepository productRepository;
 	
+	@Autowired
+	private OrganizationService organizationService;
+	
+	@Autowired
+	private DepartmentService departmentService;
+	
+	
 //	@Autowired
 //	private ServiceAllocationService serviceAllocationService;
 	
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 	
-    public Product save(Product product) {
+    public Product save(Product product) throws IOException {
         logger.debug("Request to save Product : {}", product);
         Product p = productRepository.save(product);
+        if(Objects.nonNull(p.getOrganizationId())){
+        	Optional<Organization> o = organizationService.findOne(p.getOrganizationId());
+        	if(o.isPresent()) {
+        		p.setOrganizationName(o.get().getName());
+        	}
+        }
+        if(Objects.nonNull(p.getDepartmentId())){
+        	Optional<Department> o = departmentService.findOne(p.getDepartmentId());
+        	if(o.isPresent()) {
+        		p.setDepartmentName(o.get().getName());
+        	}
+        }
+        
 //        if(p != null) {
 //			Map<String, String> filter = new HashMap<>();
 //			filter.put("productId", String.valueOf(p.getId()));
@@ -152,7 +175,24 @@ public class ProductService {
 //    			} catch (IOException e) {
 //    				logger.error("Error in getting deployment environments ", e.getMessage());
 //    			}
-    			
+    			try {
+    				if(Objects.nonNull(existingProduct.getOrganizationId())){
+                    	Optional<Organization> o = organizationService.findOne(existingProduct.getOrganizationId());
+                    	if(o.isPresent()) {
+                    		existingProduct.setOrganizationName(o.get().getName());
+                    	}
+                    }
+                    if(Objects.nonNull(existingProduct.getDepartmentId())){
+                    	Optional<Department> o = departmentService.findOne(existingProduct.getDepartmentId());
+                    	if(o.isPresent()) {
+                    		existingProduct.setDepartmentName(o.get().getName());
+                    	}
+                    }
+    			}catch(Exception e) {
+    				logger.warn("Exception in getting org and department name: ",e);
+    			}
+                
+                
                 return existingProduct;
             })
             .map(productRepository::save);
@@ -162,6 +202,27 @@ public class ProductService {
     public List<Product> findAll() {
         logger.debug("Request to get all Products");
         List<Product> list = productRepository.findAll();
+        for(Product p: list) {
+        	try {
+        		if(Objects.nonNull(p.getOrganizationId())){
+                	Optional<Organization> o = organizationService.findOne(p.getOrganizationId());
+                	if(o.isPresent()) {
+                		p.setOrganizationName(o.get().getName());
+                	}
+                }
+                if(Objects.nonNull(p.getDepartmentId())){
+                	Optional<Department> o = departmentService.findOne(p.getDepartmentId());
+                	if(o.isPresent()) {
+                		p.setDepartmentName(o.get().getName());
+                	}
+                }
+        	}catch(Exception e) {
+        		logger.warn("Exception in getting org and dept name in findAll: ",e);
+        	}
+        	
+        }
+        
+        
 //        Map<String, String> filter = new HashMap<>();
 //		for(Product product: list) {
 //			filter.clear();
@@ -180,6 +241,29 @@ public class ProductService {
     public Optional<Product> findOne(Long id) {
         logger.debug("Request to get Product : {}", id);
         Optional<Product> op = productRepository.findById(id);
+        
+        if(op.isPresent()) {
+        	try {
+        		if(Objects.nonNull(op.get().getOrganizationId())){
+                	Optional<Organization> o = organizationService.findOne(op.get().getOrganizationId());
+                	if(o.isPresent()) {
+                		op.get().setOrganizationName(o.get().getName());
+                	}
+                }
+                if(Objects.nonNull(op.get().getDepartmentId())){
+                	Optional<Department> o = departmentService.findOne(op.get().getDepartmentId());
+                	if(o.isPresent()) {
+                		op.get().setDepartmentName(o.get().getName());
+                	}
+                }
+        	}catch(Exception e) {
+        		logger.warn("Exception in getting org and dept name in findAll: ",e);
+        	}	
+        }
+    	
+        	
+        
+        
 //        if(op.isPresent()) {
 //			Map<String, String> filter = new HashMap<>();
 //			filter.put("productId", String.valueOf(op.get().getId()));
@@ -213,7 +297,25 @@ public class ProductService {
             product.setUpdatedOn(null);
         }
         List<Product> list = productRepository.findAll(Example.of(product), Sort.by(Sort.Direction.DESC, "name"));
-        
+        for(Product p: list) {
+        	try {
+        		if(Objects.nonNull(p.getOrganizationId())){
+                	Optional<Organization> o = organizationService.findOne(p.getOrganizationId());
+                	if(o.isPresent()) {
+                		p.setOrganizationName(o.get().getName());
+                	}
+                }
+                if(Objects.nonNull(p.getDepartmentId())){
+                	Optional<Department> o = departmentService.findOne(p.getDepartmentId());
+                	if(o.isPresent()) {
+                		p.setDepartmentName(o.get().getName());
+                	}
+                }
+        	}catch(Exception e) {
+        		logger.warn("Exception in getting org and dept name in findAll: ",e);
+        	}
+        	
+        }
 //        Map<String, String> defilter = new HashMap<>();
 //		for(Product p: list) {
 //			defilter.clear();

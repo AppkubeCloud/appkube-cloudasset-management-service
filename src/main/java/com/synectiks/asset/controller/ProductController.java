@@ -83,9 +83,10 @@ public class ProductController {
 	 *         body the new product, or with status {@code 400 (Bad Request)} if the
 	 *         product has already an ID.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
+	 * @throws IOException 
 	 */
 	@PostMapping("/products")
-	public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws URISyntaxException {
+	public ResponseEntity<Product> createProduct(@Valid @RequestBody Product product) throws URISyntaxException, IOException {
 		logger.debug("REST request to save Product : {}", product);
 		if (product.getId() != null) {
 			throw new BadRequestAlertException("A new product cannot already have an ID", ENTITY_NAME, "idexists");
@@ -108,10 +109,11 @@ public class ProductController {
 	 *         {@code 500 (Internal Server Error)} if the product couldn't be
 	 *         updated.
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
+	 * @throws IOException 
 	 */
 	@PutMapping("/products/{id}")
 	public ResponseEntity<Product> updateProduct(@PathVariable(value = "id", required = false) final Long id,
-			@Valid @RequestBody Product product) throws URISyntaxException {
+			@Valid @RequestBody Product product) throws URISyntaxException, IOException {
 		logger.debug("REST request to update Product : {}, {}", id, product);
 		if (product.getId() == null) {
 			throw new BadRequestAlertException("Invalid id", ENTITY_NAME, "idnull");

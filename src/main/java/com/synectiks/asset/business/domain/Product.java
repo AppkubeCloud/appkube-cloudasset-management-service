@@ -133,6 +133,13 @@ public class Product extends AbstractAuditingEntity implements Serializable {
 	private List<DeploymentEnvironment> deploymentEnvironments;
 
 	
-
+	@Transient
+	@JsonProperty
+	private String organizationName;
+	
+	@Transient
+	@JsonProperty
+	private String departmentName;
+	
 	
 }
