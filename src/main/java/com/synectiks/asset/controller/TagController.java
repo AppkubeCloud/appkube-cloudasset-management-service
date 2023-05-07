@@ -27,11 +27,11 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.synectiks.asset.business.domain.DiscoveredAssets;
+import com.synectiks.asset.business.domain.CloudElement;
 import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.business.domain.Tag;
 import com.synectiks.asset.business.service.TagService;
-import com.synectiks.asset.business.service.DiscoveredAssetsService;
+import com.synectiks.asset.business.service.CloudElementService;
 import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.repository.TagRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
@@ -57,7 +57,7 @@ public class TagController {
 	private ServiceAllocationService serviceAllocationService;
 
 	@Autowired
-	private DiscoveredAssetsService discoveredAssetsService;
+	private CloudElementService discoveredAssetsService;
 	
 	@Autowired
 	private TagRepository tagRepository;
@@ -78,7 +78,7 @@ public class TagController {
 		if (tag.getId() != null) {
 			throw new BadRequestAlertException("A new tag cannot already have an ID", ENTITY_NAME, "idexists");
 		}
-		Optional<DiscoveredAssets> oda = discoveredAssetsService.findOne(tag.getDiscoveredAsset().getId());
+		Optional<CloudElement> oda = discoveredAssetsService.findOne(tag.getDiscoveredAsset().getId());
 		if(!oda.isPresent()) {
 			throw new BadRequestAlertException("Invalid discovered asset id", ENTITY_NAME, "idnull");
 		}

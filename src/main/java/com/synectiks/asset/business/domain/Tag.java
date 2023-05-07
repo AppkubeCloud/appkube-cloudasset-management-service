@@ -29,7 +29,7 @@ public class Tag extends AbstractAuditingEntity implements Serializable {
 
     @ManyToOne
     @JsonIgnoreProperties(value = { "assetServiceTags" }, allowSetters = true)
-    private DiscoveredAssets discoveredAsset;
+    private CloudElement discoveredAsset;
     
     @ManyToOne
     @JsonIgnoreProperties(value = { "assetServiceTags" }, allowSetters = true)
@@ -47,11 +47,11 @@ public class Tag extends AbstractAuditingEntity implements Serializable {
 		this.id = id;
 	}
 
-	public DiscoveredAssets getDiscoveredAsset() {
+	public CloudElement getDiscoveredAsset() {
 		return discoveredAsset;
 	}
 
-	public void setDiscoveredAsset(DiscoveredAssets discoveredAsset) {
+	public void setDiscoveredAsset(CloudElement discoveredAsset) {
 		this.discoveredAsset = discoveredAsset;
 	}
 

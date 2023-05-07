@@ -53,17 +53,14 @@ public class CloudElementSummaryService {
 	
 	public CloudElementSummary createCloudElement(CloudElementSummary obj){
 		logger.info("Create new cloud element summary");
-//		if(Objects.isNull(obj.getCloudEnvironment()) || (!Objects.isNull(obj.getCloudEnvironment()) && obj.getCloudEnvironment().getId() < 0)) {
-//			throw new BadRequestAlertException("Cloud environment id not provided", "CloudElement", "idnotfound");
-//		}
 		return cloudElementSummaryRepository.save(obj);
 	}
 		
 	public Optional<CloudElementSummary> partialUpdateCloudElement(CloudElementSummary obj){
 		logger.info("Update cloud element summary partialy. Id: {}", obj.getId());
-		if(!cloudElementSummaryRepository.existsById(obj.getId())) {
-			throw new BadRequestAlertException("Entity not found", "CloudElementSummary", "idnotfound");
-		}
+//		if(!cloudElementSummaryRepository.existsById(obj.getId())) {
+//			throw new BadRequestAlertException("Entity not found", "CloudElementSummary", "idnotfound");
+//		}
 		
 		Optional<CloudElementSummary> result = cloudElementSummaryRepository.findById(obj.getId())
 			.map(existingObj ->{

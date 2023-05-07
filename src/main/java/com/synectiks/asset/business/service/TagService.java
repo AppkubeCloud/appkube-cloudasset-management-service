@@ -16,7 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import com.synectiks.asset.business.domain.Tag;
-import com.synectiks.asset.business.domain.DiscoveredAssets;
+import com.synectiks.asset.business.domain.CloudElement;
 import com.synectiks.asset.business.domain.ServiceAllocation;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.TagRepository;
@@ -37,14 +37,14 @@ public class TagService {
 	private ServiceAllocationService serviceAllocationService;
 	
 	@Autowired
-	private DiscoveredAssetsService discoveredAssetsService;
+	private CloudElementService discoveredAssetsService;
 	
 	
 	public Tag save(Tag assetServiceTag) {
 		logger.debug("Request to save AssetServiceTag : {}", assetServiceTag);
 		Tag d = tagRepository.save(assetServiceTag);
 		if (d != null) {
-			DiscoveredAssets ds = assetServiceTag.getDiscoveredAsset();
+			CloudElement ds = assetServiceTag.getDiscoveredAsset();
 			ds.setTagStatus(Constants.TAGGED);
 			discoveredAssetsService.partialUpdate(ds);
 		}
@@ -56,7 +56,7 @@ public class TagService {
 
 		return tagRepository.findById(assetServiceTag.getId()).map(existingDepartment -> {
 			if (assetServiceTag.getDiscoveredAsset() != null) {
-				Optional<DiscoveredAssets> od = discoveredAssetsService.findOne(assetServiceTag.getDiscoveredAsset().getId());
+				Optional<CloudElement> od = discoveredAssetsService.findOne(assetServiceTag.getDiscoveredAsset().getId());
 				if(od.isPresent()) {
 					existingDepartment.setDiscoveredAsset(od.get());
 				}
@@ -106,7 +106,7 @@ public class TagService {
 		logger.debug("Request to delete AssetServiceTag : {}", id);
 		Optional<Tag> oas = findOne(id);
 		if(oas.isPresent()) {
-			DiscoveredAssets ds = oas.get().getDiscoveredAsset();
+			CloudElement ds = oas.get().getDiscoveredAsset();
 			tagRepository.deleteById(id);
 			Map<String, String> filter = new HashMap<>();
 			filter.put(Constants.DISCOVERED_ASSET_ID, String.valueOf(oas.get().getDiscoveredAsset().getId()));
@@ -122,9 +122,9 @@ public class TagService {
 	public List<Tag> search(Map<String, String> filter) throws IOException {
 		logger.debug("Request to get all assetServiceTag on given filters");
 
-		DiscoveredAssets discoveredAssets = null;
+		CloudElement discoveredAssets = null;
 		if (!StringUtils.isBlank(filter.get(Constants.DISCOVERED_ASSET_ID))) {
-			discoveredAssets = new DiscoveredAssets();
+			discoveredAssets = new CloudElement();
 			discoveredAssets.setId(Long.parseLong(filter.get(Constants.DISCOVERED_ASSET_ID)));
 			discoveredAssets.setCreatedOn(null);
 			discoveredAssets.setUpdatedOn(null);
@@ -165,9 +165,9 @@ public class TagService {
 	public List<Tag> searchTag(Map<String, String> filter) throws IOException {
 		logger.debug("Request to get all tags on given filters");
 
-		DiscoveredAssets discoveredAssets = null;
+		CloudElement discoveredAssets = null;
 		if (!StringUtils.isBlank(filter.get(Constants.DISCOVERED_ASSET_ID))) {
-			discoveredAssets = new DiscoveredAssets();
+			discoveredAssets = new CloudElement();
 			discoveredAssets.setId(Long.parseLong(filter.get(Constants.DISCOVERED_ASSET_ID)));
 			discoveredAssets.setCreatedOn(null);
 			discoveredAssets.setUpdatedOn(null);
