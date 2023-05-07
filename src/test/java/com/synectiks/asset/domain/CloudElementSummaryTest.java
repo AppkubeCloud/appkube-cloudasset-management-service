@@ -2,17 +2,18 @@ package com.synectiks.asset.domain;
 
 import static org.assertj.core.api.Assertions.assertThat;
 
+import com.synectiks.asset.business.domain.CloudElementSummary;
 import com.synectiks.asset.web.rest.TestUtil;
 import org.junit.jupiter.api.Test;
 
-class CloudElementTest {
+class CloudElementSummaryTest {
 
   @Test
   void equalsVerifier() throws Exception {
-    TestUtil.equalsVerifier(CloudElement.class);
-    CloudElement cloudElement1 = new CloudElement();
+    TestUtil.equalsVerifier(CloudElementSummary.class);
+    CloudElementSummary cloudElement1 = new CloudElementSummary();
     cloudElement1.setId(1L);
-    CloudElement cloudElement2 = new CloudElement();
+    CloudElementSummary cloudElement2 = new CloudElementSummary();
     cloudElement2.setId(cloudElement1.getId());
     assertThat(cloudElement1).isEqualTo(cloudElement2);
     cloudElement2.setId(2L);

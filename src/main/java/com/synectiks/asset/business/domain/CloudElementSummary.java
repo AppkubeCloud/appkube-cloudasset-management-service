@@ -1,4 +1,4 @@
-package com.synectiks.asset.domain;
+package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -10,15 +10,11 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
-import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
-import com.synectiks.asset.business.domain.AbstractAuditingEntity;
-import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.service.CustomeHashMapConverter;
 
 import lombok.AllArgsConstructor;
@@ -28,35 +24,28 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * Discovered assets of a cloud environment
+ * CloudElementSummary
  */
 @Entity
-@Table(name = "cloud_element")
+@Table(name = "cloud_element_summary")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CloudElement extends AbstractAuditingEntity implements Serializable {
+public class CloudElementSummary extends AbstractAuditingEntity implements Serializable {
 
   private static final long serialVersionUID = 1L;
 
   @Id
-  @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "sequenceGenerator")
-  @SequenceGenerator(name = "sequenceGenerator")
+  @GeneratedValue(strategy = GenerationType.IDENTITY)
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "name")
-  private String name;
-  
-  @Column(name = "account_id")
-  private String accountId;
-
   @Convert(converter = CustomeHashMapConverter.class)
-  @Column(name = "view_json", columnDefinition = "jsonb")
-  private Map<String, Object> viewJson;
+  @Column(name = "summary_json", columnDefinition = "jsonb")
+  private Map<String, Object> summaryJson;
   
   @ManyToOne
   private CloudEnvironment cloudEnvironment;
