@@ -53,13 +53,13 @@ public class ServiceMetadataController {
     private ServiceMetadataRepository serviceMetadataRepository;
 
     /**
-     * {@code POST  /service-metadatas} : Create a new service_metadata.
+     * {@code POST  /service-metadata} : Create a new service_metadata.
      *
      * @param service_metadata the service_metadata to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new service_metadata, or with status {@code 400 (Bad Request)} if the service_metadata has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PostMapping("/service-metadatas")
+    @PostMapping("/service-metadata")
     public ResponseEntity<ServiceMetadata> createServiceMetadata(@Valid @RequestBody ServiceMetadata serviceMetadata) throws URISyntaxException {
         logger.debug("REST request to save ServiceMetadata : {}", serviceMetadata);
         if (serviceMetadata.getId() != null) {
@@ -67,13 +67,13 @@ public class ServiceMetadataController {
         }
         ServiceMetadata result = serviceMetadataService.save(serviceMetadata);
         return ResponseEntity
-            .created(new URI("/api/service-metadatas/" + result.getId()))
+            .created(new URI("/api/service-metadata/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
             .body(result);
     }
 
     /**
-     * {@code PUT  /service-metadatas/:id} : Updates an existing ServiceMetadata.
+     * {@code PUT  /service-metadata/:id} : Updates an existing ServiceMetadata.
      *
      * @param id the id of the ServiceMetadata to save.
      * @param ServiceMetadata the ServiceMetadata to update.
@@ -82,7 +82,7 @@ public class ServiceMetadataController {
      * or with status {@code 500 (Internal Server Error)} if the ServiceMetadata couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PutMapping("/service-metadatas/{id}")
+    @PutMapping("/service-metadata/{id}")
     public ResponseEntity<ServiceMetadata> updateServiceMetadatan(
         @PathVariable(value = "id", required = false) final Long id,
         @Valid @RequestBody ServiceMetadata serviceMetadata
@@ -107,7 +107,7 @@ public class ServiceMetadataController {
     }
 
     /**
-     * {@code PATCH  /service-metadatas/:id} : Partial updates given fields of an existing ServiceMetadata, field will ignore if it is null
+     * {@code PATCH  /service-metadata/:id} : Partial updates given fields of an existing ServiceMetadata, field will ignore if it is null
      *
      * @param id the id of the ServiceMetadata to save.
      * @param ServiceMetadata the ServiceMetadata to update.
@@ -117,7 +117,7 @@ public class ServiceMetadataController {
      * or with status {@code 500 (Internal Server Error)} if the ServiceMetadata couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
      */
-    @PatchMapping(value = "/service-metadatas/{id}", consumes = { "application/json", "application/merge-patch+json" })
+    @PatchMapping(value = "/service-metadata/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<ServiceMetadata> partialUpdateServiceMetadata(
         @PathVariable(value = "id", required = false) final Long id,
         @NotNull @RequestBody ServiceMetadata serviceMetadata
@@ -143,25 +143,25 @@ public class ServiceMetadataController {
     }
 
     /**
-     * {@code GET  /service-metadatas} : get all the ServiceMetadatas.
+     * {@code GET  /service-metadata} : get all the ServiceMetadatas.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ServiceMetadatas in body.
      * @throws IOException 
      */
-    @GetMapping("/service-metadatas")
+    @GetMapping("/service-metadata")
     public List<ServiceMetadata> getAllServiceMetadatas() throws IOException {
         logger.debug("REST request to get all ServiceMetadatas");
         return serviceMetadataService.findAll();
     }
 
     /**
-     * {@code GET  /service-metadatas/:id} : get the "id" ServiceMetadata.
+     * {@code GET  /service-metadata/:id} : get the "id" ServiceMetadata.
      *
      * @param id the id of the ServiceMetadata to retrieve.
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and with body the ServiceMetadata, or with status {@code 404 (Not Found)}.
      * @throws IOException 
      */
-    @GetMapping("/service-metadatas/{id}")
+    @GetMapping("/service-metadata/{id}")
     public ResponseEntity<ServiceMetadata> getServiceMetadata(@PathVariable Long id) throws IOException {
         logger.debug("REST request to get ServiceMetadata : {}", id);
         Optional<ServiceMetadata> organization = serviceMetadataService.findOne(id);
@@ -169,12 +169,12 @@ public class ServiceMetadataController {
     }
 
     /**
-     * {@code DELETE  /service-metadatas/:id} : delete the "id" ServiceMetadata.
+     * {@code DELETE  /service-metadata/:id} : delete the "id" ServiceMetadata.
      *
      * @param id the id of the ServiceMetadata to delete.
      * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
      */
-    @DeleteMapping("/service-metadatas/{id}")
+    @DeleteMapping("/service-metadata/{id}")
     public ResponseEntity<Void> deleteServiceMetadata(@PathVariable Long id) {
         logger.debug("REST request to delete ServiceMetadata : {}", id);
         serviceMetadataService.delete(id);
@@ -185,11 +185,11 @@ public class ServiceMetadataController {
     }
 
     /**
-     * {@code GET  /service-metadatas/search} : get all the ServiceMetadatas on given filters.
+     * {@code GET  /service-metadata/search} : get all the ServiceMetadatas on given filters.
      *
      * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list of ServiceMetadatas in body.
      */
-    @GetMapping("/service-metadatas/search")
+    @GetMapping("/service-metadata/search")
     public List<ServiceMetadata> search(@RequestParam Map<String, String> filter) throws IOException {
         logger.debug("REST request to get all ServiceMetadatas on given filters");
         return serviceMetadataService.search(filter);
