@@ -55,18 +55,18 @@ public class CloudEnvironmentService {
                 if (cloudEnvironment.getAccountId() != null) {
                     existingCloudEnvironment.setAccountId(cloudEnvironment.getAccountId());
                 }
-                if (cloudEnvironment.getVaultId() != null) {
-                    existingCloudEnvironment.setVaultId(cloudEnvironment.getVaultId());
-                }
-                if (cloudEnvironment.getDisplayName() != null) {
-                    existingCloudEnvironment.setDisplayName(cloudEnvironment.getDisplayName());
-                }
-                if (cloudEnvironment.getRoleArn() != null) {
-                    existingCloudEnvironment.setRoleArn(cloudEnvironment.getRoleArn());
-                }
-                if (cloudEnvironment.getExternalId() != null) {
-                    existingCloudEnvironment.setExternalId(cloudEnvironment.getExternalId());
-                }
+//                if (cloudEnvironment.getVaultId() != null) {
+//                    existingCloudEnvironment.setVaultId(cloudEnvironment.getVaultId());
+//                }
+//                if (cloudEnvironment.getDisplayName() != null) {
+//                    existingCloudEnvironment.setDisplayName(cloudEnvironment.getDisplayName());
+//                }
+//                if (cloudEnvironment.getRoleArn() != null) {
+//                    existingCloudEnvironment.setRoleArn(cloudEnvironment.getRoleArn());
+//                }
+//                if (cloudEnvironment.getExternalId() != null) {
+//                    existingCloudEnvironment.setExternalId(cloudEnvironment.getExternalId());
+//                }
                 if (cloudEnvironment.getCloud() != null) {
                     existingCloudEnvironment.setCloud(cloudEnvironment.getCloud());
                 }

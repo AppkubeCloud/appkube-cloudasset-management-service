@@ -15,7 +15,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.fasterxml.jackson.databind.JsonNode;
-import com.synectiks.asset.domain.AccountServices;
+import com.synectiks.asset.business.domain.AccountServices;
 import com.synectiks.asset.repository.AccountServicesRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 

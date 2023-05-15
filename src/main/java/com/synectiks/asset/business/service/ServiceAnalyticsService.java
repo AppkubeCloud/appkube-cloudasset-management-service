@@ -14,8 +14,8 @@ import org.springframework.data.domain.Sort;
 import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.domain.ServiceAnalytics;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceAnalyticsRepository;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.util.DateFormatUtil;

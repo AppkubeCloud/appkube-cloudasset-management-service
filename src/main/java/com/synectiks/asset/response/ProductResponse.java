@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synectiks.asset.business.domain.Product;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -29,12 +27,12 @@ public class ProductResponse implements Serializable {
   
   private List<DeploymentEnvironmentResponse> deploymentEnvironmentList;
   
-  public static ProductResponse from(Product product) {
+  public static ProductResponse from(String product) {
 	  return ProductResponse.builder()
-			  .id(product.getId())
-			  .name(product.getName())
-			  .description(product.getDescription())
-			  .status(product.getStatus())
+//			  .id(product.getId())
+			  .name(product)
+//			  .description(product.getDescription())
+//			  .status(product.getStatus())
 			  .build();
   }
   

@@ -11,8 +11,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.business.service.ServiceDetailService;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 
 @Component("UniqueProductUtil")
@@ -35,7 +35,7 @@ public class UniqueProductUtil {
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(new HashMap<>());
 		Map<String, String> map = new HashMap<>();
 		for(ServiceDetail sd: sdr.getServices()) {
-			map.put((String)sd.getMetadata_json().get("associatedProduct"), (String)sd.getMetadata_json().get("associatedProduct"));
+			map.put((String)sd.getMetadataJson().get("associatedProduct"), (String)sd.getMetadataJson().get("associatedProduct"));
 		}
 		return new ArrayList<>(map.keySet());
 	}
@@ -47,7 +47,7 @@ public class UniqueProductUtil {
         ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
         Map<String, String> map = new HashMap<>();
         for(ServiceDetail sd: sdr.getServices()) {
-            map.put((String)sd.getMetadata_json().get("associatedProduct"), (String)sd.getMetadata_json().get("associatedProduct"));
+            map.put((String)sd.getMetadataJson().get("associatedProduct"), (String)sd.getMetadataJson().get("associatedProduct"));
         }
         return new ArrayList<>(map.keySet());
     }

@@ -17,9 +17,9 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ObjectNode;
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.ServiceDetailReportResponse;
 import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.util.UniqueProductUtil;
@@ -81,7 +81,7 @@ public class AnalyticController {
                 Double avgSecSla = 0.0D;
                 Double avgEndSla = 0.0D;
                 for(ServiceDetail serviceDetail: sdr.getServices()){
-                	Map<String, Object> dsTypeMap = serviceDetail.getSla_json();
+                	Map<String, Object> dsTypeMap = serviceDetail.getSlaJson();
                 	if(dsTypeMap != null) {
                 		perfSla = perfSla + (Double)((Map)dsTypeMap.get(Constants.PERFORMANCE)).get("sla");
                         avlSla = avlSla + (Double)((Map)dsTypeMap.get(Constants.AVAILABILITY)).get("sla");

@@ -1,7 +1,6 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -17,7 +16,6 @@ import org.springframework.transaction.annotation.Transactional;
 
 import com.synectiks.asset.business.domain.Department;
 import com.synectiks.asset.business.domain.Organization;
-import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.DepartmentRepository;
 import com.synectiks.asset.util.JsonAndObjectConverterUtil;
@@ -32,24 +30,20 @@ public class DepartmentService {
 
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
-
-	@Autowired
-	private ServiceAllocationService serviceAllocationService;
-	
 	
 	public Department save(Department department) {
 		logger.debug("Request to save Department : {}", department);
 		Department d = departmentRepository.save(department);
-		if(d != null){
-			Map<String, String> filter = new HashMap<>();
-			filter.put("departmentId", String.valueOf(d.getId()));
-			try {
-				List<Product> pList = serviceAllocationService.getProducts(filter);
-				d.setProducts(pList);
-			} catch (IOException e) {
-				logger.error("Error in getting products ", e.getMessage());
-			}
-		}
+//		if(d != null){
+//			Map<String, String> filter = new HashMap<>();
+//			filter.put("departmentId", String.valueOf(d.getId()));
+//			try {
+//				List<Product> pList = serviceAllocationService.getProducts(filter);
+//				d.setProducts(pList);
+//			} catch (IOException e) {
+//				logger.error("Error in getting products ", e.getMessage());
+//			}
+//		}
 		return d;
 	}
 
@@ -75,14 +69,14 @@ public class DepartmentService {
 			if (department.getUpdatedBy() != null) {
 				existingDepartment.setUpdatedBy(department.getUpdatedBy());
 			}
-			Map<String, String> filter = new HashMap<>();
-			filter.put("departmentId", String.valueOf(existingDepartment.getId()));
-			try {
-				List<Product> pList = serviceAllocationService.getProducts(filter);
-				existingDepartment.setProducts(pList);
-			} catch (IOException e) {
-				logger.error("Error in getting products ", e.getMessage());
-			}
+//			Map<String, String> filter = new HashMap<>();
+//			filter.put("departmentId", String.valueOf(existingDepartment.getId()));
+//			try {
+//				List<Product> pList = serviceAllocationService.getProducts(filter);
+//				existingDepartment.setProducts(pList);
+//			} catch (IOException e) {
+//				logger.error("Error in getting products ", e.getMessage());
+//			}
 			return existingDepartment;
 		}).map(departmentRepository::save);
 	}
@@ -91,17 +85,17 @@ public class DepartmentService {
 	public List<Department> findAll() {
 		logger.debug("Request to get all Departments");
 		List<Department> list = departmentRepository.findAll();
-		Map<String, String> filter = new HashMap<>();
-		for(Department department: list) {
-			filter.clear();
-			filter.put("departmentId", String.valueOf(department.getId()));
-			try {
-				List<Product> pList = serviceAllocationService.getProducts(filter);
-				department.setProducts(pList);
-			} catch (IOException e) {
-				logger.error("Error in getting products ", e.getMessage());
-			}
-		}
+//		Map<String, String> filter = new HashMap<>();
+//		for(Department department: list) {
+//			filter.clear();
+//			filter.put("departmentId", String.valueOf(department.getId()));
+//			try {
+//				List<Product> pList = serviceAllocationService.getProducts(filter);
+//				department.setProducts(pList);
+//			} catch (IOException e) {
+//				logger.error("Error in getting products ", e.getMessage());
+//			}
+//		}
 		return list;
 	}
 
@@ -109,16 +103,16 @@ public class DepartmentService {
 	public Optional<Department> findOne(Long id) {
 		logger.debug("Request to get Department : {}", id);
 		Optional<Department> od = departmentRepository.findById(id);
-		if(od.isPresent()) {
-			Map<String, String> filter = new HashMap<>();
-			filter.put("departmentId", String.valueOf(od.get().getId()));
-			try {
-				List<Product> pList = serviceAllocationService.getProducts(filter);
-				od.get().setProducts(pList);
-			} catch (IOException e) {
-				logger.error("Error in getting products ", e.getMessage());
-			}
-		}
+//		if(od.isPresent()) {
+//			Map<String, String> filter = new HashMap<>();
+//			filter.put("departmentId", String.valueOf(od.get().getId()));
+//			try {
+//				List<Product> pList = serviceAllocationService.getProducts(filter);
+//				od.get().setProducts(pList);
+//			} catch (IOException e) {
+//				logger.error("Error in getting products ", e.getMessage());
+//			}
+//		}
 		return od;
 		
 	}
@@ -168,17 +162,17 @@ public class DepartmentService {
 		}
 		List<Department> list = departmentRepository.findAll(Example.of(department), Sort.by(Sort.Direction.DESC, "name"));
 		
-		Map<String, String> prdFilter = new HashMap<>();
-		for(Department dept: list) {
-			prdFilter.clear();
-			prdFilter.put("departmentId", String.valueOf(dept.getId()));
-			try {
-				List<Product> pList = serviceAllocationService.getProducts(prdFilter);
-				dept.setProducts(pList);
-			} catch (IOException e) {
-				logger.error("Error in getting products ", e.getMessage());
-			}
-		}
+//		Map<String, String> prdFilter = new HashMap<>();
+//		for(Department dept: list) {
+//			prdFilter.clear();
+//			prdFilter.put("departmentId", String.valueOf(dept.getId()));
+//			try {
+//				List<Product> pList = serviceAllocationService.getProducts(prdFilter);
+//				dept.setProducts(pList);
+//			} catch (IOException e) {
+//				logger.error("Error in getting products ", e.getMessage());
+//			}
+//		}
 		
 		return list;
 	}

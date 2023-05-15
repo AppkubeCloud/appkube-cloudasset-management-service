@@ -30,7 +30,7 @@ import org.springframework.web.bind.annotation.RestController;
 
 import com.fasterxml.jackson.core.JsonParseException;
 import com.fasterxml.jackson.databind.JsonMappingException;
-import com.synectiks.asset.domain.ServiceDetail;
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 
 @RestController
@@ -47,7 +47,7 @@ public class TestServiceDataGeneratorController {
 		public List<ServiceDetail> searchServiceDetailWithFilter(String Env) {
 	
 			List<ServiceDetail> list = serviceDetailRepository.findAll();
-			List<ServiceDetail> list2 = list.stream().filter((sd) -> sd.getMetadata_json().get("associatedEnv").equals(Env)).collect(Collectors.toList());
+			List<ServiceDetail> list2 = list.stream().filter((sd) -> sd.getMetadataJson().get("associatedEnv").equals(Env)).collect(Collectors.toList());
 			return list2;
 
 			}

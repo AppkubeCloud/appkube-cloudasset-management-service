@@ -2,6 +2,8 @@ package com.synectiks.asset.controller;
 
 import java.io.File;
 import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.nio.charset.StandardCharsets;
 import java.nio.file.Files;
 import java.nio.file.Paths;
@@ -18,6 +20,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -35,12 +38,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
-import com.synectiks.asset.business.service.CfgCacheConfigService;
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.business.service.ServiceDetailService;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.config.Converter;
-import com.synectiks.asset.domain.CfgCacheConfig;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.AvailabilityResponse;
 import com.synectiks.asset.response.DataProtectionResponse;
 import com.synectiks.asset.response.PerformanceResponse;
@@ -51,17 +52,22 @@ import com.synectiks.asset.util.RandomUtil;
 import com.synectiks.asset.util.UniqueProductUtil;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
+import io.github.jhipster.web.util.HeaderUtil;
+
 @RestController
 @RequestMapping("/api")
 public class ServicesDetailController {
 
 	private static final Logger logger = LoggerFactory.getLogger(ServicesDetailController.class);
 
+	private static final String ENTITY_NAME = "ServicesDetail";
+	 
+	@Value("${jhipster.clientApp.name}")
+    private String applicationName;
+
+	
 	@Autowired
 	private ServiceDetailService serviceDetailService;
-
-	@Autowired
-	private CfgCacheConfigService cfgCacheConfigService;
 
     @Autowired
     private UniqueProductUtil uniqueProductUtil;
@@ -87,10 +93,6 @@ public class ServicesDetailController {
 	public ResponseEntity<Optional<ServiceDetail>> deleteServiceDetail(@PathVariable Long id) {
 		logger.info("Request to delete service-detail by id: {}", id);
 		Optional<ServiceDetail> oSpa = serviceDetailService.deleteServiceDetail(id);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.TRUE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
 
@@ -98,10 +100,6 @@ public class ServicesDetailController {
 	public ResponseEntity<ServiceDetail> createServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to create new service-detail");
 		ServiceDetail spa = serviceDetailService.createServiceDetail(obj);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.TRUE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(spa);
 	}
 
@@ -109,10 +107,6 @@ public class ServicesDetailController {
 	public ResponseEntity<ServiceDetail> updateServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to update service-detail");
 		ServiceDetail spa = serviceDetailService.updateServiceDetail(obj);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.TRUE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(spa);
 	}
 
@@ -120,10 +114,6 @@ public class ServicesDetailController {
 	public ResponseEntity<Optional<ServiceDetail>> partialUpdateServiceDetail(@RequestBody ServiceDetail obj){
 		logger.info("Request to partially update service-detail");
 		Optional<ServiceDetail> oSpa = serviceDetailService.partialUpdateServiceDetail(obj);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.TRUE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
 
@@ -135,15 +125,15 @@ public class ServicesDetailController {
 
 		if(sdr.getServices() != null && sdr.getServices().size() > 0) {
 			for(ServiceDetail sdObj: sdr.getServices()) {
-				sdObj.getMetadata_json().put("performance", PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
-				sdObj.getMetadata_json().put("availability", AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
-				sdObj.getMetadata_json().put("security", SecurityResponse.builder().score(RandomUtil.getRandom()).build());
-				sdObj.getMetadata_json().put("dataProtection", DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
-				sdObj.getMetadata_json().put("userExperiance", UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadataJson().put("performance", PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadataJson().put("availability", AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadataJson().put("security", SecurityResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadataJson().put("dataProtection", DataProtectionResponse.builder().score(RandomUtil.getRandom()).build());
+				sdObj.getMetadataJson().put("userExperiance", UserExperianceResponse.builder().score(RandomUtil.getRandom()).build());
 				
-				if(sdObj.getSla_json() != null) {
-					String billingCost = Constants.decfor.format((Double)((Map)sdObj.getSla_json().get(Constants.PERFORMANCE)).get("sla"));
-					((Map)sdObj.getMetadata_json().get("stats")).put("totalCostSoFar", billingCost);
+				if(sdObj.getSlaJson() != null) {
+					String billingCost = Constants.decfor.format((Double)((Map)sdObj.getSlaJson().get(Constants.PERFORMANCE)).get("sla"));
+					((Map)sdObj.getMetadataJson().get("stats")).put("totalCostSoFar", billingCost);
 				}
 				
 				list.add(sdObj);
@@ -158,10 +148,6 @@ public class ServicesDetailController {
 	public ResponseEntity<List<ServiceDetail>> createBulkData(@RequestBody ObjectNode objNode) throws IOException {
 		logger.info("Request to create bulk service-detail data");
 		serviceDetailService.createBulkData(objNode);
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.TRUE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
 		return getAllServiceDetail();
 	}
 
@@ -225,8 +211,8 @@ public class ServicesDetailController {
 		}
 		Long id = Long.parseLong(serviceId);
 		Optional<ServiceDetail> osd = serviceDetailService.getServiceDetail(id);
-		if(osd.isPresent() && osd.get().getView_json() != null) {
-			return ResponseEntity.status(HttpStatus.OK).body(osd.get().getView_json());
+		if(osd.isPresent() && osd.get().getViewJson() != null) {
+			return ResponseEntity.status(HttpStatus.OK).body(osd.get().getViewJson());
 		}
 		return ResponseEntity.status(HttpStatus.OK).body(null);
 	}
@@ -472,5 +458,21 @@ public class ServicesDetailController {
 			}
 		}
 //		serviceDetailService.transformServiceDetailsListToTree();
+	}
+	
+	/**
+	 * API /service-detail/landing-zone
+	 * To get unique landing zone on given product, environment, module and service filters
+	 * @param obj
+	 * @return
+	 * @throws URISyntaxException
+	 */
+	@GetMapping("/service-detail/landing-zone")
+	public ResponseEntity<String> getLandingZone(@RequestParam Map<String, String> obj) throws URISyntaxException{
+		String landingZone = serviceDetailService.getLandingZone(obj);
+		 return ResponseEntity
+		            .created(new URI("/service-detail/landing-zone/" + landingZone))
+		            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, landingZone))
+		            .body(landingZone);
 	}
 }

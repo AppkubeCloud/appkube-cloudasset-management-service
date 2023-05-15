@@ -26,11 +26,11 @@ import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.node.ArrayNode;
 import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.google.gson.Gson;
+import com.synectiks.asset.business.domain.AccountServices;
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.AccountServices;
 import com.synectiks.asset.domain.Catalogue;
 import com.synectiks.asset.domain.Dashboard;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.repository.ServiceDetailRepository;
 import com.synectiks.asset.response.AccountTree;
 import com.synectiks.asset.response.App;
@@ -59,7 +59,7 @@ public class ServiceDetailService {
 	private static final Logger logger = LoggerFactory.getLogger(ServiceDetailService.class);
 
 	@Autowired
-	private ServiceDetailRepository serviceDetailJsonRepository;
+	private ServiceDetailRepository serviceDetailRepository;
 
 	@Autowired
 	private AccountServicesService accountServicesService;
@@ -84,12 +84,12 @@ public class ServiceDetailService {
 
 	public Optional<ServiceDetail> getServiceDetail(Long id) {
 		logger.info("Get service detail by id: {}", id);
-		return serviceDetailJsonRepository.findById(id);
+		return serviceDetailRepository.findById(id);
 	}
 
 	public List<ServiceDetail> getAllServiceDetail() {
 		logger.info("Get all service detail");
-		return serviceDetailJsonRepository.findAll(Sort.by(Direction.DESC, "id"));
+		return serviceDetailRepository.findAll(Sort.by(Direction.DESC, "id"));
 	}
 
 	public Optional<ServiceDetail> deleteServiceDetail(Long id) {
@@ -99,49 +99,49 @@ public class ServiceDetailService {
 			logger.warn("Id {} not found. Service detail cannot be deleted", id);
 			return oObj;
 		}
-		serviceDetailJsonRepository.deleteById(id);
+		serviceDetailRepository.deleteById(id);
 		transformServiceDetailsListToTree();
 		return oObj;
 	}
 
 	public ServiceDetail createServiceDetail(ServiceDetail obj) {
 		logger.info("Create new service detail");
-		ServiceDetail sd = serviceDetailJsonRepository.save(obj);
+		ServiceDetail sd = serviceDetailRepository.save(obj);
 //		transformServiceDetailsListToTree();
 		return sd;
 	}
 
 	public ServiceDetail updateServiceDetail(ServiceDetail obj) {
 		logger.info("Update service detail. Id: {}", obj.getId());
-		if (!serviceDetailJsonRepository.existsById(obj.getId())) {
+		if (!serviceDetailRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "ServiceDetail", "idnotfound");
 		}
-		ServiceDetail sd = serviceDetailJsonRepository.save(obj);
+		ServiceDetail sd = serviceDetailRepository.save(obj);
 //		transformServiceDetailsListToTree();
 		return sd;
 	}
 
 	public List<ServiceDetail> updateServiceDetailBatch(List<ServiceDetail> obj) {
-		return serviceDetailJsonRepository.saveAll(obj);
+		return serviceDetailRepository.saveAll(obj);
 	}
 	
 	public ServiceDetail updateServiceDetailSlaJson(ServiceDetail obj) {
 		logger.info("Update service detail sla_json. Id: {}", obj.getId());
-		if (!serviceDetailJsonRepository.existsById(obj.getId())) {
+		if (!serviceDetailRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "ServiceDetail", "idnotfound");
 		}
-		ServiceDetail sd = serviceDetailJsonRepository.save(obj);
+		ServiceDetail sd = serviceDetailRepository.save(obj);
 		return sd;
 	}
 
 	public Optional<ServiceDetail> partialUpdateServiceDetail(ServiceDetail obj) {
 		logger.info("Update service detail partialy. Id: {}", obj.getId());
-		if (!serviceDetailJsonRepository.existsById(obj.getId())) {
+		if (!serviceDetailRepository.existsById(obj.getId())) {
 			throw new BadRequestAlertException("Entity not found", "ServiceDetail", "idnotfound");
 		}
-		Optional<ServiceDetail> result = serviceDetailJsonRepository.findById(obj.getId()).map(existingObj -> {
+		Optional<ServiceDetail> result = serviceDetailRepository.findById(obj.getId()).map(existingObj -> {
 			return existingObj;
-		}).map(serviceDetailJsonRepository::save);
+		}).map(serviceDetailRepository::save);
 		transformServiceDetailsListToTree();
 		return result;
 	}
@@ -150,7 +150,7 @@ public class ServiceDetailService {
 		JsonNode objArray = objNode.get("services");
 		for (JsonNode node : objArray) {
 			ServiceDetail sd = ServiceDetail.builder()
-					.metadata_json(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node)).build();
+					.metadataJson(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node)).build();
 			createServiceDetail(sd);
 		}
 		transformServiceDetailsListToTree();
@@ -160,7 +160,7 @@ public class ServiceDetailService {
 		JsonNode objArray = objNode.get("services");
 		for (JsonNode node : objArray) {
 			ServiceDetail sd = ServiceDetail.builder()
-					.metadata_json(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node)).build();
+					.metadataJson(jacsonNodeAndMapConvertUtil.convertJsonNodeToMap(node)).build();
 			createServiceDetail(sd);
 		}
 	}
@@ -169,7 +169,7 @@ public class ServiceDetailService {
 		logger.info("Search service detail with filter");
 		ServiceDetailReportResponse resp = ServiceDetailReportResponse.builder().build();
 
-		List<ServiceDetail> list = serviceDetailJsonRepository.findAll();
+		List<ServiceDetail> list = serviceDetailRepository.findAll();
 
 		if (obj.size() == 0) {
 			resp.setServices(list);
@@ -179,82 +179,82 @@ public class ServiceDetailService {
 
 		List<ServiceDetail> list2 = list;
         if (obj.containsKey("cloudType")) {
-            list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("cloudType")).equalsIgnoreCase(obj.get("cloudType")))
+            list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("cloudType")).equalsIgnoreCase(obj.get("cloudType")))
                 .collect(Collectors.toList());
         }
 		if (obj.containsKey("name")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("name")).equals(obj.get("name")))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("name")).equals(obj.get("name")))
 					.collect(Collectors.toList());
 		}
 		if (obj.containsKey("description")) {
 			list2 = list2.stream()
-					.filter(sd -> ((String) sd.getMetadata_json().get("description")).equals(obj.get("description")))
+					.filter(sd -> ((String) sd.getMetadataJson().get("description")).equals(obj.get("description")))
 					.collect(Collectors.toList());
 		}
 		if (obj.containsKey("serviceType")) {
 			list2 = list2.stream().filter(
-					sd -> ((String) sd.getMetadata_json().get("serviceType")).equalsIgnoreCase(obj.get("serviceType")))
+					sd -> ((String) sd.getMetadataJson().get("serviceType")).equalsIgnoreCase(obj.get("serviceType")))
 					.collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedOU")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedOU"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedOU"))
 					.equalsIgnoreCase(obj.get("associatedOU"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedEnv")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedEnv"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedEnv"))
 					.equalsIgnoreCase(obj.get("associatedEnv"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("serviceNature")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("serviceNature"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("serviceNature"))
 					.equalsIgnoreCase(obj.get("serviceNature"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedDept")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedDept"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedDept"))
 					.equalsIgnoreCase(obj.get("associatedDept"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedCluster")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedCluster"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedCluster"))
 					.equalsIgnoreCase(obj.get("associatedCluster"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedProduct")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedProduct"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedProduct"))
 					.equalsIgnoreCase(obj.get("associatedProduct"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("serviceHostingType")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("serviceHostingType"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("serviceHostingType"))
 					.equalsIgnoreCase(obj.get("serviceHostingType"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedLandingZone")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedLandingZone"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedLandingZone"))
 					.equalsIgnoreCase(obj.get("associatedLandingZone"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedCommonService")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedCommonService"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedCommonService"))
 					.equalsIgnoreCase(obj.get("associatedCommonService"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedCloudElementId")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedCloudElementId"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedCloudElementId"))
 					.equals(obj.get("associatedCloudElementId"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedProductEnclave")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedProductEnclave"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedProductEnclave"))
 					.equalsIgnoreCase(obj.get("associatedProductEnclave"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedBusinessService")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedBusinessService"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedBusinessService"))
 					.equalsIgnoreCase(obj.get("associatedBusinessService"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedClusterNamespace")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedClusterNamespace"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedClusterNamespace"))
 					.equalsIgnoreCase(obj.get("associatedClusterNamespace"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedGlobalServiceLocation")) {
-			list2 = list2.stream().filter(sd -> ((String) sd.getMetadata_json().get("associatedGlobalServiceLocation"))
+			list2 = list2.stream().filter(sd -> ((String) sd.getMetadataJson().get("associatedGlobalServiceLocation"))
 					.equalsIgnoreCase(obj.get("associatedGlobalServiceLocation"))).collect(Collectors.toList());
 		}
 		if (obj.containsKey("associatedManagedCloudServiceLocation")) {
 			list2 = list2.stream()
-					.filter(sd -> ((String) sd.getMetadata_json().get("associatedManagedCloudServiceLocation"))
+					.filter(sd -> ((String) sd.getMetadataJson().get("associatedManagedCloudServiceLocation"))
 							.equalsIgnoreCase(obj.get("associatedManagedCloudServiceLocation")))
 					.collect(Collectors.toList());
 		}
@@ -284,7 +284,7 @@ public class ServiceDetailService {
 		for (AccountTree at : treeList) {
 			AccountServices as = AccountServices.builder().accountId(at.getAccount()).build();
 			Map<String, Object> attributes = gson.fromJson(gson.toJson(at), Map.class);
-			as.setAccount_services_json(attributes);
+			as.setServicesJson(attributes);
 			accountServicesService.createAccountServices(as);
 		}
 		logger.info("Account services updated completed");
@@ -388,46 +388,46 @@ public class ServiceDetailService {
 
 
 	private Data buildData(ServiceDetail sd, String envName) {
-		Data data = Data.builder().id(envName + "_" + (String) sd.getMetadata_json().get("name")).dbid(sd.getId())
-				.name((String) sd.getMetadata_json().get("name")).serviceDetailId(sd.getId())
-				.description((String) sd.getMetadata_json().get("description"))
-				.associatedCloudElement((String) sd.getMetadata_json().get("associatedCloudElement"))
-				.associatedClusterNamespace((String) sd.getMetadata_json().get("associatedClusterNamespace"))
+		Data data = Data.builder().id(envName + "_" + (String) sd.getMetadataJson().get("name")).dbid(sd.getId())
+				.name((String) sd.getMetadataJson().get("name")).serviceDetailId(sd.getId())
+				.description((String) sd.getMetadataJson().get("description"))
+				.associatedCloudElement((String) sd.getMetadataJson().get("associatedCloudElement"))
+				.associatedClusterNamespace((String) sd.getMetadataJson().get("associatedClusterNamespace"))
 				.associatedManagedCloudServiceLocation(
-						(String) sd.getMetadata_json().get("associatedManagedCloudServiceLocation"))
-				.associatedGlobalServiceLocation((String) sd.getMetadata_json().get("associatedGlobalServiceLocation"))
-				.serviceHostingType((String) sd.getMetadata_json().get("serviceHostingType"))
-				.associatedCloudElementId((String) sd.getMetadata_json().get("associatedCloudElementId"))
-				.associatedOU((String) sd.getMetadata_json().get("associatedOU"))
-				.associatedDept((String) sd.getMetadata_json().get("associatedDept"))
-				.associatedProduct((String) sd.getMetadata_json().get("associatedProduct"))
-				.associatedEnv((String) sd.getMetadata_json().get("associatedEnv"))
-				.serviceType((String) sd.getMetadata_json().get("serviceType"))
-				.dbType((String) sd.getMetadata_json().get("dbType"))
-				.slaJson(sd.getSla_json())
+						(String) sd.getMetadataJson().get("associatedManagedCloudServiceLocation"))
+				.associatedGlobalServiceLocation((String) sd.getMetadataJson().get("associatedGlobalServiceLocation"))
+				.serviceHostingType((String) sd.getMetadataJson().get("serviceHostingType"))
+				.associatedCloudElementId((String) sd.getMetadataJson().get("associatedCloudElementId"))
+				.associatedOU((String) sd.getMetadataJson().get("associatedOU"))
+				.associatedDept((String) sd.getMetadataJson().get("associatedDept"))
+				.associatedProduct((String) sd.getMetadataJson().get("associatedProduct"))
+				.associatedEnv((String) sd.getMetadataJson().get("associatedEnv"))
+				.serviceType((String) sd.getMetadataJson().get("serviceType"))
+				.dbType((String) sd.getMetadataJson().get("dbType"))
+				.slaJson(sd.getSlaJson())
 				.performance(PerformanceResponse.builder()
-						.score(sd.getMetadata_json().get("performance") != null
-								? (Float) ((Map) sd.getMetadata_json().get("performance")).get("score")
+						.score(sd.getMetadataJson().get("performance") != null
+								? (Float) ((Map) sd.getMetadataJson().get("performance")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.availability(AvailabilityResponse.builder()
-						.score(sd.getMetadata_json().get("availability") != null
-								? (Float) ((Map) sd.getMetadata_json().get("availability")).get("score")
+						.score(sd.getMetadataJson().get("availability") != null
+								? (Float) ((Map) sd.getMetadataJson().get("availability")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.security(SecurityResponse.builder()
-						.score(sd.getMetadata_json().get("security") != null
-								? (Float) ((Map) sd.getMetadata_json().get("security")).get("score")
+						.score(sd.getMetadataJson().get("security") != null
+								? (Float) ((Map) sd.getMetadataJson().get("security")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.dataProtection(DataProtectionResponse.builder()
-						.score(sd.getMetadata_json().get("dataProtection") != null
-								? (Float) ((Map) sd.getMetadata_json().get("dataProtection")).get("score")
+						.score(sd.getMetadataJson().get("dataProtection") != null
+								? (Float) ((Map) sd.getMetadataJson().get("dataProtection")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.userExperiance(UserExperianceResponse.builder()
-						.score(sd.getMetadata_json().get("userExperiance") != null
-								? (Float) ((Map) sd.getMetadata_json().get("userExperiance")).get("score")
+						.score(sd.getMetadataJson().get("userExperiance") != null
+								? (Float) ((Map) sd.getMetadataJson().get("userExperiance")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 
@@ -436,47 +436,47 @@ public class ServiceDetailService {
 	}
 
 	private App buildApp(ServiceDetail sd, String envName) {
-		App app = App.builder().id(envName + "_" + (String) sd.getMetadata_json().get("name")).dbid(sd.getId())
-				.name((String) sd.getMetadata_json().get("name")).serviceDetailId(sd.getId())
-				.description((String) sd.getMetadata_json().get("description"))
-				.associatedCloudElement((String) sd.getMetadata_json().get("associatedCloudElement"))
-				.associatedClusterNamespace((String) sd.getMetadata_json().get("associatedClusterNamespace"))
+		App app = App.builder().id(envName + "_" + (String) sd.getMetadataJson().get("name")).dbid(sd.getId())
+				.name((String) sd.getMetadataJson().get("name")).serviceDetailId(sd.getId())
+				.description((String) sd.getMetadataJson().get("description"))
+				.associatedCloudElement((String) sd.getMetadataJson().get("associatedCloudElement"))
+				.associatedClusterNamespace((String) sd.getMetadataJson().get("associatedClusterNamespace"))
 				.associatedManagedCloudServiceLocation(
-						(String) sd.getMetadata_json().get("associatedManagedCloudServiceLocation"))
-				.associatedGlobalServiceLocation((String) sd.getMetadata_json().get("associatedGlobalServiceLocation"))
-				.serviceHostingType((String) sd.getMetadata_json().get("serviceHostingType"))
-				.associatedCloudElementId((String) sd.getMetadata_json().get("associatedCloudElementId"))
+						(String) sd.getMetadataJson().get("associatedManagedCloudServiceLocation"))
+				.associatedGlobalServiceLocation((String) sd.getMetadataJson().get("associatedGlobalServiceLocation"))
+				.serviceHostingType((String) sd.getMetadataJson().get("serviceHostingType"))
+				.associatedCloudElementId((String) sd.getMetadataJson().get("associatedCloudElementId"))
 
-				.associatedOU((String) sd.getMetadata_json().get("associatedOU"))
-				.associatedDept((String) sd.getMetadata_json().get("associatedDept"))
-				.associatedProduct((String) sd.getMetadata_json().get("associatedProduct"))
-				.associatedEnv((String) sd.getMetadata_json().get("associatedEnv"))
-				.serviceType((String) sd.getMetadata_json().get("serviceType"))
-				.appType((String) sd.getMetadata_json().get("appType"))
-				.slaJson(sd.getSla_json())
+				.associatedOU((String) sd.getMetadataJson().get("associatedOU"))
+				.associatedDept((String) sd.getMetadataJson().get("associatedDept"))
+				.associatedProduct((String) sd.getMetadataJson().get("associatedProduct"))
+				.associatedEnv((String) sd.getMetadataJson().get("associatedEnv"))
+				.serviceType((String) sd.getMetadataJson().get("serviceType"))
+				.appType((String) sd.getMetadataJson().get("appType"))
+				.slaJson(sd.getSlaJson())
 				.performance(PerformanceResponse.builder()
-						.score(sd.getMetadata_json().get("performance") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("performance")).get("score")
+						.score(sd.getMetadataJson().get("performance") != null
+								? (Integer) ((Map) sd.getMetadataJson().get("performance")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.availability(AvailabilityResponse.builder()
-						.score(sd.getMetadata_json().get("availability") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("availability")).get("score")
+						.score(sd.getMetadataJson().get("availability") != null
+								? (Integer) ((Map) sd.getMetadataJson().get("availability")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.security(SecurityResponse.builder()
-						.score(sd.getMetadata_json().get("security") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("security")).get("score")
+						.score(sd.getMetadataJson().get("security") != null
+								? (Integer) ((Map) sd.getMetadataJson().get("security")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.dataProtection(DataProtectionResponse.builder()
-						.score(sd.getMetadata_json().get("dataProtection") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("dataProtection")).get("score")
+						.score(sd.getMetadataJson().get("dataProtection") != null
+								? (Integer) ((Map) sd.getMetadataJson().get("dataProtection")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 				.userExperiance(UserExperianceResponse.builder()
-						.score(sd.getMetadata_json().get("userExperiance") != null
-								? (Integer) ((Map) sd.getMetadata_json().get("userExperiance")).get("score")
+						.score(sd.getMetadataJson().get("userExperiance") != null
+								? (Integer) ((Map) sd.getMetadataJson().get("userExperiance")).get("score")
 								: RandomUtil.getRandom(95, 100))
 						.build())
 
@@ -502,11 +502,11 @@ public class ServiceDetailService {
 							for (Map.Entry<String, List<ServiceDetail>> entry : acMap.entrySet()) {
 								if (entry.getKey().equals(account.getAccount())) {
 									for (ServiceDetail sd : entry.getValue()) {
-										String vpcName = (String) sd.getMetadata_json().get("associatedProductEnclave");
-										String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
-										String productName = (String) sd.getMetadata_json().get("associatedProduct");
-										String envName = (String) sd.getMetadata_json().get("associatedEnv");
-										String hostingType = (String) sd.getMetadata_json().get("serviceHostingType");
+										String vpcName = (String) sd.getMetadataJson().get("associatedProductEnclave");
+										String clusterName = (String) sd.getMetadataJson().get("associatedCluster");
+										String productName = (String) sd.getMetadataJson().get("associatedProduct");
+										String envName = (String) sd.getMetadataJson().get("associatedEnv");
+										String hostingType = (String) sd.getMetadataJson().get("serviceHostingType");
 										
 										if (!StringUtils.isBlank(vpcName)) {
 
@@ -515,17 +515,17 @@ public class ServiceDetailService {
 														&& clusterName.substring(clusterName.lastIndexOf("-") + 1).equalsIgnoreCase(cluster.getName())
 														&& productName.equalsIgnoreCase(product.getName())
 														&& envName.equalsIgnoreCase(environment.getName())) {
-													String serviceNature = (String) sd.getMetadata_json().get("serviceNature");
+													String serviceNature = (String) sd.getMetadataJson().get("serviceNature");
 													
-													String description = sd.getMetadata_json().get("description") != null ? (String)sd.getMetadata_json().get("description") : null;
-													String associatedOU = (String) sd.getMetadata_json().get("associatedOU");
-													String associatedDept = (String) sd.getMetadata_json().get("associatedDept");
+													String description = sd.getMetadataJson().get("description") != null ? (String)sd.getMetadataJson().get("description") : null;
+													String associatedOU = (String) sd.getMetadataJson().get("associatedOU");
+													String associatedDept = (String) sd.getMetadataJson().get("associatedDept");
 													if (serviceNature.equalsIgnoreCase("Business")) {
-														String associatedBusinessService = (String) sd.getMetadata_json().get("associatedBusinessService");
+														String associatedBusinessService = (String) sd.getMetadataJson().get("associatedBusinessService");
 														fillBusinessServiceMap(bsMap, description, associatedOU,
 																associatedDept, associatedBusinessService);
 													} else if (serviceNature.equalsIgnoreCase("Common")) {
-														String associatedCommonService = (String) sd.getMetadata_json().get("associatedCommonService");
+														String associatedCommonService = (String) sd.getMetadataJson().get("associatedCommonService");
 														fillCommonServiceMap(csMap, description, associatedOU,
 																associatedDept, associatedCommonService);
 													}
@@ -535,17 +535,17 @@ public class ServiceDetailService {
 														&& productName.equalsIgnoreCase(product.getName())
 														&& envName.equalsIgnoreCase(environment.getName())
 														&& hostingType.equalsIgnoreCase(cluster.getName())) {
-													String serviceNature = (String) sd.getMetadata_json().get("serviceNature");
+													String serviceNature = (String) sd.getMetadataJson().get("serviceNature");
 													
-													String description = sd.getMetadata_json().get("description") != null ? (String)sd.getMetadata_json().get("description") : null;
-													String associatedOU = (String) sd.getMetadata_json().get("associatedOU");
-													String associatedDept = (String) sd.getMetadata_json().get("associatedDept");
+													String description = sd.getMetadataJson().get("description") != null ? (String)sd.getMetadataJson().get("description") : null;
+													String associatedOU = (String) sd.getMetadataJson().get("associatedOU");
+													String associatedDept = (String) sd.getMetadataJson().get("associatedDept");
 													if (serviceNature.equalsIgnoreCase("Business")) {
-														String associatedBusinessService = (String) sd.getMetadata_json().get("associatedBusinessService");
+														String associatedBusinessService = (String) sd.getMetadataJson().get("associatedBusinessService");
 														fillBusinessServiceMap(bsMap, description, associatedOU,
 																associatedDept, associatedBusinessService);
 													} else if (serviceNature.equalsIgnoreCase("Common")) {
-														String associatedCommonService = (String) sd.getMetadata_json().get("associatedCommonService");
+														String associatedCommonService = (String) sd.getMetadataJson().get("associatedCommonService");
 														fillCommonServiceMap(csMap, description, associatedOU,
 																associatedDept, associatedCommonService);
 													}
@@ -600,16 +600,16 @@ public class ServiceDetailService {
 						for (Map.Entry<String, List<ServiceDetail>> entry : acMap.entrySet()) {
 							if (entry.getKey().equals(account.getAccount())) {
 								for (ServiceDetail sd : entry.getValue()) {
-									String vpcName = (String) sd.getMetadata_json().get("associatedProductEnclave");
-									String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
-									String productName = (String) sd.getMetadata_json().get("associatedProduct");
+									String vpcName = (String) sd.getMetadataJson().get("associatedProductEnclave");
+									String clusterName = (String) sd.getMetadataJson().get("associatedCluster");
+									String productName = (String) sd.getMetadataJson().get("associatedProduct");
 									if (!StringUtils.isBlank(vpcName)) {
-										if("Cluster".equalsIgnoreCase((String) sd.getMetadata_json().get("serviceHostingType"))) {
+										if("Cluster".equalsIgnoreCase((String) sd.getMetadataJson().get("serviceHostingType"))) {
 											if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
 													&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
 															.equalsIgnoreCase(cluster.getName())
 													&& productName.equalsIgnoreCase(product.getName())) {
-												String envName = (String) sd.getMetadata_json().get("associatedEnv");
+												String envName = (String) sd.getMetadataJson().get("associatedEnv");
 												Environment env = Environment.builder().name(envName).build();
 												if (!environmentList.contains(env)) {
 													environmentList.add(env);
@@ -618,7 +618,7 @@ public class ServiceDetailService {
 										}else {
 											if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
 													&& productName.equalsIgnoreCase(product.getName())) {
-												String envName = (String) sd.getMetadata_json().get("associatedEnv");
+												String envName = (String) sd.getMetadataJson().get("associatedEnv");
 												Environment env = Environment.builder().name(envName).build();
 												if (!environmentList.contains(env)) {
 													environmentList.add(env);
@@ -631,7 +631,7 @@ public class ServiceDetailService {
 //												&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
 //														.equalsIgnoreCase(cluster.getName())
 //												&& productName.equalsIgnoreCase(product.getName())) {
-//											String envName = (String) sd.getMetadata_json().get("associatedEnv");
+//											String envName = (String) sd.getMetadataJson().get("associatedEnv");
 //											Environment env = Environment.builder().name(envName).build();
 //											if (!environmentList.contains(env)) {
 //												environmentList.add(env);
@@ -656,15 +656,15 @@ public class ServiceDetailService {
 					for (Map.Entry<String, List<ServiceDetail>> entry : acMap.entrySet()) {
 						if (entry.getKey().equals(account.getAccount())) {
 							for (ServiceDetail sd : entry.getValue()) {
-								String vpcName = (String) sd.getMetadata_json().get("associatedProductEnclave");
-								String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
+								String vpcName = (String) sd.getMetadataJson().get("associatedProductEnclave");
+								String clusterName = (String) sd.getMetadataJson().get("associatedCluster");
 
 								if (!StringUtils.isBlank(vpcName)) {
-									if("Cluster".equalsIgnoreCase((String) sd.getMetadata_json().get("serviceHostingType"))) {
+									if("Cluster".equalsIgnoreCase((String) sd.getMetadataJson().get("serviceHostingType"))) {
 										if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
 												&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
 														.equalsIgnoreCase(cluster.getName())) {
-											String productName = (String) sd.getMetadata_json().get("associatedProduct");
+											String productName = (String) sd.getMetadataJson().get("associatedProduct");
 											Product product = Product.builder().name(productName).build();
 											if (!productList.contains(product)) {
 												productList.add(product);
@@ -672,7 +672,7 @@ public class ServiceDetailService {
 										}
 									}else {
 										if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())) {
-											String productName = (String) sd.getMetadata_json().get("associatedProduct");
+											String productName = (String) sd.getMetadataJson().get("associatedProduct");
 											Product product = Product.builder().name(productName).build();
 											if (!productList.contains(product)) {
 												productList.add(product);
@@ -687,7 +687,7 @@ public class ServiceDetailService {
 //									if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())
 //											&& clusterName.substring(clusterName.lastIndexOf("-") + 1)
 //													.equalsIgnoreCase(cluster.getName())) {
-//										String productName = (String) sd.getMetadata_json().get("associatedProduct");
+//										String productName = (String) sd.getMetadataJson().get("associatedProduct");
 //										Product product = Product.builder().name(productName).build();
 //										if (!productList.contains(product)) {
 //											productList.add(product);
@@ -710,18 +710,18 @@ public class ServiceDetailService {
 					for (Vpc vpc : at.getVpcs()) {
 						List<Cluster> clusterList = new ArrayList<>();
 						for (ServiceDetail sd : entry.getValue()) {
-							String vpcName = (String) sd.getMetadata_json().get("associatedProductEnclave");
+							String vpcName = (String) sd.getMetadataJson().get("associatedProductEnclave");
 							if (!StringUtils.isBlank(vpcName)) {
-								if("Cluster".equalsIgnoreCase((String) sd.getMetadata_json().get("serviceHostingType"))) {
+								if("Cluster".equalsIgnoreCase((String) sd.getMetadataJson().get("serviceHostingType"))) {
 									if (vpcName.substring(vpcName.indexOf("-") + 1).equalsIgnoreCase(vpc.getName())) {
-										String clusterName = (String) sd.getMetadata_json().get("associatedCluster");
+										String clusterName = (String) sd.getMetadataJson().get("associatedCluster");
 										Cluster cl = Cluster.builder().name(clusterName.substring(clusterName.lastIndexOf("-") + 1)).build();
 										if (!clusterList.contains(cl)) {
 											clusterList.add(cl);
 										}
 									}
 								}else {
-									String clusterName = (String) sd.getMetadata_json().get("serviceHostingType");
+									String clusterName = (String) sd.getMetadataJson().get("serviceHostingType");
 									Cluster cl = Cluster.builder().name(clusterName).build();
 									if (!clusterList.contains(cl)) {
 										clusterList.add(cl);
@@ -744,7 +744,7 @@ public class ServiceDetailService {
 			tree.setAccount(entry.getKey());
 			List<Vpc> vpcList = new ArrayList<>();
 			for (ServiceDetail vpc : entry.getValue()) {
-				String name = (String) vpc.getMetadata_json().get("associatedProductEnclave");
+				String name = (String) vpc.getMetadataJson().get("associatedProductEnclave");
 				if (!StringUtils.isBlank(name)) {
 					Vpc v = new Vpc();
 					v.setName(name.substring(name.indexOf("-") + 1));
@@ -762,12 +762,12 @@ public class ServiceDetailService {
 	private Map<String, List<ServiceDetail>> filterAccountSpecificList(List<ServiceDetail> listSd) {
 		Map<String, List<ServiceDetail>> acMap = new HashMap<>();
 		for (ServiceDetail sd : listSd) {
-			if (acMap.containsKey((String) sd.getMetadata_json().get("associatedLandingZone"))) {
-				acMap.get((String) sd.getMetadata_json().get("associatedLandingZone")).add(sd);
+			if (acMap.containsKey((String) sd.getMetadataJson().get("associatedLandingZone"))) {
+				acMap.get((String) sd.getMetadataJson().get("associatedLandingZone")).add(sd);
 			} else {
 				List<ServiceDetail> list = new ArrayList<>();
 				list.add(sd);
-				acMap.put((String) sd.getMetadata_json().get("associatedLandingZone"), list);
+				acMap.put((String) sd.getMetadataJson().get("associatedLandingZone"), list);
 			}
 		}
 		return acMap;
@@ -806,7 +806,7 @@ public class ServiceDetailService {
 
 				criteriaMap.clear();
 				criteriaMap.put("associatedCloudElementType",
-						(String) sd.getMetadata_json().get("associatedCloudElement"));
+						(String) sd.getMetadataJson().get("associatedCloudElement"));
 				Catalogue catalogue = catalogueService.searchCatalogue(criteriaMap);
 				List<CloudDashboard> cloudElementSpeficCloudDashBoards = catalogue.getDetails().getOps()
 						.getCloudDashBoards();
@@ -822,10 +822,10 @@ public class ServiceDetailService {
 						}
 						// check if dashboard exists
 						String serviceName = null;
-						if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
-							serviceName = (String) sd.getMetadata_json().get("associatedCommonService");
+						if(sd.getMetadataJson().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadataJson().get("serviceNature"))) {
+							serviceName = (String) sd.getMetadataJson().get("associatedCommonService");
 						}else {
-							serviceName = (String) sd.getMetadata_json().get("associatedBusinessService");
+							serviceName = (String) sd.getMetadataJson().get("associatedBusinessService");
 						}
 						isDashboardExists = checkDashboardExists(sd, serviceName, accountId, cd.getAssociatedCloudElementType(), cd.getAssociatedSLAType(), mapper);
 
@@ -841,7 +841,7 @@ public class ServiceDetailService {
 						cdCriteriaMap.put("associatedCloud", cd.getAssociatedCloud());
 						cdCriteriaMap.put("accountId", accountId);
 						cdCriteriaMap.put("associatedCloudElementId",
-								(String) sd.getMetadata_json().get("associatedCloudElementId"));
+								(String) sd.getMetadataJson().get("associatedCloudElementId"));
 
 						Dashboard dashboard = awsService.getDashboardFromAwsS3(cdCriteriaMap, s3Client, dsInstanceJson);
 						ObjectNode dashboardNode = (ObjectNode) mapper.readTree(dashboard.getData());
@@ -868,21 +868,21 @@ public class ServiceDetailService {
 	//					respNode.put("dashboardCatalogueId", cd.getId());
 						respNode.put("accountId", accountId);
 						respNode.put("cloudElement", cd.getAssociatedCloudElementType());
-						respNode.put("cloudElementId", (String) sd.getMetadata_json().get("associatedCloudElementId"));
+						respNode.put("cloudElementId", (String) sd.getMetadataJson().get("associatedCloudElementId"));
 						respNode.put("url", respNode.get("url").asText());
 
-						respNode.put("associatedOU", (String) sd.getMetadata_json().get("associatedOU"));
-						respNode.put("associatedDept", (String) sd.getMetadata_json().get("associatedDept"));
-						respNode.put("associatedProduct", (String) sd.getMetadata_json().get("associatedProduct"));
-						respNode.put("associatedEnv", (String) sd.getMetadata_json().get("associatedEnv"));
-						respNode.put("serviceType", (String) sd.getMetadata_json().get("serviceType"));
-						respNode.put("serviceNature", (String) sd.getMetadata_json().get("serviceNature"));
-						if(sd.getMetadata_json().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadata_json().get("serviceNature"))) {
-							respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedCommonService"));
+						respNode.put("associatedOU", (String) sd.getMetadataJson().get("associatedOU"));
+						respNode.put("associatedDept", (String) sd.getMetadataJson().get("associatedDept"));
+						respNode.put("associatedProduct", (String) sd.getMetadataJson().get("associatedProduct"));
+						respNode.put("associatedEnv", (String) sd.getMetadataJson().get("associatedEnv"));
+						respNode.put("serviceType", (String) sd.getMetadataJson().get("serviceType"));
+						respNode.put("serviceNature", (String) sd.getMetadataJson().get("serviceNature"));
+						if(sd.getMetadataJson().get("serviceNature") != null && "Common".equalsIgnoreCase((String)sd.getMetadataJson().get("serviceNature"))) {
+							respNode.put("serviceName", (String) sd.getMetadataJson().get("associatedCommonService"));
 						}else {
-							respNode.put("serviceName", (String) sd.getMetadata_json().get("associatedBusinessService"));
+							respNode.put("serviceName", (String) sd.getMetadataJson().get("associatedBusinessService"));
 						}
-						respNode.put("serviceInstance", (String) sd.getMetadata_json().get("name"));
+						respNode.put("serviceInstance", (String) sd.getMetadataJson().get("name"));
 
 						ArrayNode jnArray = (ArrayNode) viewJsonNode.get(cd.getAssociatedSLAType().toLowerCase());
 						jnArray.add(respNode);
@@ -901,27 +901,27 @@ public class ServiceDetailService {
 	private boolean checkDashboardExists(ServiceDetail sd, String serviceName, String accountId,
 			String cloudElement, String associatedSLAType, ObjectMapper mapper) {
 
-		String associatedOU =(String) sd.getMetadata_json().get("associatedOU");
-		String associatedDept =(String) sd.getMetadata_json().get("associatedDept");
-		String associatedProduct = (String) sd.getMetadata_json().get("associatedProduct");
-		String associatedEnv = (String) sd.getMetadata_json().get("associatedEnv");
-		String serviceType = (String) sd.getMetadata_json().get("serviceType");
-		String serviceNature = (String) sd.getMetadata_json().get("serviceNature");
-		String serviceInstance = (String) sd.getMetadata_json().get("name");
-		String cloudElementId = (String) sd.getMetadata_json().get("associatedCloudElementId");
+		String associatedOU =(String) sd.getMetadataJson().get("associatedOU");
+		String associatedDept =(String) sd.getMetadataJson().get("associatedDept");
+		String associatedProduct = (String) sd.getMetadataJson().get("associatedProduct");
+		String associatedEnv = (String) sd.getMetadataJson().get("associatedEnv");
+		String serviceType = (String) sd.getMetadataJson().get("serviceType");
+		String serviceNature = (String) sd.getMetadataJson().get("serviceNature");
+		String serviceInstance = (String) sd.getMetadataJson().get("name");
+		String cloudElementId = (String) sd.getMetadataJson().get("associatedCloudElementId");
 
-		if(sd.getView_json() == null) {
+		if(sd.getViewJson() == null) {
 			return false;
-		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) == null) {
+		}else if(sd.getViewJson().get(associatedSLAType.toLowerCase()) == null) {
 			return false;
-		}else if(sd.getView_json().get(associatedSLAType.toLowerCase()) != null
-				&& ((List)sd.getView_json().get(associatedSLAType.toLowerCase())).isEmpty()) {
+		}else if(sd.getViewJson().get(associatedSLAType.toLowerCase()) != null
+				&& ((List)sd.getViewJson().get(associatedSLAType.toLowerCase())).isEmpty()) {
 			return false;
 		}
 		if(mapper == null) {
 			mapper = Constants.instantiateMapper();
 		}
-		List jsonNodeList = (List)sd.getView_json().get(associatedSLAType.toLowerCase());
+		List jsonNodeList = (List)sd.getViewJson().get(associatedSLAType.toLowerCase());
 		for (Object objNode : jsonNodeList) {
 			Map node = (Map)objNode;
 			if(associatedOU.equalsIgnoreCase((String)node.get("associatedOU"))
@@ -954,15 +954,15 @@ public class ServiceDetailService {
 				Optional<ServiceDetail> osd = getServiceDetail(serviceId);
 				if (osd.isPresent()) {
 					ServiceDetail sd = osd.get();
-					if (sd.getView_json() == null) {
+					if (sd.getViewJson() == null) {
 						logger.info("Adding new view json");
 						ObjectNode ob = createViewJson(objectNode.get(Constants.SERVICE_ID).asText(), jsonNode, keyType, mapper);
-						sd.setView_json(jacsonNodeAndMapConvertUtil.convertObjectNodeToMap(ob));
+						sd.setViewJson(jacsonNodeAndMapConvertUtil.convertObjectNodeToMap(ob));
 					} else {
 						logger.info("Updating view json");
-						Map<String, Object> viewJsonMap = sd.getView_json();
+						Map<String, Object> viewJsonMap = sd.getViewJson();
 						updateViewJson(jsonNode, objectNode.get(Constants.SERVICE_ID).asText(), viewJsonMap, keyType, mapper);
-						sd.setView_json(viewJsonMap);
+						sd.setViewJson(viewJsonMap);
 					}
 					updateServiceDetail(sd);
 				}
@@ -981,14 +981,14 @@ public class ServiceDetailService {
     	try {
     		for(ServiceDetail serviceDetail: sdr.getServices()){
             	Map<String, Object> dsTypeMap = null;
-            	if(serviceDetail.getSla_json() == null){
+            	if(serviceDetail.getSlaJson() == null){
                     dsTypeMap = new HashMap<>();
                 }else {
-                    dsTypeMap = serviceDetail.getSla_json();
+                    dsTypeMap = serviceDetail.getSlaJson();
                 }
-            	dsTypeMap.put("cloudType", (String) serviceDetail.getMetadata_json().get("cloudType"));
-            	dsTypeMap.put("associatedProduct", (String) serviceDetail.getMetadata_json().get("associatedProduct"));
-            	dsTypeMap.put("associatedEnv", (String) serviceDetail.getMetadata_json().get("associatedEnv"));
+            	dsTypeMap.put("cloudType", (String) serviceDetail.getMetadataJson().get("cloudType"));
+            	dsTypeMap.put("associatedProduct", (String) serviceDetail.getMetadataJson().get("associatedProduct"));
+            	dsTypeMap.put("associatedEnv", (String) serviceDetail.getMetadataJson().get("associatedEnv"));
             	dsTypeMap.put("serviceId", serviceDetail.getId());
             	setSlaJson(serviceDetail, dsTypeMap);
             	objList.add(serviceDetail);
@@ -1016,7 +1016,7 @@ public class ServiceDetailService {
 		    slaMap.put("sla",RandomUtil.getRandom(98,100));
 		    dsTypeMap.put(dashBoardType,slaMap);
 		}
-		serviceDetail.setSla_json(dsTypeMap);
+		serviceDetail.setSlaJson(dsTypeMap);
 	}
 
 
@@ -1061,4 +1061,11 @@ public class ServiceDetailService {
 		viewJsonMap.put(key, existingList);
 	}
 
+	public String getLandingZone(Map<String, String> obj) {
+		String product = obj.get("product"); 
+		String environment = obj.get("environment"); 
+		String module = obj.get("module");
+		String service = obj.get("service");
+		return serviceDetailRepository.getLandingZone(product, environment, module, service);
+	}
 }

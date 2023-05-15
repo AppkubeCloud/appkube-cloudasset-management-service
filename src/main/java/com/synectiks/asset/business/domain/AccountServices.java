@@ -1,4 +1,4 @@
-package com.synectiks.asset.domain;
+package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -48,7 +48,7 @@ public class AccountServices implements Serializable {
   private String accountId;
 
   @Convert(converter = CustomeHashMapConverter.class)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> account_services_json;
+  @Column(name = "account_services_json", columnDefinition = "jsonb")
+  private Map<String, Object> servicesJson;
   
 }

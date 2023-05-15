@@ -1,4 +1,4 @@
-package com.synectiks.asset.domain;
+package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
 import java.util.Map;
@@ -44,16 +44,28 @@ public class ServiceDetail implements Serializable {
   @Column(name = "id")
   private Long id;
 
-  @Convert(converter = CustomeHashMapConverter.class)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> metadata_json;
+//  @Convert(converter = CustomeHashMapConverter.class)
+//  @Column(columnDefinition = "jsonb")
+//  private Map<String, Object> metadata_json;
   
   @Convert(converter = CustomeHashMapConverter.class)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> view_json;
+  @Column(name = "metadata_json", columnDefinition = "jsonb")
+  private Map<String, Object> metadataJson;
+  
+//  @Convert(converter = CustomeHashMapConverter.class)
+//  @Column(columnDefinition = "jsonb")
+//  private Map<String, Object> view_json;
   
   @Convert(converter = CustomeHashMapConverter.class)
-  @Column(columnDefinition = "jsonb")
-  private Map<String, Object> sla_json;
+  @Column(name = "view_json", columnDefinition = "jsonb")
+  private Map<String, Object> viewJson;
+  
+//  @Convert(converter = CustomeHashMapConverter.class)
+//  @Column(columnDefinition = "jsonb")
+//  private Map<String, Object> sla_json;
+  
+  @Convert(converter = CustomeHashMapConverter.class)
+  @Column(name = "sla_json", columnDefinition = "jsonb")
+  private Map<String, Object> slaJson;
   
 }

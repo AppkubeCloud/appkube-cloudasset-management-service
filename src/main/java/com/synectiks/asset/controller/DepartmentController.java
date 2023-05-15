@@ -3,7 +3,6 @@ package com.synectiks.asset.controller;
 import java.io.IOException;
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -12,7 +11,6 @@ import java.util.Optional;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
-import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -29,14 +27,9 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.synectiks.asset.business.domain.CloudEnvironment;
 import com.synectiks.asset.business.domain.Department;
-import com.synectiks.asset.business.domain.ServiceAllocation;
-import com.synectiks.asset.business.domain.Product;
 import com.synectiks.asset.business.service.CloudEnvironmentService;
-import com.synectiks.asset.business.service.ServiceAllocationService;
 import com.synectiks.asset.business.service.DepartmentService;
-import com.synectiks.asset.business.service.ProductService;
 import com.synectiks.asset.repository.DepartmentRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
@@ -57,14 +50,12 @@ public class DepartmentController {
 	@Autowired
 	private DepartmentService departmentService;
 
-	@Autowired
-	private ProductService productService;
+	
 
 	@Autowired
 	private CloudEnvironmentService cloudEnvironmentService;
 
-	@Autowired
-	private ServiceAllocationService departmentProductEnvService;
+	
 
 	@Autowired
 	private DepartmentRepository departmentRepository;
@@ -79,7 +70,7 @@ public class DepartmentController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PostMapping("/departments")
-	public ResponseEntity<Department> createDepartment(@Valid @RequestBody Department department)
+	public ResponseEntity<Department> create(@Valid @RequestBody Department department)
 			throws URISyntaxException {
 		log.debug("REST request to save Department : {}", department);
 		if (department.getId() != null) {
@@ -105,7 +96,7 @@ public class DepartmentController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PutMapping("/departments/{id}")
-	public ResponseEntity<Department> updateDepartment(@PathVariable(value = "id", required = false) final Long id,
+	public ResponseEntity<Department> update(@PathVariable(value = "id", required = false) final Long id,
 			@Valid @RequestBody Department department) throws URISyntaxException {
 		log.debug("REST request to update Department : {}, {}", id, department);
 		if (department.getId() == null) {
@@ -140,7 +131,7 @@ public class DepartmentController {
 	 * @throws URISyntaxException if the Location URI syntax is incorrect.
 	 */
 	@PatchMapping(value = "/departments/{id}", consumes = { "application/json", "application/merge-patch+json" })
-	public ResponseEntity<Department> partialUpdateDepartment(
+	public ResponseEntity<Department> partialUpdate(
 			@PathVariable(value = "id", required = false) final Long id, @NotNull @RequestBody Department department)
 			throws URISyntaxException {
 		log.debug("REST request to partial update Department partially : {}, {}", id, department);
@@ -168,7 +159,7 @@ public class DepartmentController {
 	 *         of departments in body.
 	 */
 	@GetMapping("/departments")
-	public List<Department> getAllDepartments() {
+	public List<Department> getAll() {
 		log.debug("REST request to get all Departments");
 		return departmentService.findAll();
 	}
@@ -181,7 +172,7 @@ public class DepartmentController {
 	 *         the department, or with status {@code 404 (Not Found)}.
 	 */
 	@GetMapping("/departments/{id}")
-	public ResponseEntity<Department> getDepartment(@PathVariable Long id) {
+	public ResponseEntity<Department> get(@PathVariable Long id) {
 		log.debug("REST request to get Department : {}", id);
 		Optional<Department> department = departmentService.findOne(id);
 		return ResponseUtil.wrapOrNotFound(department);
@@ -194,7 +185,7 @@ public class DepartmentController {
 	 * @return the {@link ResponseEntity} with status {@code 204 (NO_CONTENT)}.
 	 */
 	@DeleteMapping("/departments/{id}")
-	public ResponseEntity<Void> deleteDepartment(@PathVariable Long id) {
+	public ResponseEntity<Void> delete(@PathVariable Long id) {
 		log.debug("REST request to delete Department : {}", id);
 		departmentService.delete(id);
 		return ResponseEntity.noContent()
@@ -214,63 +205,5 @@ public class DepartmentController {
 		return departmentService.search(filter);
 	}
 
-	/**
-	 * {@code POST  /departments/add-product} : Add a product in a department.
-	 *
-	 * @param departmentProductEnv the departmentProductEnv to create.
-	 * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with
-	 *         body the new departmentProductEnv, or with status
-	 *         {@code 400 (Bad Request)} if the departmentProductEnv has already an
-	 *         ID.
-	 * @throws URISyntaxException if the Location URI syntax is incorrect.
-	 * @throws IOException
-	 */
-	@PostMapping("/departments/add-product")
-	public ResponseEntity<Department> addProduct(@RequestBody ServiceAllocation departmentProductEnv)
-			throws URISyntaxException, IOException {
-		log.debug("REST request to add a product in a department : {}", departmentProductEnv);
 
-		// find out cloud_environment on department and landing_zone
-		if (StringUtils.isBlank(departmentProductEnv.getLandingZone())) {
-			throw new BadRequestAlertException("Invalid landing zone/cloud environment", ENTITY_NAME, "idnull");
-		}
-		Map<String, String> obj = new HashMap<>();
-		obj.put("departmentId", String.valueOf(departmentProductEnv.getDepartmentId()));
-		obj.put("accountId", departmentProductEnv.getLandingZone());
-		List<CloudEnvironment> ceList = cloudEnvironmentService.search(obj);
-		if (ceList == null || (ceList != null && ceList.size() == 0)) {
-			throw new BadRequestAlertException("Landing zone/Cloud environment not found", ENTITY_NAME, "idnotfound");
-		}
-
-		if (departmentProductEnv.getDepartmentId() == null) {
-			throw new BadRequestAlertException("Invalid department id", ENTITY_NAME, "idnull");
-		}
-		if (!departmentRepository.existsById(departmentProductEnv.getDepartmentId())) {
-			throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
-		}
-
-		if (departmentProductEnv.getProductId() == null) {
-			throw new BadRequestAlertException("Invalid product id", ENTITY_NAME, "idnull");
-		}
-		Optional<Product> op = productService.findOne(departmentProductEnv.getProductId());
-		if (!op.isPresent()) {
-			throw new BadRequestAlertException("Product not found", ENTITY_NAME, "idnotfound");
-		}
-
-		Map<String, String> filter = new HashMap<>();
-		filter.put("landingZone", String.valueOf(departmentProductEnv.getLandingZone()));
-		filter.put("departmentId", String.valueOf(departmentProductEnv.getDepartmentId()));
-		filter.put("productId", String.valueOf(departmentProductEnv.getProductId()));
-		List<ServiceAllocation> dpeList = departmentProductEnvService.search(filter);
-		if(dpeList.size() > 0) {
-			throw new BadRequestAlertException("Product is already associated with department", ENTITY_NAME, "idexists");
-		}
-		departmentProductEnvService.save(departmentProductEnv);
-		Optional<Department> od = departmentService.findOne(departmentProductEnv.getDepartmentId());
-		
-		return ResponseEntity
-				.created(new URI("/api/departments/add-product/" + od.get().getId())).headers(HeaderUtil
-						.createEntityCreationAlert(applicationName, false, ENTITY_NAME, od.get().getId().toString()))
-				.body(od.get());
-	}
 }

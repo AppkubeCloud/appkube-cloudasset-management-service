@@ -12,9 +12,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.synectiks.asset.business.domain.Department;
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.CfgCacheConfig;
-import com.synectiks.asset.domain.ServiceDetail;
 import com.synectiks.asset.response.DepartmentResponse;
 import com.synectiks.asset.response.DepartmentWiseAnaliticResponse;
 import com.synectiks.asset.response.OrganizationResponse;
@@ -25,14 +24,12 @@ public class DepartmentWiseAnalyticsService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(DepartmentWiseAnalyticsService.class);
 	
-	@Autowired
-	OrganizationService organizationService;
+//	@Autowired
+//	private OrganizationService organizationService;
 	
 	@Autowired
-	DepartmentService departmentService;
+	private DepartmentService departmentService;
 	
-	@Autowired
-	ServiceAllocationService departmentProductService;
 	
 //	@Autowired
 //	ProductDeploymentService productDeploymentService;
@@ -58,8 +55,8 @@ public class DepartmentWiseAnalyticsService {
 	@Autowired
 	private ServiceDetailService serviceDetailService;
 	
-	@Autowired
-	private CfgCacheConfigService cfgCacheConfigService;
+//	@Autowired
+//	private CfgCacheConfigService cfgCacheConfigService;
 	
 	public Optional<Department> getDepartment(Long id) {
 		return departmentService.findOne(id);
@@ -305,14 +302,14 @@ public class DepartmentWiseAnalyticsService {
 	// department wise analytics by service.json
 	public DepartmentWiseAnaliticResponse getAnalyticalDataFromJson(Map<String, String> obj) {
 		
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		if(oCache.isPresent() && oCache.get().isDirtyFlag() == Boolean.FALSE) {
+//		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
+//		if(oCache.isPresent() && oCache.get().isDirtyFlag() == Boolean.FALSE) {
 			DepartmentWiseAnaliticResponse dwa = (DepartmentWiseAnaliticResponse)Constants.cache.get(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
 			if(dwa != null && dwa.getOrganization() != null) {
 				logger.info("Getting department wise analytics from cache");
 				return dwa;
 			}
-		}
+//		}
 		logger.info("Getting department wise analytics from database");
 		ServiceDetailReportResponse sdr = serviceDetailService.searchServiceDetailWithFilter(obj);
 		OrganizationResponse org = null;
@@ -320,8 +317,8 @@ public class DepartmentWiseAnalyticsService {
 		//unique list of all the departments 
 		Map<String, String> depMap = new HashMap<>();
 		for(ServiceDetail sd: sdr.getServices()) {
-			org = OrganizationResponse.builder().name((String)sd.getMetadata_json().get("associatedOU")).build();
-			depMap.put((String)sd.getMetadata_json().get("associatedDept"), (String)sd.getMetadata_json().get("associatedDept"));
+			org = OrganizationResponse.builder().name((String)sd.getMetadataJson().get("associatedOU")).build();
+			depMap.put((String)sd.getMetadataJson().get("associatedDept"), (String)sd.getMetadataJson().get("associatedDept"));
 		}
 		
 		// product list of each department
@@ -336,7 +333,7 @@ public class DepartmentWiseAnalyticsService {
 //			ServiceDetailReportResponse productJson = serviceDetailService.searchServiceDetailWithFilter(productSearch);
 //			Map<String, String> uniqueProductMap = new HashMap<>();
 //			for(ServiceDetail prdSd: productJson.getServices() ) {
-//				uniqueProductMap.put((String)prdSd.getMetadata_json().get("associatedProduct"), (String)prdSd.getMetadata_json().get("associatedProduct"));
+//				uniqueProductMap.put((String)prdSd.getMetadataJson().get("associatedProduct"), (String)prdSd.getMetadataJson().get("associatedProduct"));
 //			}
 //			
 //			List<ProductResponse> productResponseList = new ArrayList<>();
@@ -357,7 +354,7 @@ public class DepartmentWiseAnalyticsService {
 //				ServiceDetailReportResponse depEnvJson = serviceDetailService.searchServiceDetailWithFilter(depEnvSearch);
 //				Map<String, String> deploymentEnvironmentMap = new HashMap<>(); 
 //				for(ServiceDetail depEnvSd: depEnvJson.getServices()) {
-//					deploymentEnvironmentMap.put((String)depEnvSd.getMetadata_json().get("associatedEnv"), (String)depEnvSd.getMetadata_json().get("associatedEnv"));
+//					deploymentEnvironmentMap.put((String)depEnvSd.getMetadataJson().get("associatedEnv"), (String)depEnvSd.getMetadataJson().get("associatedEnv"));
 //				}
 //				List<DeploymentEnvironmentResponse> deploymentEnvironmentResponseList = new ArrayList<>();
 //				for(Map.Entry<String, String> depEnvEntry: deploymentEnvironmentMap.entrySet()) {
@@ -383,7 +380,7 @@ public class DepartmentWiseAnalyticsService {
 //					
 //					Map<String, String> serviceCatMap = new HashMap<>(); // filter all categories of this product
 //					for(ServiceDetail depEnvSpecificSd: serivesOfdepPrdDepEnvJson.getServices()) {
-//						serviceCatMap.put((String)depEnvSpecificSd.getMetadata_json().get("serviceNature"), (String)depEnvSpecificSd.getMetadata_json().get("serviceNature"));
+//						serviceCatMap.put((String)depEnvSpecificSd.getMetadataJson().get("serviceNature"), (String)depEnvSpecificSd.getMetadataJson().get("serviceNature"));
 //					}
 //					
 //					List<ServiceCategoryResponse> srvCatRespList = new ArrayList<>();
@@ -411,9 +408,9 @@ public class DepartmentWiseAnalyticsService {
 //						for(ServiceDetail sd: json.getServices()) {
 //							ServiceNameResponse serviceNameResponse = null;
 //							if("Common".equalsIgnoreCase(serCatResp.getName())) {
-//								serviceNameResponse = ServiceNameResponse.from(null, (String)sd.getMetadata_json().get("associatedCommonService"));
+//								serviceNameResponse = ServiceNameResponse.from(null, (String)sd.getMetadataJson().get("associatedCommonService"));
 //							}else if("Business".equalsIgnoreCase(serCatResp.getName())) {
-//								serviceNameResponse = ServiceNameResponse.from(null, (String)sd.getMetadata_json().get("associatedBusinessService"));
+//								serviceNameResponse = ServiceNameResponse.from(null, (String)sd.getMetadataJson().get("associatedBusinessService"));
 //							}
 //							if(serCatResp.getServiceNameList() == null) {
 //								List<ServiceNameResponse> snRespList = new ArrayList<>();
@@ -447,7 +444,7 @@ public class DepartmentWiseAnalyticsService {
 //						for(ServiceNameResponse snResp: serCatResp.getServiceNameList()) {
 //							Map<String, String> serviceTagMap = new HashMap<>(); // filter all tags of this product
 //							for(ServiceDetail sd: json.getServices()) {
-//								serviceTagMap.put((String)sd.getMetadata_json().get("serviceType"), (String)sd.getMetadata_json().get("serviceType"));
+//								serviceTagMap.put((String)sd.getMetadataJson().get("serviceType"), (String)sd.getMetadataJson().get("serviceType"));
 //							}
 //							snResp.setTagList(getTagList(serviceTagMap));
 //						}
@@ -477,12 +474,12 @@ public class DepartmentWiseAnalyticsService {
 //								leafQryMap.put("serviceType", tag.getTagName()); // app/data
 //								ServiceDetailReportResponse json = serviceDetailService.searchServiceDetailWithFilter(leafQryMap);
 //								for(ServiceDetail sd: json.getServices()) {
-//									if(depResp.getName().equals((String)sd.getMetadata_json().get("associatedDept"))
-//											&& prdResp.getName().equals((String)sd.getMetadata_json().get("associatedProduct"))
-//											&& depEnvResp.getName().equals((String)sd.getMetadata_json().get("associatedEnv"))
-//											&& serCatResp.getName().equals((String)sd.getMetadata_json().get("serviceNature"))
+//									if(depResp.getName().equals((String)sd.getMetadataJson().get("associatedDept"))
+//											&& prdResp.getName().equals((String)sd.getMetadataJson().get("associatedProduct"))
+//											&& depEnvResp.getName().equals((String)sd.getMetadataJson().get("associatedEnv"))
+//											&& serCatResp.getName().equals((String)sd.getMetadataJson().get("serviceNature"))
 ////											&& snResp.getName().equals(sd.getDetails().getAssociatedCommonService())
-//											&& tag.getTagName().equals((String)sd.getMetadata_json().get("serviceType"))) {
+//											&& tag.getTagName().equals((String)sd.getMetadataJson().get("serviceType"))) {
 //										ServiceTagLinkResponse serviceTagLinkResponse = ServiceTagLinkResponse.from(sd);
 //										serviceTagLinkResponse.setPerformance(PerformanceResponse.builder().score(RandomUtil.getRandom()).build());
 //										serviceTagLinkResponse.setAvailability(AvailabilityResponse.builder().score(RandomUtil.getRandom()).build());
@@ -517,12 +514,12 @@ public class DepartmentWiseAnalyticsService {
 		}
 		org.setTotalDepartment(departmentResponseList.size());
 		org.setDepartmentList(departmentResponseList);
-		DepartmentWiseAnaliticResponse dwa = DepartmentWiseAnaliticResponse.builder().organization(org).build();
-		Constants.cache.put(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY,dwa);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.FALSE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
-		return dwa;
+		DepartmentWiseAnaliticResponse dwar = DepartmentWiseAnaliticResponse.builder().organization(org).build();
+		Constants.cache.put(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY,dwar);
+//		CfgCacheConfig ccf = oCache.get();
+//		ccf.setDirtyFlag(Boolean.FALSE);
+//		cfgCacheConfigService.updateCfgCacheConfig(ccf);
+		return dwar;
 	}
 
 //	private void populateServiceNameResponse(Map<String, String> serviceTagMap, ServiceCategoryResponse scResp,

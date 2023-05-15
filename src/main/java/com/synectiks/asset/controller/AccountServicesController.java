@@ -20,8 +20,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.synectiks.asset.business.domain.AccountServices;
 import com.synectiks.asset.business.service.AccountServicesService;
-import com.synectiks.asset.domain.AccountServices;
 
 @RestController
 @RequestMapping("/api")

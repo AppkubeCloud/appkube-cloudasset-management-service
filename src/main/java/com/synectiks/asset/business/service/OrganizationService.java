@@ -1,7 +1,6 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Optional;
@@ -15,7 +14,6 @@ import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
-import com.synectiks.asset.business.domain.Department;
 import com.synectiks.asset.business.domain.Organization;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.OrganizationRepository;
@@ -26,8 +24,7 @@ public class OrganizationService {
 	
 	private static final Logger logger = LoggerFactory.getLogger(OrganizationService.class);
 	
-	@Autowired
-	private ServiceAllocationService serviceAllocationService;
+	
 	
 	@Autowired
 	private OrganizationRepository organizationRepository;
@@ -74,15 +71,15 @@ public class OrganizationService {
     public List<Organization> findAll() throws IOException {
     	logger.debug("Request to get all Organizations");
     	List<Organization> list = organizationRepository.findAll();
-    	Map<String, String> filter = new HashMap<>();
-    	for(Organization o: list) {
-    		filter.clear();
-    		for(Department d: o.getDepartments()) {
-    			filter.clear();
-    			filter.put("departmentId", String.valueOf(d.getId()));
-    			d.setProducts(serviceAllocationService.getProducts(filter));
-    		}
-    	}
+//    	Map<String, String> filter = new HashMap<>();
+//    	for(Organization o: list) {
+//    		filter.clear();
+//    		for(Department d: o.getDepartments()) {
+//    			filter.clear();
+//    			filter.put("departmentId", String.valueOf(d.getId()));
+//    			d.setProducts(serviceAllocationService.getProducts(filter));
+//    		}
+//    	}
     	return list;
     }
 
@@ -90,14 +87,14 @@ public class OrganizationService {
     public Optional<Organization> findOne(Long id) throws IOException {
     	logger.debug("Request to get Organization : {}", id);
     	Optional<Organization> o = organizationRepository.findById(id);
-    	if(o.isPresent()) {
-    		Map<String, String> filter = new HashMap<>();
-    		for(Department d: o.get().getDepartments()) {
-    			filter.clear();
-    			filter.put("departmentId", String.valueOf(d.getId()));
-    			d.setProducts(serviceAllocationService.getProducts(filter));
-    		}
-    	}
+//    	if(o.isPresent()) {
+//    		Map<String, String> filter = new HashMap<>();
+//    		for(Department d: o.get().getDepartments()) {
+//    			filter.clear();
+//    			filter.put("departmentId", String.valueOf(d.getId()));
+//    			d.setProducts(serviceAllocationService.getProducts(filter));
+//    		}
+//    	}
     	return o;
     }
 
@@ -126,18 +123,18 @@ public class OrganizationService {
             organization.setUpdatedOn(null);
         }
         List<Organization> list = organizationRepository.findAll(Example.of(organization), Sort.by(Sort.Direction.DESC, "name"));
-        Map<String, String> prdfilter = new HashMap<>();
-    	for(Organization o: list) {
-    		filter.clear();
-    		for(Department d: o.getDepartments()) {
-    			prdfilter.clear();
-    			prdfilter.put("departmentId", String.valueOf(d.getId()));
-    			if(!StringUtils.isBlank(landingZone)) {
-    				prdfilter.put("landingZone", landingZone);
-    			}
-    			d.setProducts(serviceAllocationService.getProducts(prdfilter));
-    		}
-    	}
+//        Map<String, String> prdfilter = new HashMap<>();
+//    	for(Organization o: list) {
+//    		filter.clear();
+//    		for(Department d: o.getDepartments()) {
+//    			prdfilter.clear();
+//    			prdfilter.put("departmentId", String.valueOf(d.getId()));
+//    			if(!StringUtils.isBlank(landingZone)) {
+//    				prdfilter.put("landingZone", landingZone);
+//    			}
+//    			d.setProducts(serviceAllocationService.getProducts(prdfilter));
+//    		}
+//    	}
     	return list;
     }
 }

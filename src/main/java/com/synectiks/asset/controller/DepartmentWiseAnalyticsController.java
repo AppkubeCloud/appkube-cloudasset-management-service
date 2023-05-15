@@ -1,8 +1,6 @@
 package com.synectiks.asset.controller;
 
-import java.util.HashMap;
 import java.util.Map;
-import java.util.Optional;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -14,10 +12,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-import com.synectiks.asset.business.service.CfgCacheConfigService;
 import com.synectiks.asset.business.service.DepartmentWiseAnalyticsService;
-import com.synectiks.asset.config.Constants;
-import com.synectiks.asset.domain.CfgCacheConfig;
 import com.synectiks.asset.response.DepartmentWiseAnaliticResponse;
 
 @RestController
@@ -29,8 +24,7 @@ public class DepartmentWiseAnalyticsController {
 	@Autowired
 	private DepartmentWiseAnalyticsService departmentWiseAnalyticsService;
 	
-	@Autowired
-	private CfgCacheConfigService cfgCacheConfigService;
+	
 	
 //	@Deprecated
 //	@GetMapping("/department-wise-analytics/search")
@@ -55,15 +49,15 @@ public class DepartmentWiseAnalyticsController {
 		return ResponseEntity.status(HttpStatus.OK).body(resp);
 	}
 	
-	@GetMapping("/department-wise-analytics/update-cache")
-	public ResponseEntity<CfgCacheConfig> updateCache(){
-		logger.info("Request to update department-wise-analytics cache");
-		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
-		CfgCacheConfig ccf = oCache.get();
-		ccf.setDirtyFlag(Boolean.TRUE);
-		cfgCacheConfigService.updateCfgCacheConfig(ccf);
-		Map<String, String> obj = new HashMap<>();
-		departmentWiseAnalyticsService.getAnalyticalDataFromJson(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(ccf);
-	}
+//	@GetMapping("/department-wise-analytics/update-cache")
+//	public ResponseEntity<CfgCacheConfig> updateCache(){
+//		logger.info("Request to update department-wise-analytics cache");
+//		Optional<CfgCacheConfig> oCache= cfgCacheConfigService.getCfgCacheConfigByName(Constants.DEPARTMENT_WISE_ANALYTICS_CACHE_KEY);
+//		CfgCacheConfig ccf = oCache.get();
+//		ccf.setDirtyFlag(Boolean.TRUE);
+//		cfgCacheConfigService.updateCfgCacheConfig(ccf);
+//		Map<String, String> obj = new HashMap<>();
+//		departmentWiseAnalyticsService.getAnalyticalDataFromJson(obj);
+//		return ResponseEntity.status(HttpStatus.OK).body(ccf);
+//	}
 }

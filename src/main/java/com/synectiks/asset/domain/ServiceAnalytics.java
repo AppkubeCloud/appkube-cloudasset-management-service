@@ -16,6 +16,7 @@ import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import com.fasterxml.jackson.annotation.JsonIgnoreProperties;
+import com.synectiks.asset.business.domain.ServiceDetail;
 
 import lombok.AllArgsConstructor;
 import lombok.Builder;

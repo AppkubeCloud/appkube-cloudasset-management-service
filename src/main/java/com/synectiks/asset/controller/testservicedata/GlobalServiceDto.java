@@ -18,8 +18,8 @@ import com.fasterxml.jackson.databind.JsonMappingException;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.synectiks.asset.AssetserviceApp;
+import com.synectiks.asset.business.domain.ServiceDetail;
 import com.synectiks.asset.business.service.ServiceDetailService;
-import com.synectiks.asset.domain.ServiceDetail;
 
 public class GlobalServiceDto extends ServiceDto implements Serializable{
 
@@ -128,7 +128,7 @@ public class GlobalServiceDto extends ServiceDto implements Serializable{
 		JsonNode node = mapper.convertValue(this, JsonNode.class);
 		System.out.println(node.toPrettyString());
 		HashMap<String, Object> obj = mapper.readValue(node.toString().getBytes(), new TypeReference<HashMap<String,Object>>() {});
-		ServiceDetail sd = ServiceDetail.builder().metadata_json(obj).build();
+		ServiceDetail sd = ServiceDetail.builder().metadataJson(obj).build();
 		ServiceDetailService sds = AssetserviceApp.getBean(ServiceDetailService.class);
 		sds.createServiceDetail(sd);
 		

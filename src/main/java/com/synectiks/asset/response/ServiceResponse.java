@@ -4,8 +4,6 @@ import java.io.Serializable;
 
 import org.apache.commons.lang3.StringUtils;
 
-import com.synectiks.asset.business.domain.Services;
-
 import lombok.AllArgsConstructor;
 import lombok.Builder;
 import lombok.Getter;
@@ -33,14 +31,14 @@ public class ServiceResponse implements Serializable {
 //  private UserExperianceResponse userExperiance;
 //  private List<ServiceTagResponse> tagList;
   
-  public static ServiceResponse from(Services services) {
-	  return ServiceResponse.builder()
-			  .id(services.getId())
-			  .name(services.getName())
-			  .description(services.getDescription())
-			  .status(services.getStatus())
-			  .build();
-  }
+//  public static ServiceResponse from(Services services) {
+//	  return ServiceResponse.builder()
+//			  .id(services.getId())
+//			  .name(services.getName())
+//			  .description(services.getDescription())
+//			  .status(services.getStatus())
+//			  .build();
+//  }
   
   public static ServiceResponse from(Long id, String name, String description, String status) {
 	  ServiceResponse sr = ServiceResponse.builder().build();
