@@ -14,7 +14,7 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 
 import com.google.gson.Gson;
-import com.synectiks.asset.domain.Catalogue;
+import com.synectiks.asset.business.domain.Catalogue;
 import com.synectiks.asset.repository.CatalogueRepository;
 import com.synectiks.asset.response.catalogue.CloudDashboard;
 import com.synectiks.asset.response.catalogue.Datasource;

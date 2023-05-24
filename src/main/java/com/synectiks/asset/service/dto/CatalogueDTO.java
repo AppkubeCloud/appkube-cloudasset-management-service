@@ -8,7 +8,7 @@ import javax.validation.constraints.Size;
 
 
 /**
- * A DTO for the {@link com.synectiks.asset.domain.Catalogue} entity.
+ * A DTO for the {@link com.synectiks.asset.business.domain.Catalogue} entity.
  */
 public class CatalogueDTO implements Serializable {
 

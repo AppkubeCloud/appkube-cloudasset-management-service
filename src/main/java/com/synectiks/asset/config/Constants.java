@@ -20,7 +20,7 @@ import com.fasterxml.jackson.databind.JsonDeserializer;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
 import com.fasterxml.jackson.databind.module.SimpleModule;
-import com.synectiks.asset.domain.Dashboard;
+import com.synectiks.asset.business.domain.Dashboard;
 
 /**
  * Application constants.
@@ -136,6 +136,7 @@ public final class Constants {
     public static final String TAGGED = "Tagged";
     public static final String DISCOVERED_ASSET_ID = "discoveredAssetId";
     public static final String SERVICE_ALLOCATION_ID = "serviceAllocationId";
+    public static final String CLOUD_ENVIRONMENT_ID = "cloudEnvironmentId";
     
     public static final String MODULE_ID = "moduleId";
     

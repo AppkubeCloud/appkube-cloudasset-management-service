@@ -40,9 +40,6 @@ public class CloudEnvironment extends AbstractAuditingEntity implements Serializ
   @Column(name = "id")
   private Long id;
 
-  @Column(name = "name")
-  private String name;
-
   @Size(max = 5000)
   @Column(name = "description", length = 5000)
   private String description;

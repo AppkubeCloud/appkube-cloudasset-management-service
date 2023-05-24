@@ -1,5 +1,7 @@
 package com.synectiks.asset.controller;
 
+import java.net.URI;
+import java.net.URISyntaxException;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
@@ -30,6 +32,7 @@ import com.synectiks.asset.business.service.CloudEnvironmentService;
 import com.synectiks.asset.repository.CloudElementSummaryRepository;
 import com.synectiks.asset.web.rest.errors.BadRequestAlertException;
 
+import io.github.jhipster.web.util.HeaderUtil;
 import io.github.jhipster.web.util.ResponseUtil;
 
 @RestController
@@ -51,6 +54,35 @@ public class CloudElementSummaryController {
 	@Autowired
 	private CloudEnvironmentService cloudEnvironmentService;
 	
+	/**
+     * {@code POST  /cloud-element-summary} : Create a new cloudElementSummary.
+     *
+     * @param cloudElementSummary the cloudElementSummary to create.
+     * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new cloudElementSummary, or with status {@code 400 (Bad Request)} if the cloudElementSummary has already an ID.
+     * @throws URISyntaxException if the Location URI syntax is incorrect.
+     */
+	@PostMapping("/cloud-element-summary")
+	public ResponseEntity<CloudElementSummary> createCloudElement(@RequestBody CloudElementSummary obj) throws URISyntaxException{
+		logger.info("Request to create new cloud-element-summary");
+		if (obj.getId() != null) {
+            throw new BadRequestAlertException("A new cloud-element-summary cannot already have an ID", ENTITY_NAME, "idexists");
+        }
+		if (obj.getCloudEnvironment() == null) {
+			throw new BadRequestAlertException("Cloud environment not provided", ENTITY_NAME, "idnull");
+		}else if (obj.getCloudEnvironment() != null && obj.getCloudEnvironment().getId() == null) {
+			throw new BadRequestAlertException("Cloud environment id not provided", ENTITY_NAME, "idnull");
+		}else if (obj.getCloudEnvironment() != null && obj.getCloudEnvironment().getId() != null) {
+			Optional<CloudEnvironment> oc = cloudEnvironmentService.findOne(obj.getCloudEnvironment().getId());
+			if(!oc.isPresent()) {
+				throw new BadRequestAlertException("Cloud environment not found", ENTITY_NAME, "idnotfound");
+			}
+		}
+		CloudElementSummary result = cloudElementService.createCloudElement(obj);
+		return ResponseEntity
+	            .created(new URI("cloud-element-summary/" + result.getId()))
+	            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
+	            .body(result);
+	}
 	
 	@GetMapping("/cloud-element-summary/{id}")
 	public ResponseEntity<CloudElementSummary> getCloudElement(@PathVariable Long id) {
@@ -73,25 +105,7 @@ public class CloudElementSummaryController {
 		return ResponseEntity.status(HttpStatus.OK).body(oSpa);
 	}
 	
-	@PostMapping("/cloud-element-summary")
-	public ResponseEntity<CloudElementSummary> createCloudElement(@RequestBody CloudElementSummary obj){
-		logger.info("Request to create new cloud-element-summary");
-		if (obj.getId() != null) {
-            throw new BadRequestAlertException("A new cloud-element-summary cannot already have an ID", ENTITY_NAME, "idexists");
-        }
-		if (obj.getCloudEnvironment() == null) {
-			throw new BadRequestAlertException("Cloud environment not provided", ENTITY_NAME, "idnull");
-		}else if (obj.getCloudEnvironment() != null && obj.getCloudEnvironment().getId() == null) {
-			throw new BadRequestAlertException("Cloud environment id not provided", ENTITY_NAME, "idnull");
-		}else if (obj.getCloudEnvironment() != null && obj.getCloudEnvironment().getId() != null) {
-			Optional<CloudEnvironment> oc = cloudEnvironmentService.findOne(obj.getCloudEnvironment().getId());
-			if(!oc.isPresent()) {
-				throw new BadRequestAlertException("Cloud environment not found", ENTITY_NAME, "idnotfound");
-			}
-		}
-		CloudElementSummary spa = cloudElementService.createCloudElement(obj);
-		return ResponseEntity.status(HttpStatus.OK).body(spa);
-	}
+	
 	
 	@PatchMapping("/cloud-element-summary/{id}")
 	public ResponseEntity<Optional<CloudElementSummary>> partialUpdateCloudElement(

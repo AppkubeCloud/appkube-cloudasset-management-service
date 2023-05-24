@@ -52,8 +52,8 @@ public class CloudElementService {
             .findById(cloudElement.getId())
             .map(existingCloudElement -> {
                 
-                if (cloudElement.getElementId() != null) {
-                    existingCloudElement.setElementId(cloudElement.getElementId());
+                if (cloudElement.getInstanceId() != null) {
+                    existingCloudElement.setInstanceId(cloudElement.getInstanceId());
                 }
                 if (cloudElement.getElementType() != null) {
                     existingCloudElement.setElementType(cloudElement.getElementType());
@@ -61,12 +61,36 @@ public class CloudElementService {
                 if (cloudElement.getArn() != null) {
                     existingCloudElement.setArn(cloudElement.getArn());
                 }
+                
+                if (cloudElement.getCloudEntity() != null) {
+                    existingCloudElement.setCloudEntity(cloudElement.getCloudEntity());
+                }
+                if (cloudElement.getHardwareLocation() != null) {
+                    existingCloudElement.setHardwareLocation(cloudElement.getHardwareLocation());
+                }
+                if (cloudElement.getHostedServices() != null) {
+                    existingCloudElement.setHostedServices(cloudElement.getHostedServices());
+                }
+                if (cloudElement.getSlaJson() != null) {
+                    existingCloudElement.setSlaJson(cloudElement.getSlaJson());
+                }
+                if (cloudElement.getCostJson() != null) {
+                    existingCloudElement.setCostJson(cloudElement.getCostJson());
+                }
+                if (cloudElement.getViewJson() != null) {
+                    existingCloudElement.setViewJson(cloudElement.getViewJson());
+                }
+                if (cloudElement.getConfigJson() != null) {
+                    existingCloudElement.setConfigJson(cloudElement.getConfigJson());
+                }
+                if (cloudElement.getComplianceJson() != null) {
+                    existingCloudElement.setComplianceJson(cloudElement.getComplianceJson());
+                }
+                
                 if (cloudElement.getTagStatus() != null) {
                     existingCloudElement.setTagStatus(cloudElement.getTagStatus());
                 }
-                if(cloudElement.getElementJson() != null) {
-                	existingCloudElement.setElementJson(cloudElement.getElementJson());
-				}
+                
 				if (cloudElement.getStatus() != null) {
                     existingCloudElement.setStatus(cloudElement.getStatus());
                 }
@@ -115,20 +139,38 @@ public class CloudElementService {
     
     @Transactional(readOnly = true)
 	public List<CloudElement> search(Map<String, String> filter) throws IOException {
-		log.debug("Request to get all CloudElement on given filters");
+		log.debug("Request to get all CloudElements on given filters");
 
-		CloudElement discoveredAssets = jsonAndObjectConverterUtil
+		CloudEnvironment cloudEnvironment = null;
+		if (!StringUtils.isBlank(filter.get(Constants.CLOUD_ENVIRONMENT_ID))) {
+			cloudEnvironment = new CloudEnvironment();
+			cloudEnvironment.setId(Long.parseLong(filter.get(Constants.CLOUD_ENVIRONMENT_ID)));
+			cloudEnvironment.setCreatedOn(null);
+			cloudEnvironment.setUpdatedOn(null);
+			filter.remove(Constants.CLOUD_ENVIRONMENT_ID);
+		}else if(!StringUtils.isBlank(filter.get(Constants.LANDING_ZONE))) {
+			cloudEnvironment = new CloudEnvironment();
+			cloudEnvironment.setAccountId(filter.get(Constants.LANDING_ZONE));
+			cloudEnvironment.setCreatedOn(null);
+			cloudEnvironment.setUpdatedOn(null);
+			filter.remove(Constants.LANDING_ZONE);
+		}
+		
+		CloudElement cloudElement = jsonAndObjectConverterUtil
 				.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, CloudElement.class);
 
+		if(cloudEnvironment != null) {
+			cloudElement.setCloudEnvironment(cloudEnvironment);
+		}
 		// unset default value if createdOn is not coming in filter
 		if (StringUtils.isBlank(filter.get(Constants.CREATED_ON))) {
-			discoveredAssets.setCreatedOn(null);
+			cloudElement.setCreatedOn(null);
 		}
 		// unset default value if updatedOn is not coming in filter
 		if (StringUtils.isBlank(filter.get(Constants.UPDATED_ON))) {
-			discoveredAssets.setUpdatedOn(null);
+			cloudElement.setUpdatedOn(null);
 		}
-		List<CloudElement> list = cloudElementRepository.findAll(Example.of(discoveredAssets),
+		List<CloudElement> list = cloudElementRepository.findAll(Example.of(cloudElement),
 				Sort.by(Sort.Direction.DESC, "id"));
 
 		return list;

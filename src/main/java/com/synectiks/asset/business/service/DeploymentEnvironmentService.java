@@ -27,8 +27,6 @@ public class DeploymentEnvironmentService {
 	@Autowired
 	private DeploymentEnvironmentRepository deploymentEnvironmentRepository;
 
-	
-
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 
@@ -57,9 +55,6 @@ public class DeploymentEnvironmentService {
 				.map(existingDeploymentEnvironment -> {
 					if (deploymentEnvironment.getName() != null) {
 						existingDeploymentEnvironment.setName(deploymentEnvironment.getName());
-					}
-					if (deploymentEnvironment.getDescription() != null) {
-						existingDeploymentEnvironment.setDescription(deploymentEnvironment.getDescription());
 					}
 					if (deploymentEnvironment.getStatus() != null) {
 						existingDeploymentEnvironment.setStatus(deploymentEnvironment.getStatus());

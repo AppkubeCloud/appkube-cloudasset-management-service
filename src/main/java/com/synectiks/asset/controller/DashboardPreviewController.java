@@ -12,8 +12,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
+import com.synectiks.asset.business.domain.Dashboard;
 import com.synectiks.asset.business.service.AwsService;
-import com.synectiks.asset.domain.Dashboard;
 
 @RestController
 @RequestMapping("/api")

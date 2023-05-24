@@ -1,9 +1,7 @@
-package com.synectiks.asset.domain;
+package com.synectiks.asset.business.domain;
 
 import java.io.Serializable;
 import java.util.List;
-
-import com.synectiks.asset.business.domain.Department;
 
 public class DepartmentWiseAnalitics implements Serializable {
 

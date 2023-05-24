@@ -10,7 +10,7 @@ import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import com.synectiks.asset.domain.Catalogue;
+import com.synectiks.asset.business.domain.Catalogue;
 
 public class CatalogueRepositoryCustomImpl implements CatalogueRepositoryCustom {
 	

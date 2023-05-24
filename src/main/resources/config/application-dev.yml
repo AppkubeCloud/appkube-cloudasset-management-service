@@ -37,11 +37,11 @@ spring:
       indent-output: true
   datasource:
     type: com.zaxxer.hikari.HikariDataSource
-    url: jdbc:postgresql://postgresql.ch8wfucynpvq.us-east-1.rds.amazonaws.com:5431/cloudassetdb
-#    url: jdbc:postgresql://localhost:5432/cloudassetdb
+#    url: jdbc:postgresql://postgresql.ch8wfucynpvq.us-east-1.rds.amazonaws.com:5431/cmdb
+    url: jdbc:postgresql://localhost:5432/cmdb
     username: postgres
-    password: P0$tGr3$&s3qua1$n3t!k5
-#    password: postgres
+#    password: P0$tGr3$&s3qua1$n3t!k5
+    password: postgres
     hikari:
       poolName: Hikari
       auto-commit: false
@@ -49,7 +49,7 @@ spring:
     tomcat:
       connection-properties: stringtype=unspecified
   jpa:
-    database-platform: io.github.jhipster.domain.util.FixedPostgreSQL10Dialect
+    database-platform: com.synectiks.asset.config.PostgresDialectForJsonb
     show-sql: true
   liquibase:
     # Remove 'faker' if you do not want the sample data to be loaded automatically
@@ -75,7 +75,7 @@ spring:
         enabled: true
 
 server:
-  port: 5057
+  port: 6057
 
 # ===================================================================
 # JHipster specific properties

@@ -9,7 +9,6 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -24,17 +23,17 @@ import lombok.NoArgsConstructor;
 import lombok.Setter;
 
 /**
- * A CloudElement.
+ * A MicroService.
  */
 @Entity
-@Table(name = "cloud_element")
+@Table(name = "micro_service")
 @Cache(usage = CacheConcurrencyStrategy.READ_WRITE)
 @Getter
 @Setter
 @NoArgsConstructor
 @AllArgsConstructor
 @Builder
-public class CloudElement extends AbstractAuditingEntity implements Serializable {
+public class MicroService extends AbstractAuditingEntity implements Serializable {
 
 	private static final long serialVersionUID = 1L;
 
@@ -43,26 +42,28 @@ public class CloudElement extends AbstractAuditingEntity implements Serializable
 	@Column(name = "id")
 	private Long id;
 
-	@Column(name = "instance_id")
-	private String instanceId;
+	@Column(name = "name")
+	private String name;
 
-	@Column(name = "element_type")
-	private String elementType;
+	@Column(name = "department")
+	private String department;
 
-	@Column(name = "arn")
-	private String arn;
+	@Column(name = "product")
+	private String product;
+
+	@Column(name = "environment")
+	private String environment;
+
+	@Column(name = "service_type")
+	private String serviceType;
 
 	@Convert(converter = CustomeHashMapConverter.class)
-	@Column(name = "cloud_entity", columnDefinition = "jsonb")
-	private Map<String, Object> cloudEntity;
+	@Column(name = "service_topology", columnDefinition = "jsonb")
+	private Map<String, Object> serviceTopology;
 	
 	@Convert(converter = CustomeHashMapConverter.class)
-	@Column(name = "hardware_location", columnDefinition = "jsonb")
-	private Map<String, Object> hardwareLocation;
-	
-	@Convert(converter = CustomeHashMapConverter.class)
-	@Column(name = "hosted_services", columnDefinition = "jsonb")
-	private Map<String, Object> hostedServices;
+	@Column(name = "business_location", columnDefinition = "jsonb")
+	private Map<String, Object> businessLocation;
 	
 	@Convert(converter = CustomeHashMapConverter.class)
 	@Column(name = "sla_json", columnDefinition = "jsonb")
@@ -84,13 +85,7 @@ public class CloudElement extends AbstractAuditingEntity implements Serializable
 	@Column(name = "compliance_json", columnDefinition = "jsonb")
 	private Map<String, Object> complianceJson;
 	
-	@Column(name = "tag_status")
-	private String tagStatus;
-	
 	@Column(name = "status")
 	private String status;
-
-	@ManyToOne
-	private CloudEnvironment cloudEnvironment;
 
 }

@@ -46,9 +46,6 @@ public class OrganizationService {
                 if (organization.getName() != null) {
                     existingOrganization.setName(organization.getName());
                 }
-                if (organization.getStatus() != null) {
-                    existingOrganization.setStatus(organization.getStatus());
-                }
                 if (organization.getCreatedOn() != null) {
                     existingOrganization.setCreatedOn(organization.getCreatedOn());
                 }
