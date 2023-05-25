@@ -17,22 +17,26 @@ import com.synectiks.asset.business.domain.CloudEnvironment;
 @Repository
 public interface CloudEnvironmentRepository extends JpaRepository<CloudEnvironment, Long> {
 	
-	String ENV_COUNT_QUERY ="select cloud, count(*) as environments,  sum(cast (summary_json -> 'TotalDiscoveredResources' as integer)) as assets, "
+	String ENV_COUNT_QUERY ="select cloud, count(*) as environments, "
+			+ "sum(cast (summary_json -> 'TotalDiscoveredResources' as integer)) as assets, "
 			+ "0 as alerts, 0 as total_billing "
-			+ "from cloud_environment ce, cloud_element_summary ces "
-			+ "where ce.id = ces.cloud_environment_id and ce.organization_id = :orgId "
+			+ "from cloud_environment ce, cloud_element_summary ces, department dep, organization org  "
+			+ "where ce.id = ces.cloud_environment_id "
+			+ "and ce.department_id = dep.id and dep.organization_id = org.id "
+			+ "and org.id = :orgId "
 			+ "group by ce.cloud, ces.summary_json";
     
 	@Query(value = ENV_COUNT_QUERY, nativeQuery = true)
 	public List<Map<String, Object>> getCount(@Param("orgId") Long orgId);
 	
-	String ENV_CLOUD_WISE_COUNT_QUERY ="select cloud, count(*) as environments,  sum(cast (summary_json -> 'TotalDiscoveredResources' as integer)) as assets, "
+	String ENV_CLOUD_WISE_COUNT_QUERY ="select cloud, count(*) as environments, "
+			+ "sum(cast (summary_json -> 'TotalDiscoveredResources' as integer)) as assets, "
 			+ "0 as alerts, 0 as total_billing "
-			+ "from cloud_environment ce, cloud_element_summary ces "
+			+ "from cloud_environment ce, cloud_element_summary ces, department dep, organization org "
 			+ "where ce.id = ces.cloud_environment_id "
-			+ "and ce.organization_id = ces.organization_id "
+			+ "and ce.department_id = dep.id and dep.organization_id = org.id "
 			+ "and upper(ce.cloud) = upper(:cloud) "
-			+ "and ce.organization_id = :orgId and ces.organization_id = :orgId "
+			+ "and org.id = :orgId "
 			+ "group by ce.cloud, ces.summary_json";
     
 	@Query(value = ENV_CLOUD_WISE_COUNT_QUERY, nativeQuery = true)
