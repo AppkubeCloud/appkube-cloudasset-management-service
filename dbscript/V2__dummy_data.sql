@@ -10,6 +10,273 @@ VALUES('IT', NULL, NULL, NULL, NULL, NULL, 1);
 INSERT INTO public.department
 ("name", status, created_on, created_by, updated_on, updated_by, organization_id)
 VALUES('Finance', NULL, NULL, NULL, NULL, NULL, 1);
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '567373484', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '897373451', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '657907747545', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262373', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262800', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262801', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262802', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262900', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262901', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262902', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262903', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262904', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262905', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262906', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262907', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262908', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456262909', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263000', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'aws');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263001', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263002', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263003', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263004', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263005', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263006', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263007', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263008', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263009', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263010', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263011', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263012', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263013', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263014', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263015', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263016', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263017', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263018', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263019', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263020', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263021', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263022', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263023', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263024', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263025', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263026', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263027', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263028', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'azure');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263029', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263030', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263031', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263032', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263033', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263034', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263035', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263036', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263037', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263038', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263039', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263040', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263041', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263042', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263043', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263044', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263045', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263046', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263047', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263048', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263049', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'gcp');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263050', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263051', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263052', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263053', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263054', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263055', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263056', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263057', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263058', NULL, NULL, NULL, NULL, NULL, 1, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263059', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263060', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263061', NULL, NULL, NULL, NULL, NULL, 2, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263062', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263063', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263064', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263065', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263066', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263067', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263068', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263069', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263070', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
+INSERT INTO public.cloud_environment
+(description, account_id, status, created_on, updated_on, updated_by, created_by, department_id, display_name, role_arn, external_id, cloud)
+VALUES(NULL, '456263071', NULL, NULL, NULL, NULL, NULL, 3, NULL, NULL, NULL, 'kubernetes');
 INSERT INTO public.cloud_element_summary
 (summary_json, created_on, updated_on, updated_by, created_by, cloud_environment_id)
 VALUES('{"NextToken": null, "ResourceCounts": [{"Count": 207, "ResourceType": "AWS::Lambda::Function"}, {"Count": 144, "ResourceType": "AWS::S3::Bucket"}, {"Count": 87, "ResourceType": "AWS::CloudFormation::Stack"}, {"Count": 65, "ResourceType": "AWS::Backup::RecoveryPoint"}, {"Count": 50, "ResourceType": "AWS::CloudWatch::Alarm"}, {"Count": 47, "ResourceType": "AWS::EC2::SecurityGroup"}, {"Count": 41, "ResourceType": "AWS::EC2::Volume"}, {"Count": 33, "ResourceType": "AWS::KMS::Key"}, {"Count": 27, "ResourceType": "AWS::EC2::NetworkInterface"}, {"Count": 24, "ResourceType": "AWS::DynamoDB::Table"}, {"Count": 18, "ResourceType": "AWS::EC2::Subnet"}, {"Count": 17, "ResourceType": "AWS::CodeDeploy::DeploymentConfig"}, {"Count": 16, "ResourceType": "AWS::StepFunctions::StateMachine"}, {"Count": 13, "ResourceType": "AWS::ECS::TaskDefinition"}, {"Count": 13, "ResourceType": "AWS::ApiGateway::RestApi"}, {"Count": 12, "ResourceType": "AWS::EC2::Instance"}, {"Count": 12, "ResourceType": "AWS::EC2::RouteTable"}, {"Count": 10, "ResourceType": "AWS::SQS::Queue"}, {"Count": 10, "ResourceType": "AWS::ApiGateway::Stage"}, {"Count": 10, "ResourceType": "AWS::RDS::DBSnapshot"}, {"Count": 10, "ResourceType": "AWS::CloudFront::Distribution"}, {"Count": 9, "ResourceType": "AWS::RDS::DBSubnetGroup"}, {"Count": 8, "ResourceType": "AWS::ACM::Certificate"}, {"Count": 8, "ResourceType": "AWS::EC2::SubnetRouteTableAssociation"}, {"Count": 8, "ResourceType": "AWS::WAFRegional::Rule"}, {"Count": 8, "ResourceType": "AWS::ApiGatewayV2::Stage"}, {"Count": 8, "ResourceType": "AWS::ApiGatewayV2::Api"}, {"Count": 7, "ResourceType": "AWS::EC2::NetworkAcl"}, {"Count": 7, "ResourceType": "AWS::RDS::DBClusterSnapshot"}, {"Count": 6, "ResourceType": "AWS::AutoScaling::LaunchConfiguration"}, {"Count": 6, "ResourceType": "AWS::EC2::LaunchTemplate"}, {"Count": 6, "ResourceType": "AWS::SNS::Topic"}, {"Count": 5, "ResourceType": "AWS::WAFv2::IPSet"}, {"Count": 4, "ResourceType": "AWS::EC2::InternetGateway"}, {"Count": 4, "ResourceType": "AWS::Kinesis::Stream"}, {"Count": 4, "ResourceType": "AWS::EC2::VPC"}, {"Count": 4, "ResourceType": "AWS::Route53Resolver::ResolverRuleAssociation"}, {"Count": 3, "ResourceType": "AWS::EC2::CustomerGateway"}, {"Count": 3, "ResourceType": "AWS::EC2::EIP"}, {"Count": 3, "ResourceType": "AWS::Route53::HostedZone"}, {"Count": 3, "ResourceType": "AWS::KinesisFirehose::DeliveryStream"}, {"Count": 3, "ResourceType": "AWS::ECR::Repository"}, {"Count": 2, "ResourceType": "AWS::ElasticLoadBalancingV2::Listener"}, {"Count": 2, "ResourceType": "AWS::DMS::ReplicationSubnetGroup"}, {"Count": 2, "ResourceType": "AWS::EC2::FlowLog"}, {"Count": 2, "ResourceType": "AWS::CloudTrail::Trail"}, {"Count": 2, "ResourceType": "AWS::EC2::VPNGateway"}, {"Count": 2, "ResourceType": "AWS::Redshift::ClusterSnapshot"}, {"Count": 2, "ResourceType": "AWS::Backup::BackupVault"}, {"Count": 1, "ResourceType": "AWS::Route53Resolver::ResolverRule"}, {"Count": 1, "ResourceType": "AWS::Redshift::ClusterParameterGroup"}, {"Count": 1, "ResourceType": "AWS::Backup::BackupSelection"}, {"Count": 1, "ResourceType": "AWS::RDS::DBInstance"}, {"Count": 1, "ResourceType": "AWS::SecretsManager::Secret"}, {"Count": 1, "ResourceType": "AWS::EKS::Cluster"}, {"Count": 1, "ResourceType": "AWS::GuardDuty::Detector"}, {"Count": 1, "ResourceType": "AWS::AutoScaling::AutoScalingGroup"}, {"Count": 1, "ResourceType": "AWS::Backup::BackupPlan"}, {"Count": 1, "ResourceType": "AWS::Redshift::ClusterSubnetGroup"}, {"Count": 1, "ResourceType": "AWS::EC2::DHCPOptions"}, {"Count": 1, "ResourceType": "AWS::ElasticLoadBalancing::LoadBalancer"}, {"Count": 1, "ResourceType": "AWS::EFS::FileSystem"}, {"Count": 1, "ResourceType": "AWS::RDS::DBSecurityGroup"}, {"Count": 1, "ResourceType": "AWS::Config::ConfigurationRecorder"}, {"Count": 1, "ResourceType": "AWS::Config::ResourceCompliance"}, {"Count": 1, "ResourceType": "AWS::ECS::Cluster"}, {"Count": 1, "ResourceType": "AWS::ElasticLoadBalancingV2::LoadBalancer"}], "TotalDiscoveredResources": 1015}'::jsonb, NULL, NULL, NULL, NULL, 1);
