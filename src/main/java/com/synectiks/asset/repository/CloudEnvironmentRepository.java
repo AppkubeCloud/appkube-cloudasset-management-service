@@ -4,6 +4,7 @@ import java.util.List;
 import java.util.Map;
 
 import com.synectiks.asset.response.query.EnvironmentCountsDto;
+import com.synectiks.asset.response.query.EnvironmentSummaryDto;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
@@ -42,4 +43,59 @@ public interface CloudEnvironmentRepository extends JpaRepository<CloudEnvironme
 
 	@Query(value = ENV_CLOUD_WISE_COUNT_QUERY, nativeQuery = true)
 	public List<EnvironmentCountsDto> getCount(@Param("cloud") String cloud, @Param("orgId") Long orgId);
+
+
+    String ORG_WISE_ENV_SUMMARY_QUERY ="select cnv.cloud, replace(cast(ceo.landing_zone as text), '\"', '') as landing_zone, ceo.product_enclave, " +
+        "(select count(c.obj -> 'associatedProduct')  " +
+        " from cloud_element ce2, jsonb_array_elements(ce2.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj, pos) " +
+        " where ce2.hardware_location -> 'landingZone' = ceo.landing_zone " +
+        " ) as product, " +
+        "(select count(c.obj -> 'associatedService')  " +
+        " from cloud_element ce2, jsonb_array_elements(ce2.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj, pos) " +
+        " where ce2.hardware_location -> 'landingZone' = ceo.landing_zone and upper(cast(c.obj -> 'serviceType' as text)) = '\"APP\"' " +
+        " ) as app_service, " +
+        "(select count(c.obj -> 'associatedService')  " +
+        " from cloud_element ce2, jsonb_array_elements(ce2.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj, pos) " +
+        " where ce2.hardware_location -> 'landingZone' = ceo.landing_zone and upper(cast(c.obj -> 'serviceType' as text)) = '\"DATA\"' " +
+        " ) as data_service  " +
+        "from (select ce.cloud_environment_id, ce.hardware_location -> 'landingZone' as landing_zone, " +
+        " count(ce.hardware_location -> 'productEnclave') as product_enclave " +
+        " from  cloud_element ce group by ce.cloud_environment_id, ce.hardware_location -> 'landingZone' " +
+        " ) as ceo, " +
+        "cloud_environment cnv, department dep, organization org " +
+        "where ceo.cloud_environment_id = cnv.id  " +
+        "and cnv.department_id = dep.id " +
+        "and dep.organization_id = org.id " +
+        "and org.id = :orgId " +
+        "group by cnv.cloud, ceo.landing_zone, ceo.product_enclave";
+    @Query(value = ORG_WISE_ENV_SUMMARY_QUERY, nativeQuery = true)
+    public List<EnvironmentSummaryDto> getEnvironmentSummary(@Param("orgId") Long orgId);
+
+    String ORG_AND_CLOUD_WISE_ENV_SUMMARY_QUERY ="select cnv.cloud, replace(cast(ceo.landing_zone as text), '\"', '') as landing_zone, ceo.product_enclave, " +
+        "(select count(c.obj -> 'associatedProduct')  " +
+        " from cloud_element ce2, jsonb_array_elements(ce2.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj, pos) " +
+        " where ce2.hardware_location -> 'landingZone' = ceo.landing_zone " +
+        " ) as product, " +
+        "(select count(c.obj -> 'associatedService')  " +
+        " from cloud_element ce2, jsonb_array_elements(ce2.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj, pos) " +
+        " where ce2.hardware_location -> 'landingZone' = ceo.landing_zone and upper(cast(c.obj -> 'serviceType' as text)) = '\"APP\"' " +
+        " ) as app_service, " +
+        "(select count(c.obj -> 'associatedService')  " +
+        " from cloud_element ce2, jsonb_array_elements(ce2.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj, pos) " +
+        " where ce2.hardware_location -> 'landingZone' = ceo.landing_zone and upper(cast(c.obj -> 'serviceType' as text)) = '\"DATA\"' " +
+        " ) as data_service  " +
+        "from (select ce.cloud_environment_id, ce.hardware_location -> 'landingZone' as landing_zone, " +
+        " count(ce.hardware_location -> 'productEnclave') as product_enclave " +
+        " from  cloud_element ce group by ce.cloud_environment_id, ce.hardware_location -> 'landingZone' " +
+        " ) as ceo, " +
+        "cloud_environment cnv, department dep, organization org " +
+        "where ceo.cloud_environment_id = cnv.id  " +
+        "and cnv.department_id = dep.id " +
+        "and dep.organization_id = org.id " +
+        "and org.id = :orgId " +
+        "and cnv.cloud = :cloud " +
+        "group by cnv.cloud, ceo.landing_zone, ceo.product_enclave";
+    @Query(value = ORG_AND_CLOUD_WISE_ENV_SUMMARY_QUERY, nativeQuery = true)
+    public List<EnvironmentSummaryDto> getEnvironmentSummary(@Param("cloud") String cloud, @Param("orgId") Long orgId);
+
 }

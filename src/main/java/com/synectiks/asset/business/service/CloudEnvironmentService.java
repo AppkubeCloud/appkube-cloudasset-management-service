@@ -1,11 +1,12 @@
 package com.synectiks.asset.business.service;
 
 import java.io.IOException;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
+import java.util.*;
+import java.util.stream.Collectors;
 
 import com.synectiks.asset.response.query.EnvironmentCountsDto;
+import com.synectiks.asset.response.query.EnvironmentDto;
+import com.synectiks.asset.response.query.EnvironmentSummaryDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -149,13 +150,43 @@ public class CloudEnvironmentService {
 	}
 
 
-    public List<EnvironmentCountsDto> count(Long orgId) throws IOException {
+    public List<EnvironmentCountsDto> getEnvironmentCounts(Long orgId) throws IOException {
     	logger.debug("Getting cloud wise landing zone and their resource counts");
     	return cloudEnvironmentRepository.getCount(orgId);
     }
 
-    public List<EnvironmentCountsDto> count(String cloud, Long orgId) throws IOException {
+    public List<EnvironmentCountsDto> getEnvironmentCounts(String cloud, Long orgId) throws IOException {
     	logger.debug("Getting cloud wise landing zone and their resource counts");
     	return cloudEnvironmentRepository.getCount(cloud, orgId);
+    }
+
+    public List<EnvironmentDto> getEnvironmentSummary(Long orgId) throws IOException {
+        logger.debug("Getting organization wise environment summary");
+        List<EnvironmentSummaryDto> list = cloudEnvironmentRepository.getEnvironmentSummary(orgId);
+        List<EnvironmentDto> environmentDtoList = filterEnvironmentSummary(list);
+        return environmentDtoList;
+    }
+
+    public List<EnvironmentDto> getEnvironmentSummary(String cloud, Long orgId) throws IOException {
+        logger.debug("Getting cloud and organization wise environment summary");
+        List<EnvironmentSummaryDto> list = cloudEnvironmentRepository.getEnvironmentSummary(cloud, orgId);
+        List<EnvironmentDto> environmentDtoList = filterEnvironmentSummary(list);
+        return environmentDtoList;
+    }
+
+    private List<EnvironmentDto> filterEnvironmentSummary(List<EnvironmentSummaryDto> list) {
+        Set<String> cloudSet = list.stream().map(EnvironmentSummaryDto::getCloud).collect(Collectors.toSet());
+        List<EnvironmentDto> environmentDtoList = new ArrayList<>();
+        for (Object obj: cloudSet){
+            String cloudName = (String)obj;
+            logger.debug("Getting list for cloud: {}", cloudName);
+            List<EnvironmentSummaryDto> filteredList = list.stream().filter(l -> !StringUtils.isBlank(l.getCloud()) && l.getCloud().equalsIgnoreCase(cloudName)).collect(Collectors.toList());
+            EnvironmentDto dto = EnvironmentDto.builder()
+                .cloud(cloudName)
+                .environmentSummaryList(filteredList)
+                .build();
+            environmentDtoList.add(dto);
+        }
+        return environmentDtoList;
     }
 }

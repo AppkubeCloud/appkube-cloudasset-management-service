@@ -15,6 +15,8 @@ import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
 import com.synectiks.asset.response.query.EnvironmentCountsDto;
+import com.synectiks.asset.response.query.EnvironmentDto;
+import com.synectiks.asset.response.query.EnvironmentSummaryDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -295,9 +297,9 @@ public class CloudEnvironmentController {
 	 * @throws URISyntaxException
 	 */
 	@GetMapping("/organizations/{orgId}/cloud-environments/count")
-	public ResponseEntity<List<EnvironmentCountsDto>> counts(@PathVariable Long orgId) throws IOException, URISyntaxException {
+	public ResponseEntity<List<EnvironmentCountsDto>> getEnvironmentCounts(@PathVariable Long orgId) throws IOException, URISyntaxException {
 		log.debug("REST request to get record count of landing zone and its associated assets, alerts and billing cost for each cloud of an organization. Org id: {}", orgId);
-		List<EnvironmentCountsDto> result = cloudEnvironmentService.count(orgId);
+		List<EnvironmentCountsDto> result = cloudEnvironmentService.getEnvironmentCounts(orgId);
 
 		return ResponseEntity
 	            .ok()
@@ -307,19 +309,52 @@ public class CloudEnvironmentController {
 	}
 
 	/**
-	 * {@code GET  /organizations/{orgId}/cloud-environments/cloud/{cloud}/count} : get record count of landing zone and its associated assets, alerts and billing cost for given cloud of an organization.
+	 * {@code GET  /organizations/{orgId}/cloud/{cloud}/cloud-environments/count} : get record count of landing zone and its associated assets, alerts and billing cost for given cloud of an organization.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
 	 *         of record count of landing zone and its associated assets, alerts and billing cost for given cloud of an organization.
 	 * @throws URISyntaxException
 	 */
-	@GetMapping("/organizations/{orgId}/cloud-environments/cloud/{cloud}/count")
-	public ResponseEntity<List<EnvironmentCountsDto>> counts(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
-		log.debug("REST request to get record count of landing zone and its associated assets, alerts and billing cost for given cloud {} and organization {} ",cloud, orgId);
-        List<EnvironmentCountsDto> result = cloudEnvironmentService.count(cloud, orgId);
-		return ResponseEntity
-	            .ok()
-	            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId+", cloud: "+cloud))
-	            .body(result);
-	}
+	@GetMapping("/organizations/{orgId}/cloud/{cloud}/cloud-environments/count")
+	public ResponseEntity<List<EnvironmentCountsDto>> getEnvironmentCounts(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
+        log.debug("REST request to get record count of landing zone and its associated assets, alerts and billing cost for given cloud: {} and organization id: {} ",cloud, orgId);
+        List<EnvironmentCountsDto> result = cloudEnvironmentService.getEnvironmentCounts(cloud, orgId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId+", cloud: "+cloud))
+            .body(result);
+    }
+
+
+    /**
+     * {@code GET  /organizations/{orgId}/cloud-environments/summary} : get list of landing zone and its associated product enclaves, products, and and data services for a given organization.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and list of landing zone and its associated product enclaves, products, and and data services for a given organization
+     * @throws URISyntaxException
+     */
+    @GetMapping("/organizations/{orgId}/cloud-environments/summary")
+    public ResponseEntity<List<EnvironmentDto>> getEnvironmentSummary(@PathVariable Long orgId) throws IOException, URISyntaxException {
+        log.debug("REST request to get list of landing zone and its associated product enclaves, products, and and data services for a given organization. organization id: {} ",orgId);
+        List<EnvironmentDto> result = cloudEnvironmentService.getEnvironmentSummary(orgId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId))
+            .body(result);
+    }
+
+    /**
+     * {@code GET  /organizations/{orgId}/cloud/{cloud}/cloud-environments/summary} : get list of landing zone and its associated product enclaves, products, and and data services for a given organization and cloud.
+     *
+     * @return the {@link ResponseEntity} with status {@code 200 (OK)} and list of landing zone and its associated product enclaves, products, and and data services for a given organization and cloud
+     * @throws URISyntaxException
+     */
+    @GetMapping("/organizations/{orgId}/cloud/{cloud}/cloud-environments/summary")
+    public ResponseEntity<List<EnvironmentDto>> getEnvironmentSummary(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
+        log.debug("REST request to get list of landing zone and its associated product enclaves, products, and and data services for a given organization and cloud. organization id: {}, cloud: {}",orgId, cloud);
+        List<EnvironmentDto> result = cloudEnvironmentService.getEnvironmentSummary(cloud, orgId);
+        return ResponseEntity
+            .ok()
+            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId))
+            .body(result);
+    }
 }
