@@ -14,6 +14,7 @@ import java.util.Set;
 import javax.validation.Valid;
 import javax.validation.constraints.NotNull;
 
+import com.synectiks.asset.response.query.EnvironmentCountsDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -46,9 +47,9 @@ import io.github.jhipster.web.util.ResponseUtil;
 @RestController
 @RequestMapping("/api")
 public class CloudEnvironmentController {
-	
+
 	private final Logger log = LoggerFactory.getLogger(CloudEnvironmentController.class);
-    
+
 	private static final String ENTITY_NAME = "CloudEnvironment";
 
     @Value("${jhipster.clientApp.name}")
@@ -56,14 +57,14 @@ public class CloudEnvironmentController {
 
     @Autowired
     private CloudEnvironmentService cloudEnvironmentService;
-    
+
     @Autowired
     private DepartmentService departmentService;
 
     @Autowired
     private CloudEnvironmentRepository cloudEnvironmentRepository;
 
-    
+
 
     /**
      * {@code POST  /cloud-environments} : Create a new cloudEnvironment.
@@ -71,7 +72,7 @@ public class CloudEnvironmentController {
      * @param cloudEnvironment the cloudEnvironment to create.
      * @return the {@link ResponseEntity} with status {@code 201 (Created)} and with body the new cloudEnvironment, or with status {@code 400 (Bad Request)} if the cloudEnvironment has already an ID.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
-     * @throws IOException 
+     * @throws IOException
      */
     @PostMapping("/cloud-environments")
     public ResponseEntity<CloudEnvironment> createCloudEnvironment(@Valid @RequestBody CloudEnvironment cloudEnvironment)
@@ -90,7 +91,7 @@ public class CloudEnvironmentController {
 				throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
 			}
 		}
-        
+
         String accountId = cloudEnvironment.getAccountId();
         Map<String, String> filter = new HashMap<>();
         if(Constants.AWS.equalsIgnoreCase(cloudEnvironment.getCloud().toUpperCase())) {
@@ -100,12 +101,12 @@ public class CloudEnvironmentController {
 			throw new BadRequestAlertException("Account id/Landing zone not found", ENTITY_NAME, "idnotfound");
         }
         cloudEnvironment.setAccountId(accountId);
-        
+
         filter.put("cloud", cloudEnvironment.getCloud().toUpperCase());
         filter.put(Constants.ACCOUNT_ID, cloudEnvironment.getAccountId());
         filter.put(Constants.DEPARTMENT_ID, String.valueOf(cloudEnvironment.getDepartment().getId()));
         List<CloudEnvironment> list = cloudEnvironmentService.search(filter);
-         
+
         CloudEnvironment result = null;
         if(list == null || (list != null && list.size() == 0)) {
         	result = cloudEnvironmentService.save(cloudEnvironment);
@@ -120,13 +121,13 @@ public class CloudEnvironmentController {
 //        			result = cloudEnvironmentService.save(cloudEnvironment);
 //        		}else  {
 //        			throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
-//        		} 
+//        		}
 //        	}else {
         		throw new DuplicateRequestAlertException("cloudEnvironment already exists", ENTITY_NAME, "idexists");
 //        	}
         }
-        
-        
+
+
         return ResponseEntity
             .created(new URI("/api/cloud-environments/" + result.getId()))
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, result.getId().toString()))
@@ -177,7 +178,7 @@ public class CloudEnvironmentController {
      * or with status {@code 404 (Not Found)} if the cloudEnvironment is not found,
      * or with status {@code 500 (Internal Server Error)} if the cloudEnvironment couldn't be updated.
      * @throws URISyntaxException if the Location URI syntax is incorrect.
-     * @throws IOException 
+     * @throws IOException
      */
     @PatchMapping(value = "/cloud-environments/{id}", consumes = { "application/json", "application/merge-patch+json" })
     public ResponseEntity<CloudEnvironment> partialUpdateCloudEnvironment(
@@ -202,12 +203,12 @@ public class CloudEnvironmentController {
 				throw new BadRequestAlertException("Department not found", ENTITY_NAME, "idnotfound");
 			}
 		}
-        
+
         String accountId = cloudEnvironment.getRoleArn().split(":")[4];
         Map<String, String> filter = new HashMap<>();
         filter.put("accountId", accountId);
         List<CloudEnvironment> list = cloudEnvironmentService.search(filter);
-         
+
         Optional<CloudEnvironment> result = null;
         if(list == null || (list != null && list.size() == 0)) {
         	result = cloudEnvironmentService.partialUpdate(cloudEnvironment);
@@ -222,7 +223,7 @@ public class CloudEnvironmentController {
         			result = cloudEnvironmentService.partialUpdate(cloudEnvironment);
         		}else  {
         			throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
-        		} 
+        		}
         	}else {
         		throw new BadRequestAlertException("cloudEnvironment already discovered", ENTITY_NAME, "idexists");
         	}
@@ -273,7 +274,7 @@ public class CloudEnvironmentController {
             .headers(HeaderUtil.createEntityDeletionAlert(applicationName, false, ENTITY_NAME, id.toString()))
             .build();
     }
-    
+
 	/**
 	 * {@code GET  /cloud-environments/search} : get all the cloud-environments on given filters.
 	 *
@@ -285,37 +286,37 @@ public class CloudEnvironmentController {
 		log.debug("REST request to get all cloud-environments on given filters");
 		return cloudEnvironmentService.search(filter);
 	}
-	
+
 	/**
 	 * {@code GET  /organizations/{orgId}/cloud-environments/count} : get record count of landing zone and its associated assets, alerts and billing cost for each cloud of an organization.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
 	 *         of record count of landing zone and its associated assets, alerts and billing cost for each cloud of an organization.
-	 * @throws URISyntaxException 
+	 * @throws URISyntaxException
 	 */
 	@GetMapping("/organizations/{orgId}/cloud-environments/count")
-	public ResponseEntity<List<Map<String, Object>>> counts(@PathVariable Long orgId) throws IOException, URISyntaxException {
+	public ResponseEntity<List<EnvironmentCountsDto>> counts(@PathVariable Long orgId) throws IOException, URISyntaxException {
 		log.debug("REST request to get record count of landing zone and its associated assets, alerts and billing cost for each cloud of an organization. Org id: {}", orgId);
-		List<Map<String, Object>> result = cloudEnvironmentService.count(orgId);
-		
+		List<EnvironmentCountsDto> result = cloudEnvironmentService.count(orgId);
+
 		return ResponseEntity
 	            .ok()
 	            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId))
 	            .body(result);
-		
+
 	}
-	
+
 	/**
 	 * {@code GET  /organizations/{orgId}/cloud-environments/cloud/{cloud}/count} : get record count of landing zone and its associated assets, alerts and billing cost for given cloud of an organization.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and the list
 	 *         of record count of landing zone and its associated assets, alerts and billing cost for given cloud of an organization.
-	 * @throws URISyntaxException 
+	 * @throws URISyntaxException
 	 */
 	@GetMapping("/organizations/{orgId}/cloud-environments/cloud/{cloud}/count")
-	public ResponseEntity<Map<String, Object>> counts(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
+	public ResponseEntity<List<EnvironmentCountsDto>> counts(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
 		log.debug("REST request to get record count of landing zone and its associated assets, alerts and billing cost for given cloud {} and organization {} ",cloud, orgId);
-		Map<String, Object> result = cloudEnvironmentService.count(cloud, orgId);
+        List<EnvironmentCountsDto> result = cloudEnvironmentService.count(cloud, orgId);
 		return ResponseEntity
 	            .ok()
 	            .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId+", cloud: "+cloud))

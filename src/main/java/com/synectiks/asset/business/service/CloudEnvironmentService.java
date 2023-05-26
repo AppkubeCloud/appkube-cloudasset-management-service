@@ -5,6 +5,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Optional;
 
+import com.synectiks.asset.response.query.EnvironmentCountsDto;
 import org.apache.commons.lang3.StringUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -22,18 +23,18 @@ import com.synectiks.asset.util.JsonAndObjectConverterUtil;
 
 @Service
 public class CloudEnvironmentService {
-	
+
 	private final Logger logger = LoggerFactory.getLogger(CloudEnvironmentService.class);
 
 	@Autowired
 	private CloudEnvironmentRepository cloudEnvironmentRepository;
-	
+
 	@Autowired
 	private DepartmentService departmentService;
-	
+
 	@Autowired
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
-	
+
     public CloudEnvironment save(CloudEnvironment cloudEnvironment) {
         logger.debug("Request to save CloudEnvironment : {}", cloudEnvironment);
 //        cloudEnvironment.setAccountId(cloudEnvironment.getRoleArn().split(":")[4]);
@@ -104,7 +105,7 @@ public class CloudEnvironmentService {
         logger.debug("Request to delete CloudEnvironment : {}", id);
         cloudEnvironmentRepository.deleteById(id);
     }
-	
+
     @Transactional(readOnly = true)
 	public List<CloudEnvironment> search(Map<String, String> filter) throws IOException {
 		logger.debug("Request to get all cloudEnvironments on given filters");
@@ -117,7 +118,7 @@ public class CloudEnvironmentService {
 			department.setUpdatedOn(null);
 			filter.remove(Constants.DEPARTMENT_ID);
 		}
-		
+
 		if (!StringUtils.isBlank(filter.get(Constants.DEPARTMENT_NAME))) {
 			if(department != null) {
 				department.setName(filter.get(Constants.DEPARTMENT_NAME));
@@ -129,7 +130,7 @@ public class CloudEnvironmentService {
 			department.setUpdatedOn(null);
 			filter.remove(Constants.DEPARTMENT_NAME);
 		}
-		
+
 		CloudEnvironment ce = jsonAndObjectConverterUtil.convertSourceObjectToTarget(Constants.instantiateMapper(), filter, CloudEnvironment.class);
 
 		// unset default value if createdOn is not coming in filter
@@ -146,14 +147,14 @@ public class CloudEnvironmentService {
 		List<CloudEnvironment> list = cloudEnvironmentRepository.findAll(Example.of(ce), Sort.by(Sort.Direction.DESC, "id"));
 		return list;
 	}
-    
-    
-    public List<Map<String, Object>> count(Long orgId) throws IOException {
+
+
+    public List<EnvironmentCountsDto> count(Long orgId) throws IOException {
     	logger.debug("Getting cloud wise landing zone and their resource counts");
     	return cloudEnvironmentRepository.getCount(orgId);
     }
-    
-    public Map<String, Object> count(String cloud, Long orgId) throws IOException {
+
+    public List<EnvironmentCountsDto> count(String cloud, Long orgId) throws IOException {
     	logger.debug("Getting cloud wise landing zone and their resource counts");
     	return cloudEnvironmentRepository.getCount(cloud, orgId);
     }
