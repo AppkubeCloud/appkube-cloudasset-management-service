@@ -42,7 +42,7 @@ public interface CloudEnvironmentRepository extends JpaRepository<CloudEnvironme
 			+ "group by ce.cloud, ces.summary_json";
 
 	@Query(value = ENV_CLOUD_WISE_COUNT_QUERY, nativeQuery = true)
-	public List<EnvironmentCountsDto> getCount(@Param("cloud") String cloud, @Param("orgId") Long orgId);
+	public EnvironmentCountsDto getCount(@Param("cloud") String cloud, @Param("orgId") Long orgId);
 
 
     String ORG_WISE_ENV_SUMMARY_QUERY ="select cnv.cloud, replace(cast(ceo.landing_zone as text), '\"', '') as landing_zone, ceo.product_enclave, " +

@@ -316,9 +316,9 @@ public class CloudEnvironmentController {
 	 * @throws URISyntaxException
 	 */
 	@GetMapping("/organizations/{orgId}/cloud/{cloud}/cloud-environments/count")
-	public ResponseEntity<List<EnvironmentCountsDto>> getEnvironmentCounts(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
+	public ResponseEntity<EnvironmentCountsDto> getEnvironmentCounts(@PathVariable String cloud, @PathVariable Long orgId) throws IOException, URISyntaxException {
         log.debug("REST request to get record count of landing zone and its associated assets, alerts and billing cost for given cloud: {} and organization id: {} ",cloud, orgId);
-        List<EnvironmentCountsDto> result = cloudEnvironmentService.getEnvironmentCounts(cloud, orgId);
+        EnvironmentCountsDto result = cloudEnvironmentService.getEnvironmentCounts(cloud, orgId);
         return ResponseEntity
             .ok()
             .headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: "+orgId+", cloud: "+cloud))

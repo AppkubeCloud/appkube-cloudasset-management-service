@@ -155,7 +155,7 @@ public class CloudEnvironmentService {
     	return cloudEnvironmentRepository.getCount(orgId);
     }
 
-    public List<EnvironmentCountsDto> getEnvironmentCounts(String cloud, Long orgId) throws IOException {
+    public EnvironmentCountsDto getEnvironmentCounts(String cloud, Long orgId) throws IOException {
     	logger.debug("Getting cloud wise landing zone and their resource counts");
     	return cloudEnvironmentRepository.getCount(cloud, orgId);
     }
