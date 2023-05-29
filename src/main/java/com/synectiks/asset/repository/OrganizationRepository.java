@@ -42,11 +42,11 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	@Query(value = LANDING_ZONE_QUERY, nativeQuery = true)
 	public List<String> getLandingZone(@Param("orgId") Long orgId);
 	
-	String DEPARTMENY_LANDING_ZONE_QUERY = "select cnv .account_id  \r\n"
+	String DEPARTMENY_LANDING_ZONE_QUERY = "select cnv.account_id  \r\n"
 			+ "from cloud_environment cnv, department dep, organization org\r\n"
 			+ "where org.id = dep.organization_id\r\n"
 			+ "and dep.id = cnv.department_id\r\n"
-			+ "and org.id =:orgId  and dep .id =:depId";
+			+ "and org.id =:orgId  and dep.id =:depId";
 
 	@Query(value = DEPARTMENY_LANDING_ZONE_QUERY, nativeQuery = true)
 	public List<String> getDepartmentLandingZones(@Param("orgId") Long orgId,@Param("depId") Long depId);

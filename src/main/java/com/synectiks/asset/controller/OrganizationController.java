@@ -245,6 +245,28 @@ public class OrganizationController {
 				.body(result);
 
 	}
+	
+	/**
+	 * {@code GET /organizations/{orgId}/landing-zone} : get landing zone list of an
+	 * organization.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         department list of an organization.
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/landing-zone")
+	public ResponseEntity<List<String>> getOrganizationLandingZone(@PathVariable Long orgId)
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of  landing Zones of given Organization. Organization id :{}", orgId);
+		List<String> result = organizationService.getLandingZones(orgId);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId))
+				.body(result);
+
+	}
+	
 
 	/**
 	 * {@code GET /organizations/{orgId}/departments/{depId}/products} : get product
@@ -268,29 +290,10 @@ public class OrganizationController {
 
 	}
 
-	/**
-	 * {@code GET /organizations/{orgId}/landing-zone} : get landing zone list of an
-	 * organization.
-	 *
-	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
-	 *         department list of an organization.
-	 * @throws URISyntaxException
-	 */
 
-	@GetMapping("/organizations/{orgId}/landing-zone")
-	public ResponseEntity<List<String>> getOrganizationLandingZone(@PathVariable Long orgId)
-			throws IOException, URISyntaxException {
-		logger.debug("REST request to get list of  landing Zones of given Organization. Organization id :{}", orgId);
-		List<String> result = organizationService.getLandingZones(orgId);
-
-		return ResponseEntity.ok()
-				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId))
-				.body(result);
-
-	}
 
 	/**
-	 * {@code GET /organizations/{orgId}/landing-zone} : get landing zone list of an
+	 * {@code GET /organizations/{orgId}/departments/{depId}/landing-zone} : get landing zone list of an
 	 * departments an organization.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
