@@ -84,14 +84,6 @@ public class OrganizationService {
     public Optional<Organization> findOne(Long id) throws IOException {
     	logger.debug("Request to get Organization : {}", id);
     	Optional<Organization> o = organizationRepository.findById(id);
-//    	if(o.isPresent()) {
-//    		Map<String, String> filter = new HashMap<>();
-//    		for(Department d: o.get().getDepartments()) {
-//    			filter.clear();
-//    			filter.put("departmentId", String.valueOf(d.getId()));
-//    			d.setProducts(serviceAllocationService.getProducts(filter));
-//    		}
-//    	}
     	return o;
     }
 
@@ -134,4 +126,54 @@ public class OrganizationService {
 //    	}
     	return list;
     }
+    
+    
+    
+    public List<String> getProducts(Long orgId) throws IOException {
+    	logger.debug("Request to get list of products of an Organization");
+    	return organizationRepository.getProduct(orgId);
+    }
+    
+    public List<String> getDepartmentProducts(Long orgId, Long depId) throws IOException {
+    	logger.debug("Request to get list of products of an Organization");
+    	return organizationRepository.getDepartmentProduct(orgId,depId);
+    }
+//    associated landing Zones
+    public List<String> getLandingZones(Long orgId) throws IOException {
+    	logger.debug("Request to get list of landing zone of an Organization");
+    	return organizationRepository.getLandingZone(orgId);
+    }
+    
+    public List<String> getDepartmentLandingZones(Long orgId, Long depId ) throws IOException {
+    	logger.debug("Request to get list of landing zone of an Department an Organization");
+    	return organizationRepository.getDepartmentLandingZones(orgId,depId);
+    }
+    public List<String> getCloudnameLandingZones(Long orgId,String cloudName) throws IOException {
+    	logger.debug("Request to get list of landing zone of cloudName an Organization");
+    	return organizationRepository.getCloudnameLandingZones(orgId,cloudName);
+    }
+    public List<String> getDepartmentCloudnameLandingZones(Long orgId, Long depId, String cloudName) throws IOException {
+    	logger.debug("Request to get list of landing zone of cloudName an Department an Organization");
+    	return organizationRepository.getDepartmentCloudnameLandingZones(orgId,depId,cloudName);
+    }
+    
+    //product enclaves
+   
+    public List<String> getOrganizationProductEnclave(Long orgId) throws IOException {
+    	logger.debug("Request to get list of product enclaves of an Organization");
+    	return organizationRepository.getOrganizationProductEnclave(orgId);
+    }
+    public List<String> getOrganizationDepartmentsProductEnclave(Long orgId, Long depId ) throws IOException {
+    	logger.debug("Request to get list of product enclaves of an Department an Organization");
+    	return organizationRepository.getOrganizationDepartmentsProductEnclave(orgId,depId);
+    }
+    public List<String> getOrganizationLandingzoneProductEnclave(Long orgId,String landingZone) throws IOException {
+    	logger.debug("Request to get list of product enclaves of landingZoneName an Organization");
+    	return organizationRepository.getObj(orgId,landingZone);
+    }
+    public List<String> getOrganizationDepartmentLandingzoneProductEnclave(Long orgId, Long depId, String landingZone) throws IOException {
+    	logger.debug("Request to get list of product enclaves of landingZoneName an Department an Organization");
+    	return organizationRepository.getOrganizationDepartmentLandingzoneProductEnclave(orgId,depId,landingZone);
+    }
+    
 }
