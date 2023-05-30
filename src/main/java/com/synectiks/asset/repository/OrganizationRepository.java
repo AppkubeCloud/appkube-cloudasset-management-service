@@ -117,6 +117,33 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	@Query(value = DEPARTMENT_LANDINGZONENAME_PRODUCT_ENC_QUERY, nativeQuery = true)
 	public List<String> getOrganizationDepartmentLandingzoneProductEnclave(@Param("orgId") Long orgId,@Param("depId") Long depId,@Param("landingZone") String landingZone);
 	
+	
+	
+	String ENV_PRODUCT_QUERY = "SELECT c.obj->>'associatedProduct' as products\r\n"
+			+ "FROM cloud_element ce,cloud_environment cnv, department dep, organization org , \r\n"
+			+ "jsonb_array_elements(ce.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj)\r\n"
+			+ "WHERE \r\n"
+			+ "org.id = dep.organization_id\r\n"
+			+ "and dep.id = cnv.department_id\r\n"
+			+ "and cnv.id = ce.cloud_environment_id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and c.obj->>'associatedEnv' =:env";
+	@Query(value = ENV_PRODUCT_QUERY, nativeQuery = true)
+	public List<String> getOrganizationEnvProduct(@Param("orgId") Long orgId,@Param("env") String env);
+	
+	String ORG_DEPARTMENT_ENV_PRODUCT_QUERY = "SELECT c.obj->>'associatedProduct' as products\r\n"
+			+ "FROM cloud_element ce,cloud_environment cnv, department dep, organization org , \r\n"
+			+ "jsonb_array_elements(ce.hosted_services -> 'HOSTEDSERVICES') with ordinality c(obj)\r\n"
+			+ "WHERE \r\n"
+			+ "org.id = dep.organization_id\r\n"
+			+ "and dep.id = cnv.department_id\r\n"
+			+ "and cnv.id = ce.cloud_environment_id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep .id =:depId\r\n"
+			+ "and c.obj->>'associatedEnv' = :env";
+	@Query(value = ORG_DEPARTMENT_ENV_PRODUCT_QUERY, nativeQuery = true)
+	public List<String> getOrganizationDepartmentEnvProduct(@Param("orgId")Long orgId, @Param("depId")Long depId, @Param("env")String env);
+	
 }
 
 

@@ -175,5 +175,15 @@ public class OrganizationService {
     	logger.debug("Request to get list of product enclaves of landingZoneName an Department an Organization");
     	return organizationRepository.getOrganizationDepartmentLandingzoneProductEnclave(orgId,depId,landingZone);
     }
+//environment wise
+	public List<String> getOrganizationEnvProduct(Long orgId, String env) {
+		logger.debug("Request to get list of product  of envName an Organization");
+    	return organizationRepository.getOrganizationEnvProduct(orgId,env);
+	}
+
+	public List<String> getOrganizationDepartmentEnvProduct(Long orgId, Long depId, String env) {
+		logger.debug("Request to get list of product  of EnvName an Department an Organization");
+    	return organizationRepository.getOrganizationDepartmentEnvProduct(orgId,depId,env);
+	}
     
 }

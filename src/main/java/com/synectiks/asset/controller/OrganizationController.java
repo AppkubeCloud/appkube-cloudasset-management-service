@@ -432,7 +432,7 @@ public class OrganizationController {
 	 * {@code GET
 	 * /organizations/{orgId}/departments/{depId}/landing-zone/{landingZone}/product-enclave}
 	 * : get product-enclave list of an departments an landingZone an organization.
-	 *
+	 * 
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
 	 *         product-enclave list of an departments an landingZone an
 	 *         organization.
@@ -451,6 +451,48 @@ public class OrganizationController {
 		return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME,
 				"orgId: " + orgId + depId + landingZone)).body(result);
 
+	}
+	
+	/**
+	 * {@code GET
+	 * /organizations/{orgId}/environments/{env}/products}
+	 * : get product list of an env  an organization.
+	 * 
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *          product list of an associatedEnv an organization.
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/environments/{env}/products")
+	public ResponseEntity<List<String>> getOrganizationEnvProduct(@PathVariable Long orgId,
+			@PathVariable String env) throws IOException, URISyntaxException {
+		logger.debug(
+				"REST request to get list of  product given Organization and associatedEnv. Organization id :{}",env);
+		List<String> result = organizationService.getOrganizationEnvProduct(orgId,env);
+
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME,
+				"orgId: " + orgId +  env)).body(result);
+	}
+	
+	/**
+	 * {@code GET
+	 * /organizations/{orgId}/departments/{depId}/environments/{env}/products}
+	 * : get product list of an departments an env an organization.
+	 * 
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *          product list of an department an associatedEnv an organization.
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/departments/{depId}/environments/{env}/products")
+	public ResponseEntity<List<String>> getOrganizationDepartmentEnvProduct(@PathVariable Long orgId,@PathVariable Long depId,
+			@PathVariable String env) throws IOException, URISyntaxException {
+		logger.debug(
+				"REST request to get list of  product given Organization and associatedEnv and department. Organization id :{}",env);
+		List<String> result = organizationService.getOrganizationDepartmentEnvProduct(orgId,depId,env);
+
+		return ResponseEntity.ok().headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME,
+				"orgId: " + orgId+depId +  env)).body(result);
 	}
 
 }
