@@ -33,6 +33,7 @@ public class OrganizationService {
 	private JsonAndObjectConverterUtil jsonAndObjectConverterUtil;
 
     public Organization save(Organization organization) {
+    	
     	logger.debug("Request to save Organization : {}", organization);
         return organizationRepository.save(organization);
     }
@@ -135,7 +136,7 @@ public class OrganizationService {
     }
     
     public List<String> getDepartmentProducts(Long orgId, Long depId) throws IOException {
-    	logger.debug("Request to get list of products of an Organization");
+    	logger.debug("Request to get list of products of an department an Organization");
     	return organizationRepository.getDepartmentProduct(orgId,depId);
     }
 //    associated landing Zones
