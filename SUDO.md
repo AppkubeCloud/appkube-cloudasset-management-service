@@ -61,6 +61,7 @@ Response - List<String>
 
 <hr>
 
+
 ### `1.3 organization wise environment resource counts`
 ```
 Method - GET
@@ -102,7 +103,23 @@ Response - List<EnvironmentDto>
 
 <hr>
 
+### `1.5. organization wise departments`
 
+```
+Method - GET
+```
+```
+API End Point - /organizations/{orgId}/departments
+Request - Path variable {orgId}
+Response - Set<Department>
+```
+
+	1. Request passed to spring boot request controller 
+	2. Controller forward request to serivce class
+	3. Service class calls JPA repository 
+	4. JPA repository returns this list of department to service class and service class returns the same list to contorller then get department from the list and finally controller wraps the list into the ResponseEntity and return it to client
+
+<hr>
 
 
 
