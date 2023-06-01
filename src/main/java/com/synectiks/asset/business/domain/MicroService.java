@@ -9,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 import org.hibernate.annotations.Cache;
@@ -46,7 +47,7 @@ public class MicroService extends AbstractAuditingEntity implements Serializable
 	private String name;
 
 	@Column(name = "department")
-	private String department;
+	private String departmentName;
 
 	@Column(name = "product")
 	private String product;
@@ -87,5 +88,12 @@ public class MicroService extends AbstractAuditingEntity implements Serializable
 	
 	@Column(name = "status")
 	private String status;
+	
+	@ManyToOne
+	private Department department;
+	
+	@ManyToOne
+	private DeploymentEnvironment deploymentEnvironment;
+	
 
 }

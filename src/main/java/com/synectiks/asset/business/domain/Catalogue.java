@@ -45,7 +45,7 @@ public class Catalogue implements Serializable {
   private Long id;
 
   @Convert(converter = CatalogueConverter.class)
-  @Column(columnDefinition = "jsonb")
+  @Column(name = "details", columnDefinition = "jsonb")
   private CatalogueResponse details;
 
 }

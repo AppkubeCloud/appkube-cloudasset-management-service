@@ -186,5 +186,64 @@ public class OrganizationService {
 		logger.debug("Request to get list of product  of EnvName an Department an Organization");
     	return organizationRepository.getOrganizationDepartmentEnvProduct(orgId,depId,env);
 	}
+	
+	//micro-services
+	
+		public List<Organization> getOrganizationMicroServices(Long orgId) {
+			logger.debug("Request to get list of services  of an Organization");
+			return organizationRepository.getOrganizationMicroServices(orgId);
+
+		}
+
+		public List<String> getOrganizationproductsMicroServices(Long orgId, String product) {
+
+			logger.debug("Request to get list of services  of an Organization an Products");
+			return organizationRepository.getOrganizationproductsMicroServices(orgId, product);
+		}
+
+		public List<String> getOrganizationEnvMicroServices(Long orgId, Long env) {
+			logger.debug("Request to get list of services  of an Organization an Env");
+			return organizationRepository.getOrganizationEnvMicroServices(orgId, env);
+		}
+
+		public List<Organization> getOrganizationProductEnvMicroServices(Long orgId, String product, Long env) {
+			logger.debug("Request to get list of services  of an Organization an product an Env");
+			return organizationRepository.getOrganizationProductEnvMicroServices(orgId,product ,env);
+		}
+
+		public List<String> getOrganizationServiceTypeMicroServices(Long orgId, String serviceType) {
+			logger.debug("Request to get list of services  of an Organization an serviceType");
+			return organizationRepository.getOrganizationServiceTypeMicroServices(orgId,serviceType);
+		}
+		
+		public List<Organization> getOrganizationDepartmentsMicroServices(Long orgId, Long depId) throws IOException {
+			logger.debug("Request to get list of services of an department an Organization");
+			return organizationRepository.getOrganizationDepartmentsMicroServices(orgId, depId);
+		}
+
+		public List<String> getOrganizationDepartmentsProductMicroServices(Long orgId, Long depId, String product) {
+			// TODO Auto-generated method stub
+			logger.debug("Request to get list of services of an department an product an Organization");
+			return organizationRepository.getOrganizationDepartmentsProductMicroServices(orgId, depId,product);
+		}
+
+		public List<String> getOrganizationDepartmentsEnvMicroServices(Long orgId, Long depId, Long env) {
+			// TODO Auto-generated method stub
+			logger.debug("Request to get list of services of an department  an env an Organization");
+			return organizationRepository.getOrganizationDepartmentsEnvMicroServices(orgId, depId,env);
+		}
+
+		public List<Organization> getOrganizationDepartmentsProductEnvMicroServices(Long orgId, String product, Long depId,
+				Long env) {
+			// TODO Auto-generated method stub
+			logger.debug("Request to get list of services of an department an product an env an Organization");
+			return organizationRepository.getOrganizationDepartmentsProductEnvMicroServices(orgId,depId,product,env);
+		}
+
+		public List<String> getOrganizationDepartmentsServiceTypeMicroServices(Long orgId, Long depId, String serviceType) {
+			// TODO Auto-generated method stub
+			logger.debug("Request to get list of services of an department an serviceType  an Organization");
+			return organizationRepository.getOrganizationDepartmentsServiceTypeMicroServices(orgId,depId,serviceType);
+		}
     
 }

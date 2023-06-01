@@ -49,5 +49,11 @@ public class Organization extends AbstractAuditingEntity implements Serializable
     @JsonIgnoreProperties(value = { "organization" }, allowSetters = true)
     private Set<Department> departments = new HashSet<>();
 
+	
+    
+    
+
+	
+
 
 }

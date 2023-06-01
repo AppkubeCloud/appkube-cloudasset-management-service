@@ -144,6 +144,111 @@ public interface OrganizationRepository extends JpaRepository<Organization, Long
 	@Query(value = ORG_DEPARTMENT_ENV_PRODUCT_QUERY, nativeQuery = true)
 	public List<String> getOrganizationDepartmentEnvProduct(@Param("orgId")Long orgId, @Param("depId")Long depId, @Param("env")String env);
 	
+	
+	String ORG_MICRO_SERVICES_QUERY ="select distinct ms.* as service  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId";
+	@Query(value = ORG_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<Organization> getOrganizationMicroServices(@Param("orgId")Long orgId);
+	
+	String ORG_PRODUCT_MICRO_SERVICES_QUERY ="select distinct ms.product  as service  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms.product =:product";
+	@Query(value = ORG_PRODUCT_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<String> getOrganizationproductsMicroServices(@Param("orgId")Long orgId, @Param("product")String product);
+	
+	
+	String ORG_ENV_MICRO_SERVICES_QUERY ="select distinct ms.environment  as service  \r\n"
+			+ "from micro_service ms , department dep, deployment_environment denv , organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and denv.id = ms.deployment_environment_id \r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and  denv.id =:env";
+	@Query(value = ORG_ENV_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<String> getOrganizationEnvMicroServices(@Param("orgId")Long orgId, @Param("env") Long env);
+
+
+	String ORG_PRODUCT_ENV_MICRO_SERVICES_QUERY ="select distinct ms.*  as service   \r\n"
+			+ "from micro_service ms , department dep,deployment_environment denv, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and denv.id = ms.deployment_environment_id \r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms.product =:product\r\n"
+			+ "and  denv.id =:env";
+	@Query(value = ORG_PRODUCT_ENV_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<Organization> getOrganizationProductEnvMicroServices(@Param("orgId")Long orgId, @Param("product")String product,@Param("env") Long env);
+	
+	
+	String ORG_SERVICETYPE_MICRO_SERVICES_QUERY ="select distinct ms.product  as service  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms.service_type  =:serviceType";
+	@Query(value = ORG_SERVICETYPE_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<String> getOrganizationServiceTypeMicroServices(@Param("orgId")Long orgId, @Param("serviceType")String serviceType);
+	
+	String ORG_DEPARTMENT_MICRO_SERVICES_QUERY ="select distinct ms.* as service  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep .id =:depId";
+	@Query(value = ORG_DEPARTMENT_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<Organization> getOrganizationDepartmentsMicroServices(@Param("orgId")Long orgId, @Param("depId")Long depId);
+	
+
+	String ORG_DEPARTMENT_PRODUCT_MICRO_SERVICES_QUERY ="select distinct ms.product  as service  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep .id =:depId\r\n"
+			+ "and ms.product =:product";
+	@Query(value = ORG_DEPARTMENT_PRODUCT_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<String> getOrganizationDepartmentsProductMicroServices(@Param("orgId")Long orgId, @Param("depId")Long depId,@Param("product") String product);
+	
+	
+	String ORG_DEPARTMENT_ENV_MICRO_SERVICES_QUERY ="select distinct ms.environment  as service  \r\n"
+			+ "from micro_service ms , department dep, deployment_environment denv , organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and denv.id = ms.deployment_environment_id \r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep.id =:depId\r\n"
+			+ "and  denv.id =:env";
+	@Query(value = ORG_DEPARTMENT_ENV_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<String> getOrganizationDepartmentsEnvMicroServices(@Param("orgId")Long orgId, @Param("depId")Long depId,@Param("env")Long env);
+	
+	String ORG_DEPARTMENT_PRODUCT_ENV_MICRO_SERVICES_QUERY ="select distinct ms.*  as service   \r\n"
+			+ "from micro_service ms , department dep,deployment_environment denv, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and denv.id = ms.deployment_environment_id \r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep .id =:depId\r\n"
+			+ "and ms.product =:product\r\n"
+			+ "and  denv.id =:env";
+	@Query(value = ORG_DEPARTMENT_PRODUCT_ENV_MICRO_SERVICES_QUERY, nativeQuery = true)
+	public List<Organization> getOrganizationDepartmentsProductEnvMicroServices(@Param("orgId")Long orgId, @Param("depId")Long depId,@Param("product")String product,@Param("env")Long env);
+	
+	String ORG_DEPARTMENT_SERVICETYPE_SERVICES_QUERY ="select distinct ms.product  as service  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep .id =:depId\r\n"
+			+ "and ms.service_type  =:serviceType";
+	@Query(value = ORG_DEPARTMENT_SERVICETYPE_SERVICES_QUERY, nativeQuery = true)
+	public List<String> getOrganizationDepartmentsServiceTypeMicroServices(@Param("orgId")Long orgId, @Param("depId")Long depId,@Param("serviceType") String serviceType);
+	
 }
 
 
