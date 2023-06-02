@@ -6,8 +6,6 @@ import java.util.Map;
 import java.util.Optional;
 
 import org.apache.commons.lang3.StringUtils;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Example;
 import org.springframework.data.domain.Sort;
@@ -15,10 +13,15 @@ import org.springframework.data.domain.Sort.Direction;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import com.fasterxml.jackson.databind.node.ObjectNode;
 import com.synectiks.asset.business.domain.MicroService;
+import com.synectiks.asset.business.domain.Organization;
 import com.synectiks.asset.config.Constants;
 import com.synectiks.asset.repository.MicroServiceRepository;
 import com.synectiks.asset.util.JsonAndObjectConverterUtil;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 
 /**
  * Service Implementation for managing {@link MicroService}.
@@ -144,5 +147,132 @@ public class MicroServiceService {
 
 		return list;
 	}
+  //micro-services
+	
+  		public List<MicroService> getOrganizationMicroServices(Long orgId) {
+  			log.debug("Request to get list of services  of an Organization");
+  			return microServiceRepository.getOrganizationMicroServices(orgId);
 
+  		}
+
+  		public List<String> getOrganizationproductsMicroServices(Long orgId, String product) {
+
+  			log.debug("Request to get list of services  of an Organization an Products");
+  			return microServiceRepository.getOrganizationproductsMicroServices(orgId, product);
+  		}
+
+  		public List<String> getOrganizationEnvMicroServices(Long orgId, Long env) {
+  			log.debug("Request to get list of services  of an Organization an Env");
+  			return microServiceRepository.getOrganizationEnvMicroServices(orgId, env);
+  		}
+
+  		public List<MicroService> getOrganizationProductEnvMicroServices(Long orgId, String product, Long env) {
+  			log.debug("Request to get list of services  of an Organization an product an Env");
+  			return microServiceRepository.getOrganizationProductEnvMicroServices(orgId,product ,env);
+  		}
+
+  		public List<String> getOrganizationServiceTypeMicroServices(Long orgId, String serviceType) {
+  			log.debug("Request to get list of services  of an Organization an serviceType");
+  			return microServiceRepository.getOrganizationServiceTypeMicroServices(orgId,serviceType);
+  		}
+  		
+  		public List<ObjectNode> getOrganizationDepartmentsMicroServices(Long orgId, Long depId) throws IOException {
+  			log.debug("Request to get list of services of an department an Organization");
+  			return microServiceRepository.getOrganizationDepartmentsMicroServices(orgId, depId);
+  		}
+
+  		public List<String> getOrganizationDepartmentsProductMicroServices(Long orgId, Long depId, String product) {
+  			// TODO Auto-generated method stub
+  			log.debug("Request to get list of services of an department an product an Organization");
+  			return microServiceRepository.getOrganizationDepartmentsProductMicroServices(orgId, depId,product);
+  		}
+
+  		public List<String> getOrganizationDepartmentsEnvMicroServices(Long orgId, Long depId, Long env) {
+  			// TODO Auto-generated method stub
+  			log.debug("Request to get list of services of an department  an env an Organization");
+  			return microServiceRepository.getOrganizationDepartmentsEnvMicroServices(orgId, depId,env);
+  		}
+
+  		public List<ObjectNode> getOrganizationDepartmentsProductEnvMicroServices(Long orgId, String product, Long depId,
+  				Long env) {
+  			// TODO Auto-generated method stub
+  			log.debug("Request to get list of services of an department an product an env an Organization");
+  			return microServiceRepository.getOrganizationDepartmentsProductEnvMicroServices(orgId,depId,product,env);
+  		}
+
+  		public List<String> getOrganizationDepartmentsServiceTypeMicroServices(Long orgId, Long depId, String serviceType) {
+  			// TODO Auto-generated method stub
+  			log.debug("Request to get list of services of an department an serviceType  an Organization");
+  			return microServiceRepository.getOrganizationDepartmentsServiceTypeMicroServices(orgId,depId,serviceType);
+  		}
+  		
+  		public List<ObjectNode> getOrganizationServiceNameMicroServices(Long orgId, String name) {
+			// TODO Auto-generated method stub
+			log.debug("Request to get list of services-cost of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceNameMicroServices(orgId,name);
+		}
+
+		public List<ObjectNode> getOrganizationServiceNameDailyMicroServices(Long orgId, String serviceName) {
+			log.debug("Request to get list of services-cost-daily of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceNameDailyMicroServices(orgId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationServiceNameWeeklyMicroServices(Long orgId, String serviceName) {
+			// TODO Auto-generated method stub
+			log.debug("Request to get list of services-cost-weekly of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceNameWeeklyMicroServices(orgId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationServiceNameMonthlyMicroServices(Long orgId, String serviceName) {
+			// TODO Auto-generated method stub
+			log.debug("Request to get list of services-cost-monthly of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceNameMonthlyMicroServices(orgId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentsServiceNameMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-cost of an depId an serviceName  an Organization");
+			return microServiceRepository.getOrganizationDepartmentsServiceNameMicroServices(orgId,depId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentsServiceNameDailyMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-cost-daily of an depId an serviceName  an Organization");
+			return microServiceRepository.getOrganizationDepartmentsServiceNameDailyMicroServices(orgId,depId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentsServiceNameWeeklyMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-cost-weekly of an depId an serviceName  an Organization");
+			return microServiceRepository.getOrganizationDepartmentsServiceNameWeeklyMicroServices(orgId,depId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentsServiceNameMonthlyMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-cost-monthly of an depId an serviceName  an Organization");
+			return microServiceRepository.getOrganizationDepartmentsServiceNameMonthlyMicroServices(orgId,depId,serviceName);
+		}
+
+		public List<String> getOrganizationLandingZoneMicroServices(Long orgId, String landingZone) {
+			log.debug("Request to get list of services of  an landingZone  an Organization");
+			return microServiceRepository.getOrganizationLandingZoneMicroServices(orgId,landingZone);
+
+		}
+
+		public List<String> getOrganizationProductsMicroServices(Long orgId, String landingZone) {
+			log.debug("Request to get list of services of  an landingZone  an Organization");
+			return microServiceRepository.getOrganizationProductsMicroServices(orgId,landingZone);
+		}
+
+		public List<String> getOrganizationDepartmentsServicesMicroServices(Long orgId, Long depId,
+				String landingZone) {
+			log.debug("Request to get list of services of an department an landingZone  an Organization");
+			return microServiceRepository.getOrganizationDepartmentsServicesMicroServices(orgId,depId,landingZone);
+		}
+
+		public List<String> getOrganizationDepartmentsProductsMicroServices(Long orgId, Long depId,
+				String landingZone) {
+			log.debug("Request to get list of services of an department an landingZone  an Organization");
+			return microServiceRepository.getOrganizationDepartmentsProductsMicroServices(orgId,depId,landingZone);
+		}
 }
