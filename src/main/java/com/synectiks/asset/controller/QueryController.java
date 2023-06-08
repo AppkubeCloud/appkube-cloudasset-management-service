@@ -547,7 +547,7 @@ public class QueryController {
 
 	}
 	
-//	*********************************************miro serice cost**********************************************************************
+//	*********************************************miro service cost**********************************************************************
 	
 	/**
 	 * {@code GET /organizations/{orgId}/services/{serviceName}/service-cost} : get service-cost
@@ -600,7 +600,7 @@ public class QueryController {
 	 * @throws URISyntaxException
 	 */
 
-	@GetMapping("organizations/{orgId}/services/{serviceName}/service-cost/weekly")
+	@GetMapping("/organizations/{orgId}/services/{serviceName}/service-cost/weekly")
 	public ResponseEntity<List<ObjectNode>> getOrganizationServiceNameWeeklyMicroServices(@PathVariable Long orgId ,@PathVariable String serviceName )
 			throws IOException, URISyntaxException {
 		logger.debug("REST request to get list of services-cost-weekly of given Organization an serviceName. Organization id :{}", orgId,serviceName);
@@ -613,7 +613,7 @@ public class QueryController {
 	}
 	
 	/**
-	 * {@code GET organizations/{orgId}/services/{serviceName}/service-cost/weekly} : get service-cost-monthly
+	 * {@code GET /organizations/{orgId}/services/{serviceName}/service-cost/weekly} : get service-cost-monthly
 	 * list of organization an serviceName.
 	 *
 	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
@@ -621,7 +621,7 @@ public class QueryController {
 	 * @throws URISyntaxException
 	 */
 
-	@GetMapping("organizations/{orgId}/services/{serviceName}/service-cost/monthly")
+	@GetMapping("/organizations/{orgId}/services/{serviceName}/service-cost/monthly")
 	public ResponseEntity<List<ObjectNode>> getOrganizationServiceNameMonthlyMicroServices(@PathVariable Long orgId ,@PathVariable String serviceName )
 			throws IOException, URISyntaxException {
 		logger.debug("REST request to get list of services-cost-monthly of given Organization an serviceName. Organization id :{}", orgId,serviceName);
@@ -631,7 +631,48 @@ public class QueryController {
 				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + serviceName))
 				.body(result);
 
-	}
+	} 
+	/**
+	 * {@code GET /organizations/{orgId}/landing-zone/{landingZone}/product/{product}/products} : get service
+	 * list of organization an landingZone an product.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-cost-monthly list of an organization an landingZone an product
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/landing-zone/{landingZone}/product/{product}/products")
+	public ResponseEntity<List<ObjectNode>> getOrganizationLandingZoneProductServices(@PathVariable Long orgId ,@PathVariable String landingZone, @PathVariable String product )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services of given organization an landingZone an product. Organization id :{}", orgId,landingZone,product);
+		List<ObjectNode> result = microServiceService.getOrganizationLandingZoneProductServices(orgId,landingZone,product);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + landingZone+product))
+				.body(result);
+
+	} 
+	
+	/**
+	 * {@code GET /organizations/{orgId}/departments/{depId}/landing-zone/{landingZone}/product/{product}/products} : get service
+	 * list of organization an landingZone an departments an product.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-cost-monthly list of an organization an landingZone an departments an product
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/departments/{depId}/landing-zone/{landingZone}/product/{product}/products")
+	public ResponseEntity<List<ObjectNode>> getOrganizationDepartmentLandingZoneProductServices(@PathVariable Long orgId,@PathVariable Long depId ,@PathVariable String landingZone, @PathVariable String product )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services of given organization an organization an landingZone an departments an product. Organization id :{}", orgId,depId,landingZone,product);
+		List<ObjectNode> result = microServiceService.getOrganizationDepartmentLandingZoneProductServices(orgId,depId,landingZone,product);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + depId+ landingZone+product))
+				.body(result);
+
+	} 
 	
 	/**
 	 * {@code GET /organizations/{orgId}/departments/{depId}/services/{serviceName}/service-cost} : get service-cost
@@ -793,6 +834,180 @@ public class QueryController {
 
 		return ResponseEntity.ok()
 				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId+depId + landingZone))
+				.body(result);
+
+	}
+	
+	
+//	*********************************************miro service sla**********************************************************************
+	
+	/**
+	 * {@code GET /organizations/{orgId}/services/{serviceName}/service-sla} : get service-sla
+	 * list of organization an  serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-sla list of an organization an serviceName
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/services/{name}/service-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationServiceSlaMicroServices(@PathVariable Long orgId ,@PathVariable String name )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-sla of given Organization an serviceName. Organization id :{}", orgId,name);
+		List<ObjectNode> result = microServiceService.getOrganizationServiceSlaMicroServices(orgId,name);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + name))
+				.body(result);
+
+	}
+	
+
+	/**
+	 * {@code GET /organizations/{orgId}/services/{serviceName}/service-sla/cureent-sla} : get service-cureent-sla
+	 * list of organization an serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-cureent-sla list of an organization an serviceName
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/services/{serviceName}/service/cureent-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationServiceCurrentSlaMicroServices(@PathVariable Long orgId ,@PathVariable String serviceName )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-cureent-sla of given Organization an serviceName. Organization id :{}", orgId,serviceName);
+		List<ObjectNode> result = microServiceService.getOrganizationServiceCurrentSlaMicroServices(orgId,serviceName);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + serviceName))
+				.body(result);
+
+	}
+	/**
+	 * {@code GET /organizations/{orgId}/services/{serviceName}/service/monthly-sla} : get service-monthly-sla
+	 * list of organization an serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-monthly-sla list of an organization an serviceName
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/services/{serviceName}/service/monthly-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationServiceMonthlySlaMicroServices(@PathVariable Long orgId ,@PathVariable String serviceName )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-monthly-sla of given Organization an serviceName. Organization id :{}", orgId,serviceName);
+		List<ObjectNode> result = microServiceService.getOrganizationServiceMonthlySlaMicroServices(orgId,serviceName);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + serviceName))
+				.body(result);
+
+	}
+	
+	/**
+	 * {@code GET /organizations/{orgId}/services/{serviceName}/service-cost/weekly} : get service-weekly-sla
+	 * list of organization an serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-weekly-sla list of an organization an serviceName
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/services/{serviceName}/service/weekly-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationServiceWeeklySlaMicroServices(@PathVariable Long orgId ,@PathVariable String serviceName )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-weekly-sla of given Organization an serviceName. Organization id :{}", orgId,serviceName);
+		List<ObjectNode> result = microServiceService.getOrganizationServiceWeeklySlaMicroServices(orgId,serviceName);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId + serviceName))
+				.body(result);
+
+	} 
+	
+	
+	/**
+	 * {@code GET /organizations/{orgId}/departments/{depId}/services/{serviceName}/service-sla} : get service-sla
+	 * list of organization an department an  serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-sla list of an organization an department an serviceName
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/organizations/{orgId}/departments/{depId}/services/{name}/service-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationDepartmentServiceSlaMicroServices(@PathVariable Long orgId,@PathVariable Long depId ,@PathVariable String name )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-sla of given Organization an department an serviceName. Organization id :{}", orgId,depId,name);
+		List<ObjectNode> result = microServiceService.getOrganizationDepartmentServiceSlaMicroServices(orgId,depId,name);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId+depId + name))
+				.body(result);
+
+	}
+	
+
+	/**
+	 * {@code GET /organizations/{orgId}/departments/{depId}/services/{serviceName}/service/cureent-sla} : get service-cureent-sla
+	 * list of organization an department an serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-cureent-sla list of an organization an serviceName an department
+	 * @throws URISyntaxException
+	 */
+	
+	@GetMapping("/organizations/{orgId}/departments/{depId}/services/{serviceName}/service/cureent-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationDepartmentServiceCureentSlaMicroServices(@PathVariable Long orgId,@PathVariable Long depId ,@PathVariable String serviceName )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-current-sla of given Organization an department an serviceName. Organization id :{}", orgId,depId,serviceName);
+		List<ObjectNode> result = microServiceService.getOrganizationDepartmentServiceCureentSlaMicroServices(orgId,depId,serviceName);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId+depId + serviceName))
+				.body(result);
+
+	}
+	/**
+	 * {@code GET /organizations/{orgId}/departments/{depId}/services/{serviceName}/service/monthly-sla} : get service-monthly-sla
+	 * list of organization an departments an serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-monthly-sla list of an organization an departments an serviceName
+	 * @throws URISyntaxException
+	 */
+	
+	@GetMapping("/organizations/{orgId}/departments/{depId}/services/{serviceName}/service/monthly-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationDepartmentServiceMonthlySlaMicroServices(@PathVariable Long orgId,@PathVariable Long depId ,@PathVariable String serviceName )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-monthly-sla of given Organization an department an serviceName. Organization id :{}", orgId,depId,serviceName);
+		List<ObjectNode> result = microServiceService.getOrganizationDepartmentServiceMonthlySlaMicroServices(orgId,depId,serviceName);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId+depId + serviceName))
+				.body(result);
+
+	}
+	
+	/**
+	 * {@code GET /organizations/{orgId}/departments/{depId}/services/{serviceName}/service/weekly-sla} : get service-weekly-sla
+	 * list of organization an department an serviceName.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get
+	 *         service-weekly-sla list of an organization an serviceName an department
+	 * @throws URISyntaxException
+	 */
+	
+	
+
+	@GetMapping("/organizations/{orgId}/departments/{depId}/services/{serviceName}/service/weekly-sla")
+	public ResponseEntity<List<ObjectNode>> getOrganizationDepartmentServiceWeeklySlaMicroServices(@PathVariable Long orgId,@PathVariable Long depId ,@PathVariable String serviceName )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of services-weekly-sla of given Organization an department an serviceName. Organization id :{}", orgId,depId,serviceName);
+		List<ObjectNode> result = microServiceService.getOrganizationDepartmentServiceWeeklySlaMicroServices(orgId,depId,serviceName);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "orgId: " + orgId+depId + serviceName))
 				.body(result);
 
 	}

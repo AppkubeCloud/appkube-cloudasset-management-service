@@ -275,4 +275,61 @@ public class MicroServiceService {
 			log.debug("Request to get list of services of an department an landingZone  an Organization");
 			return microServiceRepository.getOrganizationDepartmentsProductsMicroServices(orgId,depId,landingZone);
 		}
+
+		public List<ObjectNode> getOrganizationLandingZoneProductServices(Long orgId, String landingZone,
+				String product) {
+			log.debug("Request to get list of services of an product an landingZone  an Organization");
+			return microServiceRepository.getOrganizationLandingZoneProductServices(orgId,landingZone,product);
+		}
+		public List<ObjectNode> getOrganizationDepartmentLandingZoneProductServices(Long orgId,Long depId, String landingZone,
+				String product) {
+			log.debug("Request to get list of services of an department an product an landingZone  an Organization");
+			return microServiceRepository.getOrganizationDepartmentLandingZoneProductServices(orgId,depId,landingZone,product);
+		}
+
+		public List<ObjectNode> getOrganizationServiceSlaMicroServices(Long orgId, String name) {
+			log.debug("Request to get list of services-sla of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceSlaMicroServices(orgId,name);
+			
+		}
+
+		public List<ObjectNode> getOrganizationServiceCurrentSlaMicroServices(Long orgId, String serviceName) {
+			log.debug("Request to get list of services-cureent-sla of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceCurrentSlaMicroServices(orgId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationServiceMonthlySlaMicroServices(Long orgId, String serviceName) {
+			log.debug("Request to get list of services-monthly-sla of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceMonthlySlaMicroServices(orgId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationServiceWeeklySlaMicroServices(Long orgId, String serviceName) {
+			log.debug("Request to get list of services-weekly-sla of an serviceName  an Organization");
+			return microServiceRepository.getOrganizationServiceWeeklySlaMicroServices(orgId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentServiceSlaMicroServices(Long orgId, Long depId, String name) {
+			log.debug("Request to get list of services-sla of an serviceName an department  an Organization");
+			return microServiceRepository.getOrganizationDepartmentServiceSlaMicroServices(orgId,depId,name);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentServiceCureentSlaMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-cureent-sla of an serviceName an department  an Organization");
+			return microServiceRepository.getOrganizationDepartmentServiceCureentSlaMicroServices(orgId,depId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentServiceMonthlySlaMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-monthly-sla of an serviceName an department  an Organization");
+			return microServiceRepository.getOrganizationDepartmentServiceMonthlySlaMicroServices(orgId,depId,serviceName);
+		}
+
+		public List<ObjectNode> getOrganizationDepartmentServiceWeeklySlaMicroServices(Long orgId, Long depId,
+				String serviceName) {
+			log.debug("Request to get list of services-weekly-sla of an serviceName an department  an Organization");
+			return microServiceRepository.getOrganizationDepartmentServiceWeeklySlaMicroServices(orgId,depId,serviceName);
+		}
+
+	
 }

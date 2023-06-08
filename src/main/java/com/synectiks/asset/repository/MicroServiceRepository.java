@@ -255,4 +255,119 @@ public interface MicroServiceRepository extends JpaRepository<MicroService, Long
 	public List<String> getOrganizationDepartmentsProductsMicroServices(@Param("orgId")Long orgId,@Param("depId")Long depId ,@Param("landingZone")String landingZone);
 	
 	
+	String ORG_LANDINGZONE_PRODUCT_SERVICES_QUERY ="select distinct  ms.product \r\n"
+			+ "from  micro_service ms ,cloud_element ce,cloud_environment cnv, department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and dep.id = cnv.department_id\r\n"
+			+ "and cnv.id = ce.cloud_environment_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and ms.department_id = cnv.department_id \r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms .product =:product\r\n"
+			+ "and cnv.account_id =:landingZone";
+	@Query(value = ORG_LANDINGZONE_PRODUCT_SERVICES_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationLandingZoneProductServices(@Param("orgId")Long orgId,@Param("landingZone")String landingZon,@Param("product")String product );
+	
+	String ORG_DEP_LANDINGZONE_PRODUCT_SERVICES_QUERY ="select distinct  ms.product \r\n"
+			+ "from  micro_service ms ,cloud_element ce,cloud_environment cnv, department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and dep.id = cnv.department_id\r\n"
+			+ "and cnv.id = ce.cloud_environment_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and ms.department_id = cnv.department_id \r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep.id = :depId\r\n"
+			+ "and ms .product =:product\r\n"
+			+ "and cnv.account_id =:landingZone";
+	@Query(value = ORG_DEP_LANDINGZONE_PRODUCT_SERVICES_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationDepartmentLandingZoneProductServices(@Param("orgId")Long orgId,@Param("depId")Long depId,@Param("landingZone")String landingZon,@Param("product")String product );
+	
+	
+	
+	
+	String ORG_SERVICETYPE_MICRO_SERVICES_SLA_QUERY ="select distinct ms.sla_json  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms .name =:serviceName";
+	@Query(value = ORG_SERVICETYPE_MICRO_SERVICES_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationServiceSlaMicroServices(@Param("orgId")Long orgId, @Param("serviceName")String serviceName);
+	
+	String ORG_SERVICETYPE_MICRO_SERVICES_CURRENT_SLA_QUERY ="select distinct ms.sla_json ->'CURRENTSLA' as  current_sla\r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms .name =:serviceName\r\n";
+	@Query(value = ORG_SERVICETYPE_MICRO_SERVICES_CURRENT_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationServiceCurrentSlaMicroServices(@Param("orgId")Long orgId, @Param("serviceName")String serviceName);
+	
+	
+	String ORG_SERVICETYPE_MICRO_SERVICES_MONTHLY_SLA_QUERY ="select distinct ms.sla_json->'MONTHLYSLA' as  monthly_sla\r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms .\"name\" =:serviceName";
+	@Query(value = ORG_SERVICETYPE_MICRO_SERVICES_MONTHLY_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationServiceMonthlySlaMicroServices(@Param("orgId")Long orgId, @Param("serviceName")String serviceName);
+	
+	String ORG_SERVICETYPE_MICRO_SERVICES_WEEKLY_SLA_QUERY ="select distinct ms.sla_json->'WEEKLYSLA' as  weekly_sla\r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and ms .\"name\" =:serviceName";
+	@Query(value = ORG_SERVICETYPE_MICRO_SERVICES_WEEKLY_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationServiceWeeklySlaMicroServices(@Param("orgId")Long orgId, @Param("serviceName")String serviceName);
+	
+	String ORG_DEP_SERVICETYPE_MICRO_SERVICES_SLA_QUERY ="select distinct ms.sla_json  \r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep.id = :depId\r\n"
+			+ "and ms .name =:serviceName";
+	@Query(value = ORG_DEP_SERVICETYPE_MICRO_SERVICES_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationDepartmentServiceSlaMicroServices(@Param("orgId")Long orgId,@Param("depId")Long depId, @Param("serviceName")String serviceName);
+	
+	String ORG_DEP_SERVICETYPE_MICRO_SERVICES_CURRENT_SLA_QUERY ="select distinct ms.sla_json ->'CURRENTSLA' as  current_sla\r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep.id = :depId\r\n"
+			+ "and ms .name =:serviceName\r\n";
+	@Query(value = ORG_DEP_SERVICETYPE_MICRO_SERVICES_CURRENT_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationDepartmentServiceCureentSlaMicroServices(@Param("orgId")Long orgId,@Param("depId")Long depId, @Param("serviceName")String serviceName);
+	
+	String ORG_DEP_SERVICETYPE_MICRO_SERVICES_MONTHLY_SLA_QUERY ="select distinct ms.sla_json->'MONTHLYSLA' as  monthly_sla\r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep.id = :depId\r\n"
+			+ "and ms .\"name\" =:serviceName";
+	@Query(value = ORG_DEP_SERVICETYPE_MICRO_SERVICES_MONTHLY_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationDepartmentServiceMonthlySlaMicroServices(@Param("orgId")Long orgId,@Param("depId")Long depId, @Param("serviceName")String serviceName);
+	
+	
+	String ORG_DEP_SERVICETYPE_MICRO_SERVICES_WEEKLY_SLA_QUERY ="select distinct ms.sla_json->'WEEKLYSLA' as  weekly_sla\r\n"
+			+ "from micro_service ms , department dep, organization org\r\n"
+			+ "where org.id = dep.organization_id\r\n"
+			+ "and ms.department_id = dep.id\r\n"
+			+ "and org.id = :orgId\r\n"
+			+ "and dep.id = :depId\r\n"
+			+ "and ms .\"name\" =:serviceName";
+	@Query(value = ORG_DEP_SERVICETYPE_MICRO_SERVICES_WEEKLY_SLA_QUERY, nativeQuery = true)
+	public List<ObjectNode> getOrganizationDepartmentServiceWeeklySlaMicroServices(@Param("orgId")Long orgId,@Param("depId")Long depId, @Param("serviceName")String serviceName);
+	
+	
+	
+	
+	
+	
+	
 }
+
