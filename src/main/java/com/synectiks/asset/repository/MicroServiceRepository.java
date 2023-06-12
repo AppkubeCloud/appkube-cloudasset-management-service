@@ -364,6 +364,38 @@ public interface MicroServiceRepository extends JpaRepository<MicroService, Long
 	public List<ObjectNode> getOrganizationDepartmentServiceWeeklySlaMicroServices(@Param("orgId")Long orgId,@Param("depId")Long depId, @Param("serviceName")String serviceName);
 	
 	
+	String SPEND_TODAY_ANALYTICS ="SELECT key,value\r\n"
+			+ "FROM cloud_element ce, jsonb_each_text(ce.cost_json->'DAILYCOST') AS obj(key, value) \r\n"
+			+ "WHERE jsonb_exists(ce.cost_json ->'DAILYCOST', cast(current_date as text)) \r\n"
+			+ "and date(key) = current_date \r\n"
+			+ "and ce.id =:id";
+	@Query(value = SPEND_TODAY_ANALYTICS, nativeQuery = true)
+	public List<String> getSpendTodaySpendAnalytics(@Param("id")Long id);
+	
+	String ALL_SPEND_TODAY_ANALYTICS ="SELECT sum(cast (value as int)) \r\n"
+			+ "FROM cloud_element ce, jsonb_each_text(ce.cost_json->'DAILYCOST') AS obj(key, value) \r\n"
+			+ "WHERE jsonb_exists(ce.cost_json ->'DAILYCOST', cast(current_date as text)) \r\n"
+			+ "and date(key) = current_date";
+	@Query(value = ALL_SPEND_TODAY_ANALYTICS, nativeQuery = true)
+	public List<String> getAllSpendTodaySpendAnalytics();
+	
+	
+	String SPEND_YESTERDAY_ANALYTICS ="SELECT key, value\r\n"
+			+ "FROM cloud_element ce, jsonb_each_text(ce.cost_json->'DAILYCOST') AS obj(key, value) \r\n"
+			+ "WHERE jsonb_exists(ce.cost_json ->'DAILYCOST', cast(current_date as text)) \r\n"
+			+ "and date(key) = current_date-1\r\n"
+			+ "and ce.id =:id";
+	@Query(value = SPEND_YESTERDAY_ANALYTICS, nativeQuery = true)
+	public List<String> getSpendYesterdaySpendAnalytics(@Param("id")Long id);
+	
+	String ALL_SPEND_YESTERDAY_ANALYTICS ="select sum(cast (value as int)) \r\n"
+			+ "FROM cloud_element ce, jsonb_each_text(ce.cost_json->'DAILYCOST') AS obj(key, value) \r\n"
+			+ "WHERE jsonb_exists(ce.cost_json ->'DAILYCOST', cast(current_date as text)) \r\n"
+			+ "and date(key) = current_date-1";
+	@Query(value = ALL_SPEND_YESTERDAY_ANALYTICS, nativeQuery = true)
+	public List<String> getAllSpendYesterdaySpendAnalytics();
+	
+	
 	
 	
 	

@@ -331,5 +331,25 @@ public class MicroServiceService {
 			return microServiceRepository.getOrganizationDepartmentServiceWeeklySlaMicroServices(orgId,depId,serviceName);
 		}
 
+		public List<String> getSpendTodaySpendAnalytics(Long id) {
+			log.debug("Request to get list of spend-today an id");
+			return microServiceRepository.getSpendTodaySpendAnalytics(id);
+		}
+
+		public List<String> getAllSpendTodaySpendAnalytics() {
+			log.debug("Request to get list of spend-today  sum");
+			return microServiceRepository.getAllSpendTodaySpendAnalytics();
+		}
+
+		public List<String> getSpendYesterdaySpendAnalytics(Long id) {
+			log.debug("Request to get list of spend-yesterday an id");
+			return microServiceRepository.getSpendYesterdaySpendAnalytics(id);
+		}
+
+		public List<String> getAllSpendYesterdaySpendAnalytics() {
+			log.debug("Request to get list of spend-yesterday  sum");
+			return microServiceRepository.getAllSpendYesterdaySpendAnalytics();
+		}
+
 	
 }

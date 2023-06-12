@@ -1011,6 +1011,90 @@ public class QueryController {
 				.body(result);
 
 	}
+//********************************* Spend Analytics**********************************************************************
 	
+	/**
+	 * {@code GET /spend-today/{id}/spend-analytics} : get spend-today
+	 * list of id .
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get spend-today
+	 * list of id 
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/spend-today/{id}/spend-analytics")
+	public ResponseEntity<List<String>> getSpendTodaySpendAnalytics(@PathVariable Long id )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of spend-today of given  id :{}",id);
+		List<String> result = microServiceService.getSpendTodaySpendAnalytics(id);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "id: " + id))
+				.body(result);
+
+	}
+	
+	/**
+	 * {@code GET /spend-yesterday/{id}/spend-analytics} : get spend-yesterday
+	 * list of id .
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get spend-yesterday
+	 * list of id 
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/spend-yesterday/{id}/spend-analytics")
+	public ResponseEntity<List<String>> getSpendYesterdaySpendAnalytics(@PathVariable Long id )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get list of spend-yesterday of given  id :{}",id);
+		List<String> result = microServiceService.getSpendYesterdaySpendAnalytics(id);
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "id: " + id))
+				.body(result);
+
+	}
+	
+	/**
+	 * {@code GET //spend-today/analytics : get spend-today  
+	 * list of sum.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get spend-today
+	 * list of sum  
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/spend-today/analytics")
+	public ResponseEntity<List<String>> getAllSpendTodaySpendAnalytics( )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get sum of spend-today :{}");
+		List<String> result = microServiceService.getAllSpendTodaySpendAnalytics();
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "id: " + ""))
+				.body(result);
+
+	}
+	
+	/**
+	 * {@code GET //spend-today/analytics : get spend-yesterday  
+	 * list of sum.
+	 *
+	 * @return the {@link ResponseEntity} with status {@code 200 (OK)} and get spend-yesterday
+	 * list of sum  
+	 * @throws URISyntaxException
+	 */
+
+	@GetMapping("/spend-yesterday/analytics")
+	public ResponseEntity<List<String>> getAllSpendYesterdaySpendAnalytics( )
+			throws IOException, URISyntaxException {
+		logger.debug("REST request to get sum of spend-yesterday :{}");
+		List<String> result = microServiceService.getAllSpendYesterdaySpendAnalytics();
+
+		return ResponseEntity.ok()
+				.headers(HeaderUtil.createEntityCreationAlert(applicationName, false, ENTITY_NAME, "id: " + ""))
+				.body(result);
+
+	}
 
 }
